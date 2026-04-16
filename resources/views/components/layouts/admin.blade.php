@@ -59,6 +59,7 @@
                     <x-admin.nav-link href="{{ route('admin.galeri') }}" icon="image" :active="request()->routeIs('admin.galeri*')">Galeri</x-admin.nav-link>
                 @endif
 
+                {{-- OLD PPDB MENU DISABLED
                 @if ($isSuperAdmin || $isPpdbAdmin)
                     <div class="pt-3 mt-3 border-t border-slate-800/70 space-y-1">
                         <p class="px-3 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500" x-show="sidebarOpen" x-transition>PPDB</p>
@@ -70,6 +71,19 @@
                         <x-admin.nav-link href="{{ route('admin.ppdb.tests') }}" icon="clipboard-check" :active="request()->routeIs('admin.ppdb.tests')">Panitia Tes</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.re-registration') }}" icon="beaker" :active="request()->routeIs('admin.ppdb.re-registration')">Verifikasi Daftar Ulang</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.settings') }}" icon="sliders" :active="request()->routeIs('admin.ppdb.settings')">Pengaturan PPDB</x-admin.nav-link>
+                    </div>
+                @endif
+                --}}
+
+                @if ($isSuperAdmin || $isPpdbAdmin)
+                    <div class="pt-3 mt-3 border-t border-slate-800/70 space-y-1">
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500" x-show="sidebarOpen" x-transition>PPDB</p>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.dashboard') }}" icon="home" :active="request()->routeIs('admin.ppdb.dashboard')">Dashboard</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.pendaftar') }}" icon="users" :active="request()->routeIs('admin.ppdb.pendaftar')">Data Pendaftar</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.penentuan-jurusan') }}" icon="clipboard-check" :active="request()->routeIs('admin.ppdb.penentuan-jurusan')">Penentuan Jurusan</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.daftar-ulang') }}" icon="document-text" :active="request()->routeIs('admin.ppdb.daftar-ulang')">Daftar Ulang</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.broadcast') }}" icon="megaphone" :active="request()->routeIs('admin.ppdb.broadcast')">Broadcast</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.pengaturan') }}" icon="cog" :active="request()->routeIs('admin.ppdb.pengaturan')">Pengaturan</x-admin.nav-link>
                     </div>
                 @endif
 

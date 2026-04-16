@@ -35,7 +35,12 @@ use App\Livewire\Admin\PpdbReRegistration;
 use App\Livewire\Admin\PpdbSettings;
 use App\Livewire\Admin\PpdbTestScoring;
 use App\Livewire\Admin\Settings;
-
+use App\Livewire\Admin\PpdbV2\Dashboard as PpdbDashboardV2;
+use App\Livewire\Admin\PpdbV2\Pendaftar as PpdbPendaftarV2;
+use App\Livewire\Admin\PpdbV2\PenentuanJurusan as PpdbPenentuanJurusanV2;
+use App\Livewire\Admin\PpdbV2\DaftarUlang as PpdbDaftarUlangV2;
+use App\Livewire\Admin\PpdbV2\Broadcast as PpdbBroadcastV2;
+use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
@@ -64,6 +69,8 @@ Route::post('/logout', function () {
 })->middleware('auth')->name('logout');
 
 // Admin
+// OLD ROUTES PPDB - DISABLED (Untuk dibuat ulang versi Simple)
+/*
 Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/ppdb', Ppdb::class)->name('ppdb');
     Route::get('/ppdb/export', PpdbExportController::class)->name('ppdb.export');
@@ -72,10 +79,21 @@ Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin')->name('adm
     Route::get('/ppdb/verifikasi-daftar-ulang', PpdbReRegistration::class)->name('ppdb.re-registration');
     Route::get('/ppdb/pengaturan', PpdbSettings::class)->name('ppdb.settings');
 });
+*/
+
+// ROUTES PPDB V2 (Simple UI)
+Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin/ppdb')->name('admin.ppdb.')->group(function () {
+    Route::get('/', PpdbDashboardV2::class)->name('dashboard');
+    Route::get('/pendaftar', PpdbPendaftarV2::class)->name('pendaftar');
+    Route::get('/penentuan-jurusan', PpdbPenentuanJurusanV2::class)->name('penentuan-jurusan');
+    Route::get('/daftar-ulang', PpdbDaftarUlangV2::class)->name('daftar-ulang');
+    Route::get('/broadcast', PpdbBroadcastV2::class)->name('broadcast');
+    Route::get('/pengaturan', PpdbPengaturanV2::class)->name('pengaturan');
+});
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
-    Route::get('/ppdb/analisa', PpdbAnalytics::class)->name('ppdb.analytics');
+    // Route::get('/ppdb/analisa', PpdbAnalytics::class)->name('ppdb.analytics');
     Route::get('/profil-sekolah', ProfilSekolah::class)->name('profil-sekolah');
     Route::get('/pegawai', Pegawai::class)->name('pegawai');
     Route::get('/program-keahlian', ProgramKeahlian::class)->name('program-keahlian');
