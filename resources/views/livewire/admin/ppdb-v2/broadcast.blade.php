@@ -1,91 +1,197 @@
-<div>
-    <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Broadcast & Pengumuman</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Kirim otomatis pengingat jadwal langsung ke WhatsApp tau Email peserta.</p>
+<div class="space-y-6">
+    <div class="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-cyan-50 to-white p-6 shadow-sm dark:border-blue-900 dark:from-blue-950/30 dark:via-slate-900 dark:to-slate-900">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">PPDB Communication Center</p>
+                <h1 class="mt-2 text-2xl font-black text-slate-900 dark:text-white">Broadcast Strategis dan Pengumuman Terpadu</h1>
+                <p class="mt-2 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
+                    Kelola komunikasi dari tahap verifikasi, penentuan jurusan, pengumuman kelulusan, hingga daftar ulang dari satu layar.
+                    Halaman ini dirancang sebagai pusat pesan operasional PPDB agar arahan ke peserta tetap konsisten, cepat, dan terdokumentasi.
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($integrationMap as $item)
+                    <a
+                        wire:key="broadcast-link-{{ str($item['menu'])->slug() }}"
+                        href="{{ $item['route'] }}"
+                        class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                    >
+                        {{ $item['menu'] }}
+                    </a>
+                @endforeach
+            </div>
         </div>
     </div>
 
     @if (session()->has('message'))
-        <div class="mb-6 rounded-xl bg-blue-50 border border-blue-200 p-4 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 font-medium">
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-bold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
             {{ session('message') }}
         </div>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Panel Kirim Pesan -->
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Buat Pesan Massal</h3>
-            
-            <form wire:submit.prevent="sendBroadcast" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Target Penerima</label>
-                    <select wire:model="targetAudience" class="w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500 bg-slate-50 dark:bg-slate-950 dark:border-slate-700">
-                        <option value="all">Semua Pendaftar Terdaftar</option>
-                        <option value="verified">Siswa Terverifikasi Berkas (Tunggu Ujian)</option>
-                        <option value="lulus">Siswa Lulus (Semua Jurusan)</option>
-                        <option value="belum_daftar_ulang">Siswa Lulus (Belum Daftar Ulang)</option>
-                        <option value="selesai_daftar_ulang">Siswa Lulus (Selesai Daftar Ulang)</option>
-                    </select>
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_1fr]">
+        <div class="space-y-6">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Composer Pesan Massal</h3>
+                    <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                        Queue-Ready
+                    </span>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Jalur Pengiriman</label>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 cursor-pointer border rounded-xl p-3 flex-1 transition {{ $channel === 'whatsapp' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-slate-200' }}">
-                            <input type="radio" wire:model.live="channel" value="whatsapp" class="text-emerald-500 focus:ring-emerald-500">
-                            <x-admin.icon name="chat" class="w-5 h-5 text-emerald-500" />
-                            <span class="text-sm font-bold text-slate-700 dark:text-slate-300">WhatsApp</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer border rounded-xl p-3 flex-1 transition {{ $channel === 'email' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-slate-200' }}">
-                            <input type="radio" wire:model.live="channel" value="email" class="text-blue-500 focus:ring-blue-500">
-                            <x-admin.icon name="mail" class="w-5 h-5 text-blue-500" />
-                            <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Email Utama</span>
-                        </label>
+                <form wire:submit.prevent="sendBroadcast" class="space-y-4">
+                    <div>
+                        <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Target Penerima</label>
+                        <select wire:model="targetAudience" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950">
+                            <option value="all">Semua Pendaftar Terdaftar</option>
+                            <option value="verified">Siswa Terverifikasi Berkas (Tunggu Ujian)</option>
+                            <option value="lulus">Siswa Lulus (Semua Jurusan)</option>
+                            <option value="belum_daftar_ulang">Siswa Lulus (Belum Daftar Ulang)</option>
+                            <option value="selesai_daftar_ulang">Siswa Lulus (Selesai Daftar Ulang)</option>
+                        </select>
+                        @error('targetAudience')
+                            <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-300">
+                            {{ $audienceGuide[$targetAudience] ?? 'Pilih target penerima untuk melihat panduan sasaran komunikasi.' }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Jalur Pengiriman</label>
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <label class="flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition {{ $channel === 'whatsapp' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-slate-200 dark:border-slate-700' }}">
+                                <input type="radio" wire:model="channel" value="whatsapp" class="text-emerald-500 focus:ring-emerald-500">
+                                <x-admin.icon name="chat" class="h-5 w-5 text-emerald-500" />
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">WhatsApp</span>
+                            </label>
+                            <label class="flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition {{ $channel === 'email' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700' }}">
+                                <input type="radio" wire:model="channel" value="email" class="text-blue-500 focus:ring-blue-500">
+                                <x-admin.icon name="mail" class="h-5 w-5 text-blue-500" />
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Email Utama</span>
+                            </label>
+                        </div>
+                        @error('channel')
+                            <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            {{ $channel === 'whatsapp' ? 'Gunakan kalimat singkat, padat, dan mudah ditindaklanjuti oleh peserta.' : 'Gunakan format formal agar cocok untuk arsip administratif peserta.' }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Isi Pesan/Pengumuman</label>
+                        <textarea wire:model.blur="messageText" rows="6" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm shadow-inner focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950" placeholder="Tulis pengingat jadwal, pengumuman hasil, atau instruksi daftar ulang di sini..."></textarea>
+                        @error('messageText')
+                            <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Gunakan token personalisasi agar pesan lebih relevan dan mudah dipahami peserta.</p>
+                    </div>
+
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Token Personal</p>
+                        <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            @foreach ($tokenGuide as $token)
+                                <div wire:key="broadcast-token-{{ $token['token'] }}" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-900">
+                                    <p class="font-bold text-slate-800 dark:text-slate-100">{{ $token['token'] }}</p>
+                                    <p class="mt-0.5 text-slate-500 dark:text-slate-400">{{ $token['desc'] }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-900/20">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-600">Pratinjau Pesan</p>
+                        <div class="mt-3 rounded-lg border border-blue-100 bg-white p-3 text-sm leading-relaxed text-slate-700 dark:border-blue-900 dark:bg-slate-900 dark:text-slate-200">
+                            {{ $previewText }}
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" wire:loading.attr="disabled" wire:target="sendBroadcast" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
+                            <x-admin.icon name="paper-airplane" class="h-5 w-5" />
+                            Arahkan ke Antrean Kirim (Queue)
+                        </button>
+                        <div wire:loading wire:target="sendBroadcast" class="mt-2 w-full text-center text-sm font-bold text-blue-600">
+                            Memproses pengiriman...
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="mb-4 flex items-start justify-between gap-3">
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900 dark:text-white">Template Operasional PPDB</h3>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gunakan template siap pakai untuk skenario utama sepanjang siklus PPDB.</p>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Isi Pesan/Pengumuman</label>
-                    <textarea wire:model="messageText" rows="5" class="w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500 shadow-inner bg-slate-50 dark:bg-slate-950 dark:border-slate-700" placeholder="Tulis pengingat jadwal, tes, atau pengumuman seragam di sini..."></textarea>
-                    <p class="text-xs text-slate-500 mt-1">Anda dapat menggunakan variabel otomatis seperti [nama_siswa] atau [no_daftar] agar terpersonalisasi.</p>
+                <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    @foreach ($quickTemplates as $template)
+                        <button
+                            wire:key="broadcast-template-{{ $template['key'] }}"
+                            type="button"
+                            class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-blue-700 dark:hover:bg-blue-950/20"
+                            wire:click="applyTemplate('{{ $template['key'] }}')"
+                        >
+                            <p class="text-sm font-black text-slate-800 dark:text-slate-100">{{ $template['title'] }}</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Target: {{ str($template['audience'])->replace('_', ' ')->title() }} | Channel: {{ strtoupper($template['channel']) }}</p>
+                            <p class="mt-2 line-clamp-2 text-xs text-slate-600 dark:text-slate-300">{{ $template['body'] }}</p>
+                        </button>
+                    @endforeach
                 </div>
-
-                <div class="pt-2">
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                        <x-admin.icon name="paper-airplane" class="w-5 h-5" />
-                        Arahkan ke Antrean Kirim (Queue)
-                    </button>
-                    <div wire:loading wire:target="sendBroadcast" class="w-full text-center text-sm font-bold text-blue-600 mt-2">
-                        Memproses pengiriman...
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
 
-        <!-- Panduan & Pengaturan Teks Default -->
         <div class="space-y-6">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <h3 class="text-base font-black text-slate-900 dark:text-white">Cakupan Kebutuhan Komunikasi PPDB</h3>
+                <div class="mt-4 space-y-3">
+                    @foreach ($integrationMap as $item)
+                        <a wire:key="broadcast-coverage-{{ str($item['menu'])->slug() }}" href="{{ $item['route'] }}" class="block rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-blue-700 dark:hover:bg-blue-950/20">
+                            <p class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ $item['menu'] }}</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $item['goal'] }}</p>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
             <div class="rounded-2xl border border-slate-200 bg-blue-50 p-6 shadow-sm dark:border-slate-800 dark:bg-blue-900/20">
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 bg-blue-100 dark:bg-blue-800 p-2 rounded-full mt-1">
-                        <x-admin.icon name="information-circle" class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 rounded-full bg-blue-100 p-2 dark:bg-blue-800">
+                        <x-admin.icon name="information-circle" class="h-5 w-5 text-blue-600 dark:text-blue-300" />
                     </div>
                     <div>
-                        <h4 class="font-bold text-blue-900 dark:text-blue-100">Kirim Otomatis</h4>
-                        <p class="text-sm text-blue-800/80 dark:text-blue-200/80 mt-1 leading-relaxed">
-                            Selain menge-blast pesan manual di layar ini, sistem PPDB juga sudah mengaktifkan **notifikasi otomatis** saat Anda menaruh siswa ke jurusan tertentu di menu Penentuan Jurusan. Tidak perlu manual!
+                        <h4 class="font-bold text-blue-900 dark:text-blue-100">Sinkron Otomatis dengan Proses Seleksi</h4>
+                        <p class="mt-1 text-sm leading-relaxed text-blue-800/90 dark:text-blue-200/90">
+                            Selain blast manual, sistem PPDB telah mendukung notifikasi otomatis pada alur operasional tertentu.
+                            Gunakan panel ini untuk komunikasi lanjutan, penguatan instruksi, dan reminder berbasis status peserta.
                         </p>
                     </div>
                 </div>
             </div>
-            
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 dark:text-white text-sm">Pengumuman di Web Pendaftar</h3>
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <h3 class="text-base font-black text-slate-900 dark:text-white">Checklist Tata Kelola Broadcast</h3>
+                <ul class="mt-3 space-y-2">
+                    @foreach ($checklistItems as $item)
+                        <li wire:key="broadcast-check-{{ str($item)->slug() }}" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300">
+                            {{ $item }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="border-b border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800 dark:bg-slate-900/50">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-white">Pengumuman Banner di Website PPDB</h3>
                 </div>
-                <div class="p-5 text-center">
-                    <p class="text-sm text-slate-500 mb-4">Fitur ini menulis banner berjalan langsung di website PPDB bagi peserta yang tidak mendaftar lewat WA/Email aktif.</p>
-                    <button class="px-5 py-2 rounded-xl border border-slate-300 text-sm font-bold hover:bg-slate-50 transition dark:border-slate-700 dark:hover:bg-slate-800">
+                <div class="p-5">
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Gunakan kanal ini untuk peserta yang kurang responsif di WA/Email. Konten banner sebaiknya menekankan batas waktu, alur tindakan, dan tautan resmi.
+                    </p>
+                    <button type="button" class="mt-4 rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
                         Tambahkan Banner Pengumuman
                     </button>
                 </div>
