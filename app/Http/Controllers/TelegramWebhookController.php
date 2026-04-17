@@ -98,7 +98,11 @@ class TelegramWebhookController extends Controller
         $secret = (string) config('services.telegram.webhook_secret', '');
 
         if ($secret === '') {
-            return true;
+            if (app()->environment('local', 'testing')) {
+                return true;
+            }
+
+            return (bool) config('services.telegram.allow_insecure_webhook', false);
         }
 
         return hash_equals($secret, (string) $request->header('X-Telegram-Bot-Api-Secret-Token', ''));
@@ -109,7 +113,11 @@ class TelegramWebhookController extends Controller
         $allowedChats = config('services.telegram.allowed_chat_ids', []);
 
         if (! is_array($allowedChats) || $allowedChats === []) {
-            return true;
+            if (app()->environment('local', 'testing')) {
+                return true;
+            }
+
+            return (bool) config('services.telegram.allow_all_chats', false);
         }
 
         return in_array($chatId, array_map('strval', $allowedChats), true);

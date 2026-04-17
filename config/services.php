@@ -45,7 +45,9 @@ return [
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+        'allow_insecure_webhook' => filter_var(env('TELEGRAM_ALLOW_INSECURE_WEBHOOK', false), FILTER_VALIDATE_BOOLEAN),
         'allowed_chat_ids' => array_values(array_filter(array_map('trim', explode(',', (string) env('TELEGRAM_ALLOWED_CHAT_IDS', ''))))),
+        'allow_all_chats' => filter_var(env('TELEGRAM_ALLOW_ALL_CHATS', false), FILTER_VALIDATE_BOOLEAN),
         'news_author_email' => env('TELEGRAM_NEWS_AUTHOR_EMAIL'),
         'news_default_category_slug' => env('TELEGRAM_NEWS_DEFAULT_CATEGORY_SLUG'),
         'news_auto_publish' => filter_var(env('TELEGRAM_NEWS_AUTO_PUBLISH', true), FILTER_VALIDATE_BOOLEAN),

@@ -100,7 +100,7 @@
                                 <div x-show="content.trim().length === 0" class="rounded-xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-400 dark:border-slate-700 dark:text-slate-500">
                                     Preview akan tampil di sini setelah Anda mulai menulis isi berita.
                                 </div>
-                                <div x-show="content.trim().length > 0" x-html="content"></div>
+                                <div x-show="content.trim().length > 0" x-html="safePreview"></div>
                             </div>
                             @error('inline_image') <p class="mt-2 text-xs text-red-500">{{ $message }}</p> @enderror
                             @error('konten_html') <p class="mt-2 text-xs text-red-500">{{ $message }}</p> @enderror

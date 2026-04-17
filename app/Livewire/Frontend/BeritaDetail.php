@@ -5,6 +5,7 @@ namespace App\Livewire\Frontend;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\Berita;
+use App\Support\NewsHtmlSanitizer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 class BeritaDetail extends Component
 {
     public Berita $berita;
+    public string $safeKontenHtml = '';
 
     public function mount(string $slug)
     {
@@ -21,6 +23,7 @@ class BeritaDetail extends Component
             ->firstOrFail();
 
         $this->berita->incrementViewCount();
+        $this->safeKontenHtml = app(NewsHtmlSanitizer::class)->sanitize((string) $this->berita->konten_html);
     }
 
     public function render()
@@ -32,7 +35,7 @@ class BeritaDetail extends Component
             ->take(3)
             ->get();
 
-        $plainContent = trim(preg_replace('/\s+/', ' ', strip_tags($this->berita->konten_html)));
+        $plainContent = trim(preg_replace('/\s+/', ' ', strip_tags($this->safeKontenHtml)));
         $metaDescription = Str::limit($plainContent, 160, '...');
         $readingMinutes = max(1, (int) ceil(str_word_count($plainContent) / 200));
         $canonicalUrl = route('berita.show', $this->berita->slug);
@@ -73,14 +76,15 @@ class BeritaDetail extends Component
             ],
             'articleSection' => $this->berita->kategori?->nama_kategori,
             'wordCount' => str_word_count($plainContent),
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
         return view('livewire.frontend.berita-detail', compact(
             'related',
             'metaDescription',
             'readingMinutes',
             'canonicalUrl',
-            'shareImage'
+            'shareImage',
+            'safeKontenHtml'
         ))
             ->title($this->berita->judul . ' - SMK Negeri 1 Kolaka')
             ->layoutData([

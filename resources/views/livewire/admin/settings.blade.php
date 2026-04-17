@@ -1,4 +1,4 @@
-<div>
+<div x-data="adminConfirmModal()">
     <div class="flex justify-end mb-6">
         <button wire:click="create" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">+ Tambah Setting</button>
     </div>
@@ -21,7 +21,7 @@
                     <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">{{ $item->type }}</span></td>
                     <td class="px-4 py-3 text-right space-x-1">
                         <button wire:click="edit({{ $item->id }})" class="px-3 py-1 text-xs font-medium bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-100 transition">Edit</button>
-                        <button wire:click="delete({{ $item->id }})" wire:confirm="Yakin hapus?" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
+                        <button @click="openConfirm('delete', {{ $item->id }}, 'Hapus setting ini?', 'Konfigurasi setting akan dihapus permanen.', 'Ya, Hapus', 'warning')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
                     </td>
                 </tr>
                 @empty
@@ -62,4 +62,6 @@
         </div>
     </div>
     @endif
+
+    <x-admin.confirm-modal />
 </div>

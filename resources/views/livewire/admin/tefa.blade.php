@@ -1,4 +1,4 @@
-<div>
+<div x-data="adminConfirmModal()">
     {{-- Tabs --}}
     <div class="flex gap-2 mb-6">
         <button wire:click="$set('tab', 'produk')" class="px-4 py-2 text-sm font-semibold rounded-lg transition {{ $tab === 'produk' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }}">Produk</button>
@@ -33,7 +33,7 @@
                     <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">{{ $item->status_ketersediaan }}</span></td>
                     <td class="px-4 py-3 text-right space-x-1">
                         <button wire:click="editProduk({{ $item->id }})" class="px-3 py-1 text-xs font-medium bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-100 transition">Edit</button>
-                        <button wire:click="deleteProduk({{ $item->id }})" wire:confirm="Yakin hapus produk ini?" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
+                        <button @click="openConfirm('deleteProduk', {{ $item->id }}, 'Hapus produk ini?', 'Produk TEFA akan dihapus permanen.', 'Ya, Hapus', 'danger')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
                     </td>
                 </tr>
                 @empty
@@ -64,7 +64,7 @@
                     <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $kat->produk_count }}</td>
                     <td class="px-4 py-3 text-right space-x-1">
                         <button wire:click="editKategori({{ $kat->id }})" class="px-3 py-1 text-xs font-medium bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-100 transition">Edit</button>
-                        <button wire:click="deleteKategori({{ $kat->id }})" wire:confirm="Yakin hapus kategori ini?" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
+                        <button @click="openConfirm('deleteKategori', {{ $kat->id }}, 'Hapus kategori ini?', 'Kategori TEFA akan dihapus permanen.', 'Ya, Hapus', 'warning')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
                     </td>
                 </tr>
                 @empty
@@ -158,4 +158,6 @@
         </div>
     </div>
     @endif
+
+    <x-admin.confirm-modal />
 </div>

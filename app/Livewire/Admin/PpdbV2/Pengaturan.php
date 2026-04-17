@@ -6,8 +6,10 @@ use App\Models\PpdbPeriod;
 use App\Models\PpdbQuota;
 use App\Models\PpdbTrack;
 use App\Support\PpdbPeriodResolver;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Throwable;
 
 class Pengaturan extends Component
 {
@@ -19,6 +21,12 @@ class Pengaturan extends Component
     public array $trackSettings = [];
     public array $quotaSettings = [];
     public array $newPeriodForm = [];
+    public bool $showActionModal = false;
+    public string $pendingAction = '';
+    public string $actionModalTitle = '';
+    public string $actionModalMessage = '';
+    public string $actionModalConfirmLabel = '';
+    public string $actionModalTone = 'info';
 
     public function mount(): void
     {
@@ -38,6 +46,78 @@ class Pengaturan extends Component
 
         $this->syncManagementForms($selectedPeriod);
         $this->resetNewPeriodForm($selectedPeriod);
+    }
+
+    public function openActionModal(string $action): void
+    {
+        $config = $this->resolveActionModalConfig($action);
+
+        if (! $config) {
+            $this->dispatch('toast', type: 'error', message: 'Aksi tidak dikenali. Silakan muat ulang halaman.');
+            return;
+        }
+
+        $this->pendingAction = $action;
+        $this->actionModalTitle = $config['title'];
+        $this->actionModalMessage = $config['message'];
+        $this->actionModalConfirmLabel = $config['confirm_label'];
+        $this->actionModalTone = $config['tone'];
+        $this->showActionModal = true;
+    }
+
+    public function closeActionModal(): void
+    {
+        $this->showActionModal = false;
+        $this->pendingAction = '';
+        $this->actionModalTitle = '';
+        $this->actionModalMessage = '';
+        $this->actionModalConfirmLabel = '';
+        $this->actionModalTone = 'info';
+    }
+
+    public function confirmAction(): void
+    {
+        if ($this->pendingAction === '') {
+            $this->dispatch('toast', type: 'error', message: 'Belum ada aksi yang dipilih.');
+            return;
+        }
+
+        $action = $this->pendingAction;
+        $this->closeActionModal();
+
+        try {
+            switch ($action) {
+                case 'activate-period':
+                    $this->activateSelectedPeriod();
+                    break;
+                case 'archive-period':
+                    $this->archiveSelectedPeriod();
+                    break;
+                case 'delete-period':
+                    $this->deleteSelectedPeriod();
+                    break;
+                case 'create-period':
+                    $this->createPeriod();
+                    break;
+                case 'save-period-settings':
+                    $this->savePeriodSettings();
+                    break;
+                case 'save-track-settings':
+                    $this->saveTrackSettings();
+                    break;
+                case 'save-quota-settings':
+                    $this->saveQuotaSettings();
+                    break;
+                default:
+                    $this->dispatch('toast', type: 'error', message: 'Aksi tidak dikenali. Silakan muat ulang halaman.');
+                    break;
+            }
+        } catch (ValidationException) {
+            $this->dispatch('toast', type: 'error', message: 'Validasi gagal. Periksa kolom bertanda merah lalu coba lagi.');
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->dispatch('toast', type: 'error', message: 'Terjadi kesalahan sistem saat memproses aksi. Silakan coba lagi.');
+        }
     }
 
     public function savePeriodSettings(): void
@@ -74,11 +154,13 @@ class Pengaturan extends Component
 
         if ($statusPengumuman === 'published' && ! $tanggalPengumuman) {
             $this->addError('periodForm.tanggal_pengumuman', 'Tanggal pengumuman wajib diisi saat status pengumuman dipublikasikan.');
+            $this->dispatch('toast', type: 'error', message: 'Tanggal pengumuman wajib diisi saat status pengumuman dipublikasikan.');
             return;
         }
 
         if ($statusPengumuman === 'published' && (! $tanggalMulaiDaftarUlang || ! $tanggalSelesaiDaftarUlang)) {
             $this->addError('periodForm.tanggal_mulai_daftar_ulang', 'Tanggal daftar ulang wajib diisi saat pengumuman dipublikasikan.');
+            $this->dispatch('toast', type: 'error', message: 'Tanggal daftar ulang wajib diisi saat pengumuman dipublikasikan.');
             return;
         }
 
@@ -88,6 +170,7 @@ class Pengaturan extends Component
 
         if ($payload['is_active'] && $status === 'draft') {
             $this->addError('periodForm.status', 'Periode draft tidak dapat dijadikan aktif default. Ubah status terlebih dahulu.');
+            $this->dispatch('toast', type: 'error', message: 'Periode draft tidak dapat dijadikan aktif default. Ubah status terlebih dahulu.');
             return;
         }
 
@@ -187,6 +270,7 @@ class Pengaturan extends Component
 
         if (($validated['newPeriodForm']['is_active'] ?? false) && $validated['newPeriodForm']['status'] === 'draft') {
             $this->addError('newPeriodForm.status', 'Periode draft tidak dapat dijadikan aktif default saat dibuat.');
+            $this->dispatch('toast', type: 'error', message: 'Periode draft tidak dapat dijadikan aktif default saat dibuat.');
             return;
         }
 
@@ -420,5 +504,54 @@ class Pengaturan extends Component
             'clone_template' => true,
             'deskripsi' => $period?->deskripsi ?? '',
         ];
+    }
+
+    protected function resolveActionModalConfig(string $action): ?array
+    {
+        return match ($action) {
+            'activate-period' => [
+                'title' => 'Jadikan Periode Aktif Default?',
+                'message' => 'Periode terpilih akan menjadi konteks default admin dan frontend ketika parameter periode tidak dikirim.',
+                'confirm_label' => 'Ya, Jadikan Aktif',
+                'tone' => 'primary',
+            ],
+            'archive-period' => [
+                'title' => 'Arsipkan Periode Ini?',
+                'message' => 'Periode akan disembunyikan dari frontend. Data pendaftar tetap aman dan bisa ditinjau di admin.',
+                'confirm_label' => 'Ya, Arsipkan',
+                'tone' => 'warning',
+            ],
+            'delete-period' => [
+                'title' => 'Hapus Periode Secara Permanen?',
+                'message' => 'Aksi ini tidak bisa dibatalkan. Penghapusan hanya berhasil jika periode tidak aktif dan belum memiliki pendaftar.',
+                'confirm_label' => 'Ya, Hapus Permanen',
+                'tone' => 'danger',
+            ],
+            'create-period' => [
+                'title' => 'Buat Periode Baru?',
+                'message' => 'Sistem akan membuat periode baru sesuai data formulir yang sudah diisi.',
+                'confirm_label' => 'Ya, Buat Periode',
+                'tone' => 'primary',
+            ],
+            'save-period-settings' => [
+                'title' => 'Simpan Pengaturan Periode?',
+                'message' => 'Perubahan jadwal, status, dan pengumuman akan langsung mempengaruhi perilaku portal frontend.',
+                'confirm_label' => 'Ya, Simpan Periode',
+                'tone' => 'primary',
+            ],
+            'save-track-settings' => [
+                'title' => 'Simpan Pengaturan Jalur?',
+                'message' => 'Perubahan status tampil, verifikasi, dan urutan jalur akan langsung diterapkan pada portal frontend.',
+                'confirm_label' => 'Ya, Simpan Jalur',
+                'tone' => 'primary',
+            ],
+            'save-quota-settings' => [
+                'title' => 'Simpan Pengaturan Kuota?',
+                'message' => 'Kuota dan status aktif kombinasi jalur-jurusan akan diperbarui sesuai input saat ini.',
+                'confirm_label' => 'Ya, Simpan Kuota',
+                'tone' => 'primary',
+            ],
+            default => null,
+        };
     }
 }

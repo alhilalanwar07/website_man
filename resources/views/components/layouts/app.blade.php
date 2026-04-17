@@ -1,5 +1,9 @@
 @php
-    $profil = \App\Models\ProfilSekolah::first();
+    $profil = \Illuminate\Support\Facades\Cache::remember(
+        'site:profil:v1',
+        now()->addMinutes(10),
+        fn () => \App\Models\ProfilSekolah::first()
+    );
     $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
     $sosmed = $profil->tautan_sosmed ?? [];
 @endphp

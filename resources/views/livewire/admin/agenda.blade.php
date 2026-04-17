@@ -1,4 +1,4 @@
-<div>
+<div x-data="adminConfirmModal()">
     <div class="flex items-center justify-between mb-6">
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari agenda..." class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white w-64 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
         <button wire:click="create" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">+ Tambah Agenda</button>
@@ -24,7 +24,7 @@
                     <td class="px-4 py-3"><span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">{{ $item->kategori_peserta }}</span></td>
                     <td class="px-4 py-3 text-right space-x-1">
                         <button wire:click="edit({{ $item->id }})" class="px-3 py-1 text-xs font-medium bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-100 transition">Edit</button>
-                        <button wire:click="delete({{ $item->id }})" wire:confirm="Yakin hapus?" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
+                        <button @click="openConfirm('delete', {{ $item->id }}, 'Hapus agenda ini?', 'Data agenda akan dihapus permanen dari sistem.', 'Ya, Hapus', 'danger')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
                     </td>
                 </tr>
                 @empty
@@ -81,4 +81,6 @@
         </div>
     </div>
     @endif
+
+    <x-admin.confirm-modal />
 </div>

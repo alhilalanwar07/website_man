@@ -39,6 +39,9 @@ window.beritaEditor = ({ wire, draftKey }) => ({
 
         return Math.max(1, Math.ceil(this.wordCount / 200));
     },
+    get safePreview() {
+        return this.sanitizeHtml(this.content);
+    },
     get savedLabel() {
         if (! this.lastSavedAt) {
             return 'Belum ada autosave';
@@ -85,6 +88,55 @@ window.beritaEditor = ({ wire, draftKey }) => ({
         } catch {
             window.localStorage.removeItem(draftKey);
         }
+    },
+    sanitizeHtml(html) {
+        if (! html) {
+            return '';
+        }
+
+        return html
+            .replace(/<(script|style|iframe|object|embed|form|input|button|textarea|select|option)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+            .replace(/\son[a-z-]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+            .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+            .replace(/\s(href|src)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, (full, attribute, rawValue) => {
+                const value = rawValue.trim().replace(/^['"]|['"]$/g, '');
+                const compactValue = value.replace(/\s+/g, '');
+                const lowerValue = compactValue.toLowerCase();
+
+                if (! compactValue) {
+                    return '';
+                }
+
+                if (lowerValue.startsWith('javascript:') || lowerValue.startsWith('data:') || lowerValue.startsWith('vbscript:')) {
+                    return '';
+                }
+
+                if (
+                    compactValue.startsWith('/') ||
+                    compactValue.startsWith('./') ||
+                    compactValue.startsWith('../') ||
+                    compactValue.startsWith('#')
+                ) {
+                    const escapedRelative = compactValue.replace(/"/g, '&quot;');
+                    return ` ${attribute}="${escapedRelative}"`;
+                }
+
+                try {
+                    const parsed = new URL(compactValue, window.location.origin);
+                    const allowed = attribute.toLowerCase() === 'src'
+                        ? ['http:', 'https:']
+                        : ['http:', 'https:', 'mailto:', 'tel:'];
+
+                    if (! allowed.includes(parsed.protocol)) {
+                        return '';
+                    }
+
+                    const escapedUrl = parsed.toString().replace(/"/g, '&quot;');
+                    return ` ${attribute}="${escapedUrl}"`;
+                } catch {
+                    return '';
+                }
+            });
     },
     clearSavedDraft() {
         window.localStorage.removeItem(draftKey);
@@ -202,4 +254,41 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('livewire:navigated', () => {
         document.querySelectorAll('[data-animate]:not(.is-visible)').forEach(el => observer.observe(el));
     });
+});
+
+window.adminConfirmModal = () => ({
+    confirmOpen: false,
+    confirmMethod: '',
+    confirmId: null,
+    confirmTone: 'danger',
+    confirmTitle: 'Konfirmasi Aksi',
+    confirmMessage: 'Aksi ini tidak dapat dibatalkan.',
+    confirmLabel: 'Ya, Lanjutkan',
+    openConfirm(method, id, title, message, confirmLabel = 'Ya, Lanjutkan', tone = 'danger') {
+        this.confirmMethod = method;
+        this.confirmId = id;
+        this.confirmTitle = title;
+        this.confirmMessage = message;
+        this.confirmLabel = confirmLabel;
+        this.confirmTone = tone;
+        this.confirmOpen = true;
+    },
+    closeConfirm() {
+        this.confirmOpen = false;
+        this.confirmMethod = '';
+        this.confirmId = null;
+        this.confirmTone = 'danger';
+        this.confirmTitle = 'Konfirmasi Aksi';
+        this.confirmMessage = 'Aksi ini tidak dapat dibatalkan.';
+        this.confirmLabel = 'Ya, Lanjutkan';
+    },
+    runConfirm() {
+        if (! this.confirmMethod) {
+            this.closeConfirm();
+            return;
+        }
+
+        this.$wire.call(this.confirmMethod, this.confirmId);
+        this.closeConfirm();
+    },
 });

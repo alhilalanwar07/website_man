@@ -55,31 +55,22 @@
                     Periode aktif default dipakai sebagai fallback utama oleh resolver admin dan frontend ketika parameter periode tidak dikirim.
                 </p>
                 <div class="mt-4 flex flex-wrap gap-3">
-                    <button wire:click="activateSelectedPeriod" wire:loading.attr="disabled" wire:target="activateSelectedPeriod" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900">
-                        <span wire:loading.remove wire:target="activateSelectedPeriod">Jadikan Aktif Default</span>
-                        <span wire:loading wire:target="activateSelectedPeriod">Memproses...</span>
+                    <button wire:click="openActionModal('activate-period')" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900">
+                        Jadikan Aktif Default
                     </button>
                     <button
-                        wire:click="archiveSelectedPeriod"
-                        wire:confirm="Arsipkan periode ini? Periode akan disembunyikan dari frontend."
-                        wire:loading.attr="disabled"
-                        wire:target="archiveSelectedPeriod"
+                        wire:click="openActionModal('archive-period')"
                         type="button"
-                        class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-bold text-amber-700 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-bold text-amber-700 transition hover:bg-amber-100"
                     >
-                        <span wire:loading.remove wire:target="archiveSelectedPeriod">Arsipkan dari Frontend</span>
-                        <span wire:loading wire:target="archiveSelectedPeriod">Mengarsipkan...</span>
+                        Arsipkan dari Frontend
                     </button>
                     <button
-                        wire:click="deleteSelectedPeriod"
-                        wire:confirm="Hapus permanen periode ini? Hanya bisa dihapus jika belum memiliki pendaftar."
-                        wire:loading.attr="disabled"
-                        wire:target="deleteSelectedPeriod"
+                        wire:click="openActionModal('delete-period')"
                         type="button"
-                        class="rounded-xl border border-rose-300 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="rounded-xl border border-rose-300 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-100"
                     >
-                        <span wire:loading.remove wire:target="deleteSelectedPeriod">Hapus Periode</span>
-                        <span wire:loading wire:target="deleteSelectedPeriod">Menghapus...</span>
+                        Hapus Periode
                     </button>
                     <span class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
                         Status periode: {{ str($activePeriod->status)->title() }}{{ $activePeriod->is_active ? ' · Aktif' : '' }}
@@ -112,7 +103,7 @@
                         </span>
                     </summary>
                     <div class="px-6 pb-6">
-                        <form wire:submit="createPeriod" class="space-y-4">
+                        <form wire:submit.prevent="openActionModal('create-period')" class="space-y-4">
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                                 <div class="xl:col-span-2">
                                     <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Nama Periode</label>
@@ -190,9 +181,8 @@
                             </div>
 
                             <div class="flex justify-end">
-                                <button type="submit" wire:loading.attr="disabled" wire:target="createPeriod" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                    <span wire:loading.remove wire:target="createPeriod">Buat Periode Baru</span>
-                                    <span wire:loading wire:target="createPeriod">Membuat...</span>
+                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+                                    Buat Periode Baru
                                 </button>
                             </div>
                         </form>
@@ -210,7 +200,7 @@
                         </span>
                     </summary>
                     <div class="px-6 pb-6">
-                        <form wire:submit="savePeriodSettings" class="space-y-4">
+                        <form wire:submit.prevent="openActionModal('save-period-settings')" class="space-y-4">
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                                 <div class="xl:col-span-2">
                                     <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Nama Periode</label>
@@ -302,9 +292,8 @@
                                 <input wire:model="periodForm.is_active" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                             </label>
                             <div class="flex justify-end">
-                                <button type="submit" wire:loading.attr="disabled" wire:target="savePeriodSettings" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                    <span wire:loading.remove wire:target="savePeriodSettings">Simpan Pengaturan Periode</span>
-                                    <span wire:loading wire:target="savePeriodSettings">Menyimpan...</span>
+                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+                                    Simpan Pengaturan Periode
                                 </button>
                             </div>
                         </form>
@@ -322,7 +311,7 @@
                         </span>
                     </summary>
                     <div class="px-6 pb-6">
-                        <form wire:submit="saveTrackSettings" class="space-y-4">
+                        <form wire:submit.prevent="openActionModal('save-track-settings')" class="space-y-4">
                             <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
                                 @forelse($activePeriod->tracks as $track)
                                     <div wire:key="track-setting-{{ $track->id }}" class="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
@@ -351,9 +340,8 @@
                                 @endforelse
                             </div>
                             <div class="flex justify-end">
-                                <button type="submit" wire:loading.attr="disabled" wire:target="saveTrackSettings" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                    <span wire:loading.remove wire:target="saveTrackSettings">Simpan Pengaturan Jalur</span>
-                                    <span wire:loading wire:target="saveTrackSettings">Menyimpan...</span>
+                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+                                    Simpan Pengaturan Jalur
                                 </button>
                             </div>
                         </form>
@@ -371,7 +359,7 @@
                         </span>
                     </summary>
                     <div class="px-6 pb-6">
-                        <form wire:submit="saveQuotaSettings" class="space-y-4">
+                        <form wire:submit.prevent="openActionModal('save-quota-settings')" class="space-y-4">
                             <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
                                 @forelse($activePeriod->quotas as $quota)
                                     <div wire:key="quota-setting-{{ $quota->id }}" class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
@@ -399,9 +387,8 @@
                                 @endforelse
                             </div>
                             <div class="flex justify-end">
-                                <button type="submit" wire:loading.attr="disabled" wire:target="saveQuotaSettings" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                    <span wire:loading.remove wire:target="saveQuotaSettings">Simpan Pengaturan Kuota</span>
-                                    <span wire:loading wire:target="saveQuotaSettings">Menyimpan...</span>
+                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
+                                    Simpan Pengaturan Kuota
                                 </button>
                             </div>
                         </form>
@@ -412,6 +399,53 @@
     @else
         <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
             Belum ada periode PPDB yang dapat dikelola. Buat periode baru terlebih dahulu agar pengaturan operasional bisa diaktifkan.
+        </div>
+    @endif
+
+    @if($showActionModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm" wire:click="closeActionModal">
+            <div class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900" wire:click.stop>
+                <div class="flex items-start gap-4 border-b border-slate-100 p-6 dark:border-slate-800">
+                    <div @class([
+                        'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl',
+                        'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' => $actionModalTone === 'danger',
+                        'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' => $actionModalTone === 'warning',
+                        'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' => in_array($actionModalTone, ['primary', 'info'], true),
+                    ])>
+                        @if($actionModalTone === 'danger')
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        @elseif($actionModalTone === 'warning')
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        @endif
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-lg font-black text-slate-900 dark:text-white">{{ $actionModalTitle }}</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ $actionModalMessage }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-3 rounded-b-2xl bg-slate-50 p-5 dark:bg-slate-800/60">
+                    <button type="button" wire:click="closeActionModal" class="rounded-xl px-5 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-700">
+                        Batal
+                    </button>
+                    <button
+                        type="button"
+                        wire:click="confirmAction"
+                        wire:loading.attr="disabled"
+                        wire:target="confirmAction"
+                        @class([
+                            'rounded-xl px-5 py-2.5 text-sm font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-60',
+                            'bg-rose-600 hover:bg-rose-700' => $actionModalTone === 'danger',
+                            'bg-amber-600 hover:bg-amber-700' => $actionModalTone === 'warning',
+                            'bg-blue-600 hover:bg-blue-700' => in_array($actionModalTone, ['primary', 'info'], true),
+                        ])
+                    >
+                        <span wire:loading.remove wire:target="confirmAction">{{ $actionModalConfirmLabel ?: 'Ya, Lanjutkan' }}</span>
+                        <span wire:loading wire:target="confirmAction">Memproses...</span>
+                    </button>
+                </div>
+            </div>
         </div>
     @endif
 </div>

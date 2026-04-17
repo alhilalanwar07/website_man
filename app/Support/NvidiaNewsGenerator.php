@@ -9,17 +9,15 @@ use RuntimeException;
 class NvidiaNewsGenerator
 {
     /**
-     * HTML tags that are safe to render in a school news portal.
-     */
-    private const ALLOWED_TAGS = '<p><h2><h3><h4><ul><ol><li><strong><em><blockquote><a><br><figure><figcaption><table><thead><tbody><tr><th><td><caption><hr>';
-
-    /**
      * Maximum characters tolerated in a title.
      * Titles beyond this are almost certainly hallucinations.
      */
     private const MAX_TITLE_LENGTH = 180;
 
-    public function __construct(private readonly HttpFactory $http) {}
+    public function __construct(
+        private readonly HttpFactory $http,
+        private readonly NewsHtmlSanitizer $sanitizer,
+    ) {}
 
     // -------------------------------------------------------------------------
     // Public API
@@ -185,7 +183,7 @@ Schema yang wajib diikuti persis:
   "tags": ["string", "..."] — 3 hingga 6 tag kata kunci relevan dalam bahasa Indonesia, huruf kecil semua
 }
 
-HTML yang diizinkan dalam konten_html: <p> <h2> <h3> <h4> <ul> <ol> <li> <strong> <em> <blockquote> <a> <br> <figure> <figcaption> <table> <thead> <tbody> <tr> <th> <td> <caption> <hr>
+HTML yang diizinkan dalam konten_html: <p> <h2> <h3> <h4> <ul> <ol> <li> <strong> <em> <blockquote> <a> <br> <figure> <figcaption> <table> <thead> <tbody> <tr> <th> <td> <caption> <hr> <img>
 PROMPT;
     }
 
@@ -256,7 +254,7 @@ PROMPT;
         $article = $this->decodeJsonPayload($content);
 
         $title = trim(strip_tags((string) ($article['judul'] ?? '')));
-        $body  = $this->sanitizeHtml((string) ($article['konten_html'] ?? ''));
+        $body  = $this->sanitizer->sanitize((string) ($article['konten_html'] ?? ''));
         $seo   = trim(strip_tags((string) ($article['seo_description'] ?? '')));
         $tags  = $this->normalizeTags($article['tags'] ?? []);
 
@@ -268,7 +266,7 @@ PROMPT;
             throw new RuntimeException('Judul yang dihasilkan terlalu panjang — kemungkinan respons tidak valid.');
         }
 
-        if ($body === '' || mb_strlen(strip_tags($body)) < 80) {
+        if ($body === '' || mb_strlen(strip_tags($body)) < 40) {
             throw new RuntimeException('Isi berita yang dihasilkan terlalu pendek atau kosong.');
         }
 
@@ -319,34 +317,6 @@ PROMPT;
         throw new RuntimeException(
             'Format respons AI tidak dapat diparse sebagai JSON. JSON error: ' . json_last_error_msg()
         );
-    }
-
-    // -------------------------------------------------------------------------
-    // Sanitization
-    // -------------------------------------------------------------------------
-
-    protected function sanitizeHtml(string $html): string
-    {
-        if (trim($html) === '') {
-            return '';
-        }
-
-        // Remove dangerous block-level elements with their content
-        $cleaned = (string) preg_replace('/<(script|style|iframe|object|embed)\b[^>]*>.*?<\/\1>/is', '', $html);
-
-        // Strip all tags except the allow-list
-        $cleaned = strip_tags($cleaned, self::ALLOWED_TAGS);
-
-        // Strip event handler attributes (onclick, onload, onmouseover, etc.)
-        $cleaned = (string) preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $cleaned);
-
-        // Strip javascript: URIs from href / src / action
-        $cleaned = (string) preg_replace('/\s(?:href|src|action)\s*=\s*(["\'])\s*javascript:[^"\']*\1/i', '', $cleaned);
-
-        // Normalize excessive whitespace between block elements
-        $cleaned = (string) preg_replace('/(\s*\n){3,}/', "\n\n", $cleaned);
-
-        return trim($cleaned);
     }
 
     /**

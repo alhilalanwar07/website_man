@@ -1,4 +1,4 @@
-<div>
+<div x-data="adminConfirmModal()">
     {{-- Header --}}
     <div class="flex items-center justify-between mb-6">
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari pegawai..."
@@ -38,7 +38,7 @@
                         </td>
                         <td class="px-4 py-3 text-right space-x-1">
                             <button wire:click="edit({{ $item->id }})" class="px-3 py-1 text-xs font-medium bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-800 transition">Edit</button>
-                            <button wire:click="delete({{ $item->id }})" wire:confirm="Yakin hapus pegawai ini?" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-800 transition">Hapus</button>
+                            <button @click="openConfirm('delete', {{ $item->id }}, 'Hapus data pegawai ini?', 'Data pegawai akan dihapus permanen dari sistem.', 'Ya, Hapus', 'danger')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-800 transition">Hapus</button>
                         </td>
                     </tr>
                 @empty
@@ -92,4 +92,6 @@
         </div>
     </div>
     @endif
+
+    <x-admin.confirm-modal />
 </div>

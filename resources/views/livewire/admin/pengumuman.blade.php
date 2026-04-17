@@ -1,4 +1,4 @@
-<div>
+<div x-data="adminConfirmModal()">
     <div class="flex items-center justify-between mb-6">
         <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari pengumuman..." class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-slate-900 dark:text-white w-64 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
         <button wire:click="create" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition">+ Tambah Pengumuman</button>
@@ -27,7 +27,7 @@
                     <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $item->file_lampiran_path ? '📎' : '-' }}</td>
                     <td class="px-4 py-3 text-right space-x-1">
                         <button wire:click="edit({{ $item->id }})" class="px-3 py-1 text-xs font-medium bg-yellow-50 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 rounded-lg hover:bg-yellow-100 transition">Edit</button>
-                        <button wire:click="delete({{ $item->id }})" wire:confirm="Yakin hapus?" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
+                        <button @click="openConfirm('delete', {{ $item->id }}, 'Hapus pengumuman ini?', 'Data pengumuman akan dihapus permanen.', 'Ya, Hapus', 'warning')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 transition">Hapus</button>
                     </td>
                 </tr>
                 @empty
@@ -75,4 +75,6 @@
         </div>
     </div>
     @endif
+
+    <x-admin.confirm-modal />
 </div>

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\NewsHtmlSanitizer;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,6 +32,13 @@ class Berita extends Model
             'published_at' => 'datetime',
             'view_count' => 'integer',
         ];
+    }
+
+    protected function kontenHtml(): Attribute
+    {
+        return Attribute::make(
+            set: fn (?string $value) => app(NewsHtmlSanitizer::class)->sanitize((string) $value),
+        );
     }
 
     public function user(): BelongsTo

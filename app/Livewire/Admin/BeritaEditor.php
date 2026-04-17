@@ -4,8 +4,10 @@ namespace App\Livewire\Admin;
 
 use App\Models\Berita as BeritaModel;
 use App\Models\KategoriBerita;
+use App\Support\NewsHtmlSanitizer;
 use App\Support\NvidiaNewsGenerator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Throwable;
@@ -19,6 +21,9 @@ use Livewire\WithFileUploads;
 class BeritaEditor extends Component
 {
     use WithFileUploads;
+
+    private const MEDIA_GALLERY_CACHE_KEY = 'admin:berita-editor:media-gallery:v1';
+    private const CATEGORY_LIST_CACHE_KEY = 'admin:berita-editor:kategori-list:v1';
 
     public ?int $editId = null;
     public ?int $sourceId = null;
@@ -52,6 +57,14 @@ class BeritaEditor extends Component
 
     public function save(): mixed
     {
+        $this->konten_html = app(NewsHtmlSanitizer::class)->sanitize($this->konten_html);
+
+        if (trim(strip_tags($this->konten_html)) === '') {
+            $this->addError('konten_html', 'Isi berita tidak valid setelah sanitasi keamanan.');
+
+            return null;
+        }
+
         $this->validate([
             'judul' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategori_berita,id',
@@ -90,6 +103,11 @@ class BeritaEditor extends Component
             $message = 'Berita berhasil disimpan.';
         }
 
+        Cache::forget(self::MEDIA_GALLERY_CACHE_KEY);
+        Cache::forget(self::CATEGORY_LIST_CACHE_KEY);
+        Cache::forget('home:payload:v1');
+        Cache::forget('admin:dashboard:payload:v1');
+
         return redirect()
             ->route('admin.berita')
             ->with('toast', ['type' => 'success', 'message' => $message]);
@@ -102,6 +120,8 @@ class BeritaEditor extends Component
         ]);
 
         $path = $this->inline_image->store('berita/inline', 'public');
+
+        Cache::forget(self::MEDIA_GALLERY_CACHE_KEY);
 
         $this->dispatch('berita-inline-image-uploaded', url: Storage::url($path));
         $this->inline_image = null;
@@ -147,7 +167,9 @@ class BeritaEditor extends Component
     public function render()
     {
         return view('livewire.admin.berita-editor', [
-            'kategoriList' => KategoriBerita::withCount('berita')->get(),
+            'kategoriList' => Cache::remember(self::CATEGORY_LIST_CACHE_KEY, now()->addMinutes(10), function () {
+                return KategoriBerita::withCount('berita')->orderBy('nama_kategori')->get();
+            }),
             'mediaGallery' => $this->buildMediaGallery(),
             'isEditing' => $this->editId !== null,
         ]);
@@ -167,29 +189,34 @@ class BeritaEditor extends Component
 
     protected function buildMediaGallery(): Collection
     {
-        $disk = Storage::disk('public');
+        $mediaItems = Cache::remember(self::MEDIA_GALLERY_CACHE_KEY, now()->addMinutes(5), function () {
+            $disk = Storage::disk('public');
 
-        return collect(['berita/inline', 'berita'])
-            ->flatMap(function (string $directory) use ($disk) {
-                return $disk->exists($directory) ? $disk->files($directory) : [];
-            })
-            ->filter(fn (string $path) => preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $path) === 1)
-            ->unique()
-            ->map(function (string $path) use ($disk) {
-                $timestamp = $disk->lastModified($path);
+            return collect(['berita/inline', 'berita'])
+                ->flatMap(function (string $directory) use ($disk) {
+                    return $disk->exists($directory) ? $disk->files($directory) : [];
+                })
+                ->filter(fn (string $path) => preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $path) === 1)
+                ->unique()
+                ->map(function (string $path) use ($disk) {
+                    $timestamp = $disk->lastModified($path);
 
-                return [
-                    'path' => $path,
-                    'url' => $disk->url($path),
-                    'name' => (string) Str::of(pathinfo($path, PATHINFO_FILENAME))->replace(['-', '_'], ' ')->title(),
-                    'size' => number_format(($disk->size($path) ?? 0) / 1024, 1) . ' KB',
-                    'updated_at' => date('d M Y H:i', $timestamp),
-                    'timestamp' => $timestamp,
-                    'source' => str_starts_with($path, 'berita/inline') ? 'Inline' : 'Thumbnail',
-                ];
-            })
-            ->sortByDesc('timestamp')
-            ->values()
-            ->take(24);
+                    return [
+                        'path' => $path,
+                        'url' => $disk->url($path),
+                        'name' => (string) Str::of(pathinfo($path, PATHINFO_FILENAME))->replace(['-', '_'], ' ')->title(),
+                        'size' => number_format(($disk->size($path) ?? 0) / 1024, 1) . ' KB',
+                        'updated_at' => date('d M Y H:i', $timestamp),
+                        'timestamp' => $timestamp,
+                        'source' => str_starts_with($path, 'berita/inline') ? 'Inline' : 'Thumbnail',
+                    ];
+                })
+                ->sortByDesc('timestamp')
+                ->values()
+                ->take(24)
+                ->all();
+        });
+
+        return collect($mediaItems);
     }
 }

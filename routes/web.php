@@ -91,9 +91,20 @@ Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin/ppdb')->name
     Route::get('/pengaturan', PpdbPengaturanV2::class)->name('pengaturan');
 });
 
+// Legacy aliases to keep existing menus/tests compatible during PPDB V2 rollout.
+Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin/ppdb')->group(function () {
+    Route::get('/', PpdbDashboardV2::class)->name('admin.ppdb');
+    Route::get('/dashboard', PpdbDashboardV2::class)->name('admin.ppdb.dashboard');
+    Route::get('/export', PpdbExportController::class)->name('admin.ppdb.export');
+    Route::get('/pendaftar-lanjutan', PpdbApplicants::class)->name('admin.ppdb.applicants');
+    Route::get('/penilaian-tes', PpdbTestScoring::class)->name('admin.ppdb.tests');
+    Route::get('/verifikasi-daftar-ulang', PpdbReRegistration::class)->name('admin.ppdb.re-registration');
+    Route::get('/pengaturan-lanjutan', PpdbSettings::class)->name('admin.ppdb.settings');
+});
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
-    // Route::get('/ppdb/analisa', PpdbAnalytics::class)->name('ppdb.analytics');
+    Route::get('/ppdb/analisa', PpdbAnalytics::class)->name('ppdb.analytics');
     Route::get('/profil-sekolah', ProfilSekolah::class)->name('profil-sekolah');
     Route::get('/pegawai', Pegawai::class)->name('pegawai');
     Route::get('/program-keahlian', ProgramKeahlian::class)->name('program-keahlian');

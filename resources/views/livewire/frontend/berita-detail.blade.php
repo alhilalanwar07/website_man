@@ -89,7 +89,7 @@
             @endif
 
             <article class="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-a:text-blue-600 prose-img:rounded-2xl">
-                {!! $berita->konten_html !!}
+                {!! $safeKontenHtml !!}
             </article>
 
             <div x-data="{ copied: false }" class="mt-10 rounded-[28px] border border-blue-100 bg-blue-50 p-6">

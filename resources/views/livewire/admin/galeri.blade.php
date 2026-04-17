@@ -1,4 +1,4 @@
-<div>
+<div x-data="adminConfirmModal()">
     @if(!$activeAlbum)
     {{-- Album List --}}
     <div class="flex items-center justify-between mb-6">
@@ -16,7 +16,7 @@
                 </div>
                 <div class="flex gap-1">
                     <button wire:click="editAlbum({{ $album->id }})" class="p-1 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900 rounded transition text-xs">Edit</button>
-                    <button wire:click="deleteAlbum({{ $album->id }})" wire:confirm="Yakin hapus album ini?" class="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded transition text-xs">Hapus</button>
+                    <button @click="openConfirm('deleteAlbum', {{ $album->id }}, 'Hapus album ini?', 'Album dan item terkait akan dihapus permanen.', 'Ya, Hapus', 'danger')" class="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded transition text-xs">Hapus</button>
                 </div>
             </div>
             @if($album->deskripsi_singkat)
@@ -54,7 +54,7 @@
             @endif
             <div class="p-3">
                 <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ $item->caption ?? 'Tanpa caption' }}</p>
-                <button wire:click="deleteItem({{ $item->id }})" wire:confirm="Hapus item ini?" class="mt-1 text-xs text-red-500 hover:text-red-700 transition">Hapus</button>
+                <button @click="openConfirm('deleteItem', {{ $item->id }}, 'Hapus item galeri?', 'Item yang dihapus tidak dapat dipulihkan.', 'Ya, Hapus', 'info')" class="mt-1 text-xs text-red-500 hover:text-red-700 transition">Hapus</button>
             </div>
         </div>
         @empty
@@ -129,4 +129,6 @@
         </div>
     </div>
     @endif
+
+    <x-admin.confirm-modal />
 </div>

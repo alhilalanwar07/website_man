@@ -8,6 +8,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\ProfilSekolah as ProfilSekolahModel;
+use Illuminate\Support\Facades\Cache;
 
 #[Layout('components.layouts.admin')]
 #[Title('Profil Sekolah')]
@@ -113,6 +114,9 @@ class ProfilSekolah extends Component
         $this->existing_favicon = $profil->favicon_path;
         $this->existing_foto_kepsek = $profil->foto_kepsek;
         $this->reset(['logo', 'favicon', 'foto_kepsek']);
+
+        Cache::forget('site:profil:v1');
+        Cache::forget('home:payload:v1');
 
         $this->dispatch('toast', type: 'success', message: 'Profil sekolah berhasil disimpan.');
     }
