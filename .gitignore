@@ -25,6 +25,11 @@ yarn-error.log
 /.vscode
 /.zed
 
+# Copilot/Agent local metadata
+/.agents/
+/.copilot/
+skills-lock.json
+
 # Dependencies
 /node_modules
 /bower_components
