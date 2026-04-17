@@ -20,6 +20,8 @@ class PpdbDaftarUlang extends Component
 
     public function search(): void
     {
+        $keyword = $this->normalizeKeyword();
+
         $this->validate([
             'nomor_pendaftaran' => 'required|string',
             'tanggal_lahir' => 'required|date',
@@ -28,13 +30,18 @@ class PpdbDaftarUlang extends Component
         $this->searched = true;
         $this->submitted = false;
         $this->result = PpdbApplication::with(['period', 'track', 'programDiterima'])
-            ->where('nomor_pendaftaran', $this->nomor_pendaftaran)
+            ->where(function ($query) use ($keyword) {
+                $query->where('nomor_pendaftaran', $keyword)
+                    ->orWhere('nisn', $keyword);
+            })
             ->whereDate('tanggal_lahir', $this->tanggal_lahir)
             ->first();
     }
 
     public function submitReRegistration(): void
     {
+        $keyword = $this->normalizeKeyword();
+
         $this->validate([
             'nomor_pendaftaran' => 'required|string',
             'tanggal_lahir' => 'required|date',
@@ -42,7 +49,10 @@ class PpdbDaftarUlang extends Component
         ]);
 
         $application = PpdbApplication::with('period')
-            ->where('nomor_pendaftaran', $this->nomor_pendaftaran)
+            ->where(function ($query) use ($keyword) {
+                $query->where('nomor_pendaftaran', $keyword)
+                    ->orWhere('nisn', $keyword);
+            })
             ->whereDate('tanggal_lahir', $this->tanggal_lahir)
             ->firstOrFail();
 
@@ -73,6 +83,20 @@ class PpdbDaftarUlang extends Component
         $this->result = $application->fresh(['period', 'track', 'programDiterima']);
         $this->submitted = true;
         $this->dispatch('toast', type: 'success', message: 'Konfirmasi daftar ulang berhasil dikirim.');
+    }
+
+    public function resetSearch(): void
+    {
+        $this->reset(['nomor_pendaftaran', 'tanggal_lahir', 'catatan_daftar_ulang', 'result', 'searched', 'submitted']);
+        $this->resetValidation();
+    }
+
+    protected function normalizeKeyword(): string
+    {
+        $keyword = trim($this->nomor_pendaftaran);
+        $this->nomor_pendaftaran = $keyword;
+
+        return $keyword;
     }
 
     public function render()

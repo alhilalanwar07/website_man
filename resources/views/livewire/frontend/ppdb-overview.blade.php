@@ -61,6 +61,11 @@
         </div>
     </section>
 
+    @include('livewire.frontend.partials.ppdb-journey-nav', [
+        'active' => 'overview',
+        'periodQuery' => $periodQuery,
+    ])
+
     <section class="py-16 bg-white border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="rounded-[24px] bg-slate-50 p-6 border border-slate-100">
@@ -82,6 +87,12 @@
                 <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Pendaftar</p>
                 <h3 class="text-lg font-black text-slate-900 mt-2">{{ $applicationsCount }}</h3>
                 <p class="text-sm text-slate-500 mt-2">data masuk pada periode aktif</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            <div class="rounded-[24px] border border-blue-100 bg-blue-50 px-6 py-5">
+                <p class="text-xs font-bold uppercase tracking-[0.24em] text-blue-600">Tips Pemula</p>
+                <p class="mt-2 text-sm text-slate-700 leading-relaxed">Mulai dari membaca jadwal dan syarat berkas. Setelah itu isi formulir sekali sampai tuntas, lalu simpan nomor pendaftaran untuk memantau status tanpa bingung.</p>
             </div>
         </div>
     </section>
@@ -117,14 +128,14 @@
                     <a href="{{ route('ppdb.form', $periodQuery) }}" class="text-sm font-bold text-blue-600 hover:text-blue-700">Lanjut ke Form Pendaftaran</a>
                 </div>
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                    @foreach($period->tracks as $track)
-                    <div class="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm">
+                            @foreach($period->tracks as $track)
+                            <div wire:key="overview-track-{{ $track->id }}" class="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm">
                         <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">{{ $track->slug }}</p>
                         <h3 class="text-xl font-black text-slate-900 mt-3">{{ $track->nama_jalur }}</h3>
                         <p class="text-sm text-slate-500 mt-3 leading-relaxed">{{ $track->deskripsi ?: 'Jalur pendaftaran yang disiapkan untuk mendukung seleksi administrasi dan pemeringkatan.' }}</p>
                         <div class="mt-6 space-y-3">
                             @foreach($period->quotas->where('track_id', $track->id) as $quota)
-                            <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                            <div wire:key="overview-quota-{{ $track->id }}-{{ $quota->id }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                                 <span class="text-sm font-semibold text-slate-700">{{ $quota->programKeahlian->nama_jurusan }}</span>
                                 <span class="text-sm font-black text-slate-900">{{ $quota->kuota }}</span>
                             </div>

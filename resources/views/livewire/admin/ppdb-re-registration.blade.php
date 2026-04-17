@@ -75,10 +75,10 @@
             </select>
             <select wire:model.live="reRegistrationStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua status daftar ulang</option>
-                <option value="pending">Pending</option>
-                <option value="submitted">Submitted</option>
-                <option value="verified">Verified</option>
-                <option value="rejected">Rejected</option>
+                <option value="pending">Belum Konfirmasi</option>
+                <option value="submitted">Menunggu Verifikasi</option>
+                <option value="verified">Terverifikasi</option>
+                <option value="rejected">Ditolak</option>
             </select>
         </div>
 
@@ -92,9 +92,9 @@
             </div>
             <div class="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,180px)_1fr]">
                 <select wire:model="bulkVerificationStatus" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
-                    <option value="verified">Bulk Verify</option>
-                    <option value="rejected">Bulk Reject</option>
-                    <option value="submitted">Tandai Submitted</option>
+                    <option value="verified">Tandai Terverifikasi</option>
+                    <option value="rejected">Tandai Ditolak</option>
+                    <option value="submitted">Tandai Menunggu Verifikasi</option>
                 </select>
                 <input wire:model="bulkVerificationNote" type="text" placeholder="Catatan massal opsional..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
             </div>
@@ -137,7 +137,7 @@
                                 'submitted' => 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
                                 'rejected' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
                                 default => 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
-                            } }}">{{ str($application->status_daftar_ulang)->replace('_', ' ')->title() }}</span>
+                            } }}">{{ $application->status_daftar_ulang_label }}</span>
                             <p class="mt-2 text-xs text-slate-400">{{ $application->daftar_ulang_at?->translatedFormat('d M Y H:i') ?? 'Belum ada konfirmasi' }}</p>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">Konteks Daftar Ulang</p>
                         <div class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                            <p><span class="font-semibold text-slate-900 dark:text-white">Status saat ini:</span> {{ str($selectedApplication->status_daftar_ulang)->replace('_', ' ')->title() }}</p>
+                            <p><span class="font-semibold text-slate-900 dark:text-white">Status saat ini:</span> {{ $selectedApplication->status_daftar_ulang_label }}</p>
                             <p><span class="font-semibold text-slate-900 dark:text-white">Skor seleksi:</span> {{ number_format((float) ($selectedApplication->skor_seleksi ?? 0), 2) }}</p>
                             <p><span class="font-semibold text-slate-900 dark:text-white">Konfirmasi masuk:</span> {{ $selectedApplication->daftar_ulang_at?->translatedFormat('d M Y H:i') ?? 'Belum ada' }}</p>
                             <p><span class="font-semibold text-slate-900 dark:text-white">Diproses oleh:</span> {{ $selectedApplication->reRegistrationVerifier?->name ?? '-' }}</p>
@@ -187,10 +187,10 @@
                             <div>
                                 <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Daftar Ulang</label>
                                 <select wire:model="verificationStatus" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                    <option value="pending">Pending</option>
-                                    <option value="submitted">Submitted</option>
-                                    <option value="verified">Verified</option>
-                                    <option value="rejected">Rejected</option>
+                                    <option value="pending">Belum Konfirmasi</option>
+                                    <option value="submitted">Menunggu Verifikasi</option>
+                                    <option value="verified">Terverifikasi</option>
+                                    <option value="rejected">Ditolak</option>
                                 </select>
                             </div>
 
@@ -233,8 +233,8 @@
                             </select>
                             <select wire:model.live="auditStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                                 <option value="">Semua status audit</option>
-                                <option value="verified">Verified</option>
-                                <option value="rejected">Rejected</option>
+                                <option value="verified">Terverifikasi</option>
+                                <option value="rejected">Ditolak</option>
                             </select>
                             <input wire:model.live="auditDateFrom" type="date" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                             <input wire:model.live="auditDateTo" type="date" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
@@ -249,8 +249,8 @@
                                 <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
                                     <p class="text-sm font-bold text-slate-900 dark:text-white">{{ $stat['name'] }}</p>
                                     <div class="mt-3 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em]">
-                                        <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Verified {{ $stat['verified'] }}</span>
-                                        <span class="rounded-full bg-red-100 px-2.5 py-1 text-red-700 dark:bg-red-900 dark:text-red-300">Rejected {{ $stat['rejected'] }}</span>
+                                        <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Terverifikasi {{ $stat['verified'] }}</span>
+                                        <span class="rounded-full bg-red-100 px-2.5 py-1 text-red-700 dark:bg-red-900 dark:text-red-300">Ditolak {{ $stat['rejected'] }}</span>
                                     </div>
                                     <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Total diproses: {{ $stat['total'] }}</p>
                                 </div>
@@ -277,8 +277,8 @@
                                             <div class="flex-1 rounded-t-lg bg-red-500/85" style="height: {{ $trend['rejected'] > 0 ? max(($trend['rejected'] / $maxAuditTrend) * 100, 8) : 0 }}%"></div>
                                         </div>
                                         <div class="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                                            <p>Verified: {{ $trend['verified'] }}</p>
-                                            <p class="mt-1">Rejected: {{ $trend['rejected'] }}</p>
+                                            <p>Terverifikasi: {{ $trend['verified'] }}</p>
+                                            <p class="mt-1">Ditolak: {{ $trend['rejected'] }}</p>
                                         </div>
                                     </div>
                                 @endforeach
@@ -293,7 +293,7 @@
                                             <p class="font-semibold text-slate-900 dark:text-white">{{ $audit->nama_lengkap }}</p>
                                             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $audit->nomor_pendaftaran }} · {{ $audit->track?->nama_jalur }} · {{ $audit->programDiterima?->nama_jurusan ?? '-' }}</p>
                                         </div>
-                                        <span class="rounded-full px-2.5 py-1 text-[11px] font-bold {{ $audit->status_daftar_ulang === 'verified' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' }}">{{ str($audit->status_daftar_ulang)->replace('_', ' ')->title() }}</span>
+                                        <span class="rounded-full px-2.5 py-1 text-[11px] font-bold {{ $audit->status_daftar_ulang === 'verified' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' }}">{{ $audit->status_daftar_ulang_label }}</span>
                                     </div>
                                     <div class="mt-3 text-sm text-slate-600 dark:text-slate-300">
                                         <p><span class="font-semibold text-slate-900 dark:text-white">Petugas:</span> {{ $audit->reRegistrationVerifier?->name ?? '-' }}</p>

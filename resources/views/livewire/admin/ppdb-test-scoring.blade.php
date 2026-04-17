@@ -75,7 +75,7 @@
                             </div>
                             <div class="text-right">
                                 <span class="rounded-full px-2.5 py-1 text-[11px] font-bold {{ $candidate->scored_at ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' }}">{{ $candidate->scored_at ? 'Sudah dinilai' : 'Belum dinilai' }}</span>
-                                <p class="mt-2 text-xs text-slate-400">{{ str($candidate->status_pendaftaran)->replace('_', ' ')->title() }}</p>
+                                <p class="mt-2 text-xs text-slate-400">{{ $candidate->status_pendaftaran_label }}</p>
                             </div>
                         </button>
                     @empty
@@ -121,7 +121,7 @@
                                 <div wire:key="test-document-{{ $document->id }}" class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-700">
                                     <div>
                                         <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $document->jenis_dokumen }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ str($document->status_verifikasi)->title() }}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ $document->status_verifikasi_label }}</p>
                                     </div>
                                     <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="text-sm font-bold text-blue-600">Lihat</a>
                                 </div>
@@ -138,19 +138,19 @@
                                 <div>
                                     <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Pendaftaran</label>
                                     <select wire:model="scoreStatus" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                        <option value="under_review">Under Review</option>
-                                        <option value="needs_revision">Needs Revision</option>
-                                        <option value="verified">Verified</option>
+                                        <option value="under_review">Sedang Ditinjau</option>
+                                        <option value="needs_revision">Perlu Revisi</option>
+                                        <option value="verified">Terverifikasi</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Berkas</label>
                                     <select wire:model="scoreBerkasStatus" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                        <option value="pending">Pending</option>
-                                        <option value="incomplete">Incomplete</option>
-                                        <option value="complete">Complete</option>
-                                        <option value="revision">Revision</option>
-                                        <option value="verified">Verified</option>
+                                        <option value="pending">Menunggu Verifikasi</option>
+                                        <option value="incomplete">Belum Lengkap</option>
+                                        <option value="complete">Lengkap</option>
+                                        <option value="revision">Perlu Revisi</option>
+                                        <option value="verified">Sah</option>
                                     </select>
                                 </div>
                             </div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class PpdbApplication extends Model
 {
@@ -78,6 +79,61 @@ class PpdbApplication extends Model
             'skor_berkas' => 'decimal:2',
             'skor_seleksi' => 'decimal:2',
         ];
+    }
+
+    public function getStatusPendaftaranLabelAttribute(): string
+    {
+        return $this->mapStatusLabel($this->status_pendaftaran, [
+            'draft' => 'Draft',
+            'submitted' => 'Menunggu Verifikasi',
+            'under_review' => 'Sedang Ditinjau',
+            'needs_revision' => 'Perlu Revisi',
+            'verified' => 'Terverifikasi',
+            'accepted' => 'Diterima',
+            'rejected' => 'Ditolak',
+        ]);
+    }
+
+    public function getStatusBerkasLabelAttribute(): string
+    {
+        return $this->mapStatusLabel($this->status_berkas, [
+            'pending' => 'Menunggu Verifikasi',
+            'incomplete' => 'Belum Lengkap',
+            'complete' => 'Lengkap',
+            'revision' => 'Perlu Revisi',
+            'verified' => 'Sah',
+            'rejected' => 'Ditolak',
+        ]);
+    }
+
+    public function getHasilSeleksiLabelAttribute(): string
+    {
+        return $this->mapStatusLabel($this->hasil_seleksi, [
+            'pending' => 'Menunggu Hasil',
+            'passed' => 'Lulus',
+            'reserve' => 'Cadangan',
+            'failed' => 'Tidak Lulus',
+        ]);
+    }
+
+    public function getStatusDaftarUlangLabelAttribute(): string
+    {
+        return $this->mapStatusLabel($this->status_daftar_ulang, [
+            'not_available' => 'Belum Dibuka',
+            'pending' => 'Belum Konfirmasi',
+            'submitted' => 'Menunggu Verifikasi',
+            'verified' => 'Terverifikasi',
+            'rejected' => 'Ditolak',
+        ]);
+    }
+
+    protected function mapStatusLabel(?string $value, array $map): string
+    {
+        if (!$value) {
+            return '-';
+        }
+
+        return $map[$value] ?? (string) Str::of($value)->replace('_', ' ')->title();
     }
 
     public function period(): BelongsTo

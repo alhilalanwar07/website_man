@@ -4,26 +4,51 @@
         <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6">Portal PPDB</span>
             <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-tight">Cek Status <span class="text-gradient">Pendaftaran</span></h1>
-            <p class="text-slate-300 max-w-2xl mx-auto mt-4">Masukkan nomor pendaftaran dan tanggal lahir untuk melihat progres verifikasi berkas dan hasil sementara PPDB.</p>
+            <p class="text-slate-300 max-w-2xl mx-auto mt-4">Masukkan nomor pendaftaran atau NISN dan tanggal lahir untuk melihat progres verifikasi berkas dan hasil sementara PPDB.</p>
         </div>
     </section>
 
+    @include('livewire.frontend.partials.ppdb-journey-nav', [
+        'active' => 'status',
+    ])
+
     <section class="py-20 bg-slate-50">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Langkah 1</p>
+                    <p class="mt-2 text-sm font-semibold text-slate-800">Masukkan nomor pendaftaran atau NISN</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Langkah 2</p>
+                    <p class="mt-2 text-sm font-semibold text-slate-800">Cocokkan tanggal lahir</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Langkah 3</p>
+                    <p class="mt-2 text-sm font-semibold text-slate-800">Baca status dan catatan panitia</p>
+                </div>
+            </div>
             <div class="bg-white rounded-[28px] border border-slate-100 shadow-sm p-8 md:p-10">
                 <form wire:submit="search" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Pendaftaran</label>
-                        <input wire:model="nomor_pendaftaran" type="text" placeholder="PPDB-2026-0001" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Pendaftaran / NISN</label>
+                        <input wire:model.blur="nomor_pendaftaran" type="text" placeholder="PPDB-2026-0001 atau 0012345678" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
+                        <p class="mt-1 text-xs text-slate-500">Gunakan nomor yang tersimpan setelah pendaftaran selesai.</p>
                         @error('nomor_pendaftaran') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Lahir</label>
-                        <input wire:model="tanggal_lahir" type="date" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
+                        <input wire:model.blur="tanggal_lahir" type="date" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
                         @error('tanggal_lahir') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div class="md:col-span-3">
-                        <button type="submit" class="px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition">Cek Status</button>
+                    <div class="md:col-span-3 flex flex-wrap items-center gap-3">
+                        <button type="submit" wire:loading.attr="disabled" wire:target="search" class="px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="search">Cek Status</span>
+                            <span wire:loading wire:target="search">Mencari Data...</span>
+                        </button>
+                        @if($searched)
+                        <button type="button" wire:click="resetSearch" class="px-6 py-3 rounded-2xl border border-slate-300 bg-white text-sm font-bold text-slate-700 hover:bg-slate-100 transition">Cari Data Lain</button>
+                        @endif
                     </div>
                 </form>
             </div>
@@ -46,10 +71,15 @@
                             <p class="text-sm text-slate-500 mt-1">{{ $result->nomor_pendaftaran }} · {{ $result->asal_sekolah }}</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ in_array($result->status_pendaftaran, ['accepted', 'verified']) ? 'bg-emerald-50 text-emerald-700' : ($result->status_pendaftaran === 'needs_revision' ? 'bg-amber-50 text-amber-700' : ($result->status_pendaftaran === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700')) }}">{{ str($result->status_pendaftaran)->replace('_', ' ')->title() }}</span>
-                            <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $selectionBadge }}">Hasil: {{ str($result->hasil_seleksi)->replace('_', ' ')->title() }}</span>
-                            <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Berkas: {{ str($result->status_berkas)->replace('_', ' ')->title() }}</span>
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ in_array($result->status_pendaftaran, ['accepted', 'verified']) ? 'bg-emerald-50 text-emerald-700' : ($result->status_pendaftaran === 'needs_revision' ? 'bg-amber-50 text-amber-700' : ($result->status_pendaftaran === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700')) }}">{{ $result->status_pendaftaran_label }}</span>
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $selectionBadge }}">Hasil: {{ $result->hasil_seleksi_label }}</span>
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Berkas: {{ $result->status_berkas_label }}</span>
                         </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">Arti Status</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">Menunggu Verifikasi berarti berkas masih ditinjau. Perlu Revisi berarti Anda perlu memperbaiki data atau dokumen sesuai catatan panitia.</p>
                     </div>
 
                     @if($result->period?->isAnnouncementPublished())
@@ -84,7 +114,7 @@
                                 <p><span class="font-semibold">Ranking Jalur:</span> {{ $result->period?->isAnnouncementPublished() ? ($result->ranking_jalur ?? '-') : '-' }}</p>
                                 <p><span class="font-semibold">Ranking Program:</span> {{ $result->period?->isAnnouncementPublished() ? ($result->ranking_program ?? '-') : '-' }}</p>
                                 <p><span class="font-semibold">Program Diterima:</span> {{ $result->period?->isAnnouncementPublished() ? ($result->programDiterima->nama_jurusan ?? 'Belum ditetapkan') : 'Menunggu pengumuman resmi' }}</p>
-                                <p><span class="font-semibold">Daftar Ulang:</span> {{ str($result->status_daftar_ulang)->replace('_', ' ')->title() }}</p>
+                                <p><span class="font-semibold">Daftar Ulang:</span> {{ $result->status_daftar_ulang_label }}</p>
                             </div>
                         </div>
                         <div class="rounded-3xl bg-slate-50 p-6">
@@ -97,10 +127,10 @@
                         <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400 mb-4">Dokumen Terkirim</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($result->documents as $document)
-                            <div class="rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-4">
+                            <div wire:key="status-document-{{ $document->id }}" class="rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-4">
                                 <div>
                                     <p class="text-sm font-semibold text-slate-900">{{ $document->jenis_dokumen }}</p>
-                                    <p class="text-xs text-slate-500 mt-1">{{ str($document->status_verifikasi)->title() }}</p>
+                                    <p class="text-xs text-slate-500 mt-1">{{ $document->status_verifikasi_label }}</p>
                                 </div>
                                 <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="text-sm font-bold text-blue-600 hover:text-blue-700">Lihat</a>
                             </div>
@@ -110,7 +140,11 @@
                 </div>
                 @else
                 <div class="mt-8 rounded-[28px] bg-white border border-red-100 p-8 text-center text-red-600 font-semibold shadow-sm">
-                    Data pendaftaran tidak ditemukan. Periksa kembali nomor pendaftaran dan tanggal lahir.
+                    Data pendaftaran tidak ditemukan. Periksa kembali nomor pendaftaran atau NISN dan tanggal lahir.
+                    <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+                        <a href="{{ route('ppdb.form') }}" class="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition">Buka Form Pendaftaran</a>
+                        <a href="{{ route('ppdb.index') }}" class="rounded-xl border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition">Lihat Info PPDB</a>
+                    </div>
                 </div>
                 @endif
             @endif

@@ -174,7 +174,7 @@
                                 </td>
                                 <td class="px-5 py-4 align-top">
                                     <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ in_array($application->status_pendaftaran, ['accepted', 'verified'], true) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($application->status_pendaftaran === 'needs_revision' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300') }}">
-                                        {{ str($application->status_pendaftaran)->replace('_', ' ')->title() }}
+                                        {{ $application->status_pendaftaran_label }}
                                     </span>
                                 </td>
                                 <td class="px-5 py-4 align-top text-slate-600 dark:text-slate-300">

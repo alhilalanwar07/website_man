@@ -46,12 +46,12 @@
             <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari nama, nomor pendaftaran, atau sekolah..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
             <select wire:model.live="statusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua status pendaftaran</option>
-                <option value="submitted">Submitted</option>
-                <option value="under_review">Under Review</option>
-                <option value="needs_revision">Needs Revision</option>
-                <option value="verified">Verified</option>
-                <option value="accepted">Accepted</option>
-                <option value="rejected">Rejected</option>
+                <option value="submitted">Menunggu Verifikasi</option>
+                <option value="under_review">Sedang Ditinjau</option>
+                <option value="needs_revision">Perlu Revisi</option>
+                <option value="verified">Terverifikasi</option>
+                <option value="accepted">Diterima</option>
+                <option value="rejected">Ditolak</option>
             </select>
             <select wire:model.live="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua jalur</option>
@@ -61,7 +61,7 @@
             </select>
             <select wire:model.live="selectionFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua hasil seleksi</option>
-                <option value="pending">Pending</option>
+                <option value="pending">Menunggu Hasil</option>
                 <option value="passed">Lulus</option>
                 <option value="reserve">Cadangan</option>
                 <option value="failed">Tidak lulus</option>
@@ -104,14 +104,14 @@
                                         'reserve' => 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
                                         'failed' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
                                         default => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-                                    } }}">{{ str($application->hasil_seleksi)->replace('_', ' ')->title() }}</span>
+                                    } }}">{{ $application->hasil_seleksi_label }}</span>
                                     <p class="mt-2 text-xs text-slate-400">{{ $application->programDiterima?->nama_jurusan ?? 'Belum ada program final' }}</p>
                                 </td>
                                 <td class="px-4 py-3 align-top">
                                     <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ in_array($application->status_pendaftaran, ['accepted', 'verified'], true) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($application->status_pendaftaran === 'needs_revision' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' : ($application->status_pendaftaran === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300')) }}">
-                                        {{ str($application->status_pendaftaran)->replace('_', ' ')->title() }}
+                                        {{ $application->status_pendaftaran_label }}
                                     </span>
-                                    <p class="mt-2 text-xs text-slate-400">Berkas: {{ str($application->status_berkas)->replace('_', ' ')->title() }}</p>
+                                    <p class="mt-2 text-xs text-slate-400">Berkas: {{ $application->status_berkas_label }}</p>
                                 </td>
                                 <td class="px-4 py-3 text-right">
                                     <button wire:click="openReview({{ $application->id }})" class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700">Review</button>
@@ -186,7 +186,7 @@
                                 <div wire:key="document-{{ $document->id }}" class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
                                     <div>
                                         <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $document->jenis_dokumen }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ str($document->status_verifikasi)->title() }}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ $document->status_verifikasi_label }}</p>
                                     </div>
                                     <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="text-sm font-bold text-blue-600">Lihat</a>
                                 </div>
@@ -200,12 +200,12 @@
                 <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                     <div class="rounded-2xl border border-blue-100 bg-blue-50 p-5 text-sm text-slate-700 dark:border-blue-900 dark:bg-blue-950/30 dark:text-slate-200">
                         <p class="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-blue-500">Hasil Tahap 2</p>
-                        <p><span class="font-semibold">Hasil Seleksi:</span> {{ str($selectedApplication->hasil_seleksi)->replace('_', ' ')->title() }}</p>
+                        <p><span class="font-semibold">Hasil Seleksi:</span> {{ $selectedApplication->hasil_seleksi_label }}</p>
                         <p class="mt-2 leading-relaxed">{{ $selectedApplication->selection_notes ?: 'Belum ada catatan hasil seleksi.' }}</p>
                     </div>
                     <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
                         <p class="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-slate-400">Finalisasi</p>
-                        <p><span class="font-semibold">Status Daftar Ulang:</span> {{ str($selectedApplication->status_daftar_ulang)->replace('_', ' ')->title() }}</p>
+                        <p><span class="font-semibold">Status Daftar Ulang:</span> {{ $selectedApplication->status_daftar_ulang_label }}</p>
                         <p class="mt-2"><span class="font-semibold">Waktu Konfirmasi:</span> {{ $selectedApplication->daftar_ulang_at?->translatedFormat('d M Y H:i') ?? '-' }}</p>
                         <a href="{{ route('admin.ppdb.re-registration') }}" class="mt-3 inline-flex text-sm font-bold text-blue-600 transition hover:text-blue-700">Buka halaman verifikasi daftar ulang</a>
                     </div>
@@ -216,22 +216,22 @@
                         <div>
                             <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Pendaftaran</label>
                             <select wire:model="reviewStatus" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                <option value="submitted">Submitted</option>
-                                <option value="under_review">Under Review</option>
-                                <option value="needs_revision">Needs Revision</option>
-                                <option value="verified">Verified</option>
-                                <option value="accepted">Accepted</option>
-                                <option value="rejected">Rejected</option>
+                                <option value="submitted">Menunggu Verifikasi</option>
+                                <option value="under_review">Sedang Ditinjau</option>
+                                <option value="needs_revision">Perlu Revisi</option>
+                                <option value="verified">Terverifikasi</option>
+                                <option value="accepted">Diterima</option>
+                                <option value="rejected">Ditolak</option>
                             </select>
                         </div>
                         <div>
                             <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Berkas</label>
                             <select wire:model="reviewBerkasStatus" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                <option value="pending">Pending</option>
-                                <option value="incomplete">Incomplete</option>
-                                <option value="complete">Complete</option>
-                                <option value="revision">Revision</option>
-                                <option value="verified">Verified</option>
+                                <option value="pending">Menunggu Verifikasi</option>
+                                <option value="incomplete">Belum Lengkap</option>
+                                <option value="complete">Lengkap</option>
+                                <option value="revision">Perlu Revisi</option>
+                                <option value="verified">Sah</option>
                             </select>
                         </div>
                     </div>

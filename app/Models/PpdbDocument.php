@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class PpdbDocument extends Model
 {
@@ -16,6 +17,22 @@ class PpdbDocument extends Model
         'status_verifikasi',
         'catatan_verifikasi',
     ];
+
+    public function getStatusVerifikasiLabelAttribute(): string
+    {
+        if (!$this->status_verifikasi) {
+            return '-';
+        }
+
+        $map = [
+            'pending' => 'Menunggu Verifikasi',
+            'approved' => 'Disetujui',
+            'revision' => 'Perlu Revisi',
+            'rejected' => 'Ditolak',
+        ];
+
+        return $map[$this->status_verifikasi] ?? (string) Str::of($this->status_verifikasi)->replace('_', ' ')->title();
+    }
 
     public function application(): BelongsTo
     {

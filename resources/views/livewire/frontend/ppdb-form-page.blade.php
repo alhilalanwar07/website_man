@@ -13,7 +13,7 @@
                         <label class="text-xs font-bold uppercase tracking-[0.25em] text-slate-300">Pilih Tahun Ajaran / Gelombang</label>
                         <select wire:model.live="selectedPeriod" class="mt-3 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-sm text-white outline-none">
                             @foreach($availablePeriods as $periodOption)
-                                <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
+                                <option wire:key="form-period-option-{{ $periodOption->id }}" value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -43,6 +43,11 @@
         </div>
     </section>
 
+    @include('livewire.frontend.partials.ppdb-journey-nav', [
+        'active' => 'form',
+        'periodQuery' => $periodQuery,
+    ])
+
     @if($period)
     <section class="py-24 bg-slate-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 xl:grid-cols-5 gap-8">
@@ -50,25 +55,33 @@
                 <div class="bg-white rounded-[28px] border border-slate-100 shadow-sm p-7">
                     <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-500 mb-4">Checklist Wajib</p>
                     <ul class="space-y-3 text-sm text-slate-700">
-                        <li>Isi identitas siswa sesuai dokumen resmi.</li>
-                        <li>Gunakan nomor HP yang aktif untuk komunikasi panitia.</li>
-                        <li>Pilih jurusan utama dan cadangan dengan cermat.</li>
-                        <li>Upload berkas dalam format yang jelas dan mudah dibaca.</li>
-                        <li>Simpan nomor pendaftaran setelah formulir berhasil dikirim.</li>
+                        <li><span class="font-bold text-slate-900">1.</span> Isi identitas siswa sesuai dokumen resmi.</li>
+                        <li><span class="font-bold text-slate-900">2.</span> Gunakan nomor HP aktif agar panitia mudah menghubungi.</li>
+                        <li><span class="font-bold text-slate-900">3.</span> Pilih jurusan utama dan cadangan dengan cermat.</li>
+                        <li><span class="font-bold text-slate-900">4.</span> Upload berkas yang terbaca jelas.</li>
+                        <li><span class="font-bold text-slate-900">5.</span> Simpan nomor pendaftaran setelah formulir terkirim.</li>
                     </ul>
+                    <div class="mt-5 rounded-2xl bg-blue-50 border border-blue-100 px-4 py-3 text-xs text-blue-700 font-semibold">
+                        Estimasi pengisian 8-12 menit jika data dan dokumen sudah siap.
+                    </div>
                 </div>
                 <div class="bg-slate-900 text-white rounded-[28px] p-7 noise relative overflow-hidden">
                     <div class="absolute inset-0 bg-mesh-hero opacity-45"></div>
                     <div class="relative">
                         <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-300 mb-4">Dokumen yang Disiapkan</p>
                         <ul class="space-y-3 text-sm text-slate-300">
-                            <li>Kartu Keluarga</li>
-                            <li>Akta Kelahiran</li>
-                            <li>Rapor atau rekap nilai</li>
-                            <li>Pas foto terbaru</li>
-                            <li>SKL bila sudah tersedia</li>
+                            <li>Kartu Keluarga (JPG/PNG/PDF)</li>
+                            <li>Akta Kelahiran (JPG/PNG/PDF)</li>
+                            <li>Rapor atau rekap nilai (JPG/PNG/PDF)</li>
+                            <li>Pas foto terbaru (JPG/PNG)</li>
+                            <li>SKL bila sudah tersedia (opsional)</li>
                         </ul>
+                        <p class="mt-4 text-xs text-slate-400">Ukuran maksimal per berkas 4 MB.</p>
                     </div>
+                </div>
+                <div class="rounded-[28px] border border-slate-200 bg-white p-6">
+                    <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Setelah Kirim Form</p>
+                    <p class="mt-3 text-sm text-slate-700 leading-relaxed">Buka halaman cek status secara berkala. Jika panitia memberi status Perlu Revisi, ikuti catatan verifikator yang tampil di halaman status.</p>
                 </div>
                 @if($period && ! $period->isRegistrationOpen())
                 <div class="rounded-[28px] border border-amber-200 bg-amber-50 p-6">
@@ -89,23 +102,29 @@
                 <div class="mb-8">
                     <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Form Online</p>
                     <h3 class="text-2xl md:text-3xl font-black text-slate-900 mt-3">Daftar PPDB Online</h3>
+                    <p class="mt-3 text-sm text-slate-500 leading-relaxed">Kolom bertanda <span class="font-bold text-rose-600">*</span> wajib diisi. Untuk user baru, isi dari atas ke bawah agar tidak ada data terlewat.</p>
                 </div>
 
                 <form wire:submit="submitApplication" class="space-y-8">
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Bagian 1</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-800">Identitas Siswa</p>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Lengkap *</label>
-                            <input wire:model="nama_lengkap" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nama_lengkap" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <p class="mt-1 text-xs text-slate-500">Gunakan nama sesuai ijazah atau kartu keluarga.</p>
                             @error('nama_lengkap') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">NISN</label>
-                            <input wire:model="nisn" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nisn" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('nisn') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">NIK</label>
-                            <input wire:model="nik" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nik" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('nik') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
@@ -117,44 +136,49 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Agama</label>
-                            <input wire:model="agama" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="agama" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Tempat Lahir *</label>
-                            <input wire:model="tempat_lahir" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="tempat_lahir" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('tempat_lahir') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Lahir *</label>
-                            <input wire:model="tanggal_lahir" type="date" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="tanggal_lahir" type="date" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('tanggal_lahir') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor HP *</label>
-                            <input wire:model="nomor_hp" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nomor_hp" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <p class="mt-1 text-xs text-slate-500">Contoh: 08xxxxxxxxxx, pastikan aktif untuk notifikasi panitia.</p>
                             @error('nomor_hp') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
-                            <input wire:model="email" type="email" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="email" type="email" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('email') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Alamat Lengkap *</label>
-                            <textarea wire:model="alamat_lengkap" rows="3" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"></textarea>
+                            <textarea wire:model.blur="alamat_lengkap" rows="3" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"></textarea>
                             @error('alamat_lengkap') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Bagian 2</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-800">Asal Sekolah dan Pilihan Jurusan</p>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Asal Sekolah *</label>
-                            <input wire:model="asal_sekolah" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="asal_sekolah" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('asal_sekolah') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nilai Rata-rata</label>
-                            <input wire:model="nilai_rata_rata" type="number" step="0.01" min="0" max="100" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nilai_rata_rata" type="number" step="0.01" min="0" max="100" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                             @error('nilai_rata_rata') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
@@ -162,7 +186,7 @@
                             <select wire:model="track_id" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                                 <option value="">Pilih Jalur</option>
                                 @foreach($period->tracks as $track)
-                                <option value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
+                                <option wire:key="form-track-option-{{ $track->id }}" value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
                                 @endforeach
                             </select>
                             @error('track_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
@@ -172,7 +196,7 @@
                             <select wire:model="pilihan_program_1_id" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                                 <option value="">Pilih Jurusan</option>
                                 @foreach($programs as $program)
-                                <option value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
+                                <option wire:key="form-program1-option-{{ $program->id }}" value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
                                 @endforeach
                             </select>
                             @error('pilihan_program_1_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
@@ -182,76 +206,90 @@
                             <select wire:model="pilihan_program_2_id" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                                 <option value="">Tidak memilih cadangan</option>
                                 @foreach($programs as $program)
-                                <option value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
+                                <option wire:key="form-program2-option-{{ $program->id }}" value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
                                 @endforeach
                             </select>
                             @error('pilihan_program_2_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Bagian 3</p>
+                        <p class="mt-1 text-sm font-semibold text-slate-800">Data Orang Tua dan Kontak</p>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ayah</label>
-                            <input wire:model="nama_ayah" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nama_ayah" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Pekerjaan Ayah</label>
-                            <input wire:model="pekerjaan_ayah" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="pekerjaan_ayah" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Ibu</label>
-                            <input wire:model="nama_ibu" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nama_ibu" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Pekerjaan Ibu</label>
-                            <input wire:model="pekerjaan_ibu" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="pekerjaan_ibu" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor HP Orang Tua</label>
-                            <input wire:model="nomor_hp_orang_tua" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
+                            <input wire:model.blur="nomor_hp_orang_tua" type="text" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Catatan Tambahan</label>
-                        <textarea wire:model="catatan_pendaftar" rows="3" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"></textarea>
+                        <textarea wire:model.blur="catatan_pendaftar" rows="3" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10"></textarea>
                     </div>
 
                     <div>
-                        <p class="text-sm font-semibold text-slate-700 mb-4">Upload Berkas</p>
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 mb-4">
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Bagian 4</p>
+                            <p class="mt-1 text-sm font-semibold text-slate-800">Upload Berkas</p>
+                            <p class="mt-1 text-xs text-slate-500">Format: JPG, JPEG, PNG, PDF. Maksimal 4 MB per file.</p>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-slate-600 mb-2">Kartu Keluarga *</label>
-                                <input wire:model="file_kk" type="file" class="w-full text-sm text-slate-500">
+                                <input wire:model="file_kk" type="file" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-500">
                                 @error('file_kk') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-600 mb-2">Akta Kelahiran *</label>
-                                <input wire:model="file_akta" type="file" class="w-full text-sm text-slate-500">
+                                <input wire:model="file_akta" type="file" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-500">
                                 @error('file_akta') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-600 mb-2">Rapor / Nilai *</label>
-                                <input wire:model="file_rapor" type="file" class="w-full text-sm text-slate-500">
+                                <input wire:model="file_rapor" type="file" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-500">
                                 @error('file_rapor') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-600 mb-2">Pas Foto *</label>
-                                <input wire:model="file_pas_foto" type="file" class="w-full text-sm text-slate-500">
+                                <input wire:model="file_pas_foto" type="file" accept=".jpg,.jpeg,.png" class="w-full text-sm text-slate-500">
                                 @error('file_pas_foto') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-slate-600 mb-2">Surat Keterangan Lulus</label>
-                                <input wire:model="file_skl" type="file" class="w-full text-sm text-slate-500">
+                                <input wire:model="file_skl" type="file" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm text-slate-500">
                                 @error('file_skl') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
+                        </div>
+                        <div wire:loading wire:target="file_kk,file_akta,file_rapor,file_pas_foto,file_skl" class="mt-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-700">
+                            Sedang mengunggah berkas, mohon tunggu sampai proses selesai.
                         </div>
                     </div>
 
                     @error('period') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
 
                     <div class="flex flex-wrap items-center gap-4 pt-2">
-                        <button type="submit" class="px-7 py-4 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition">Kirim Pendaftaran</button>
+                        <button type="submit" wire:loading.attr="disabled" wire:target="submitApplication" class="px-7 py-4 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="submitApplication">Kirim Pendaftaran</span>
+                            <span wire:loading wire:target="submitApplication">Mengirim Data...</span>
+                        </button>
                         <a href="{{ route('ppdb.status') }}" class="text-sm font-bold text-slate-600 hover:text-blue-600">Sudah punya nomor pendaftaran?</a>
                     </div>
                 </form>

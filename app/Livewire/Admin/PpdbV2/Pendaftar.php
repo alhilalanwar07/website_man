@@ -33,7 +33,7 @@ class Pendaftar extends Component
     public function getSelectedSiswaProperty()
     {
         if (!$this->selectedSiswaId) return null;
-        return \App\Models\PpdbApplication::find($this->selectedSiswaId);
+        return \App\Models\PpdbApplication::with('documents')->find($this->selectedSiswaId);
     }
 
     public function selectSiswa($id)

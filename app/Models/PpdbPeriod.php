@@ -72,7 +72,8 @@ class PpdbPeriod extends Model
 
     public function scopePubliclyVisible($query)
     {
-        return $query->whereIn('status', ['published', 'closed', 'archived']);
+        // Archived periods are intentionally hidden from public pages.
+        return $query->whereIn('status', ['published', 'closed']);
     }
 
     public function scopeRegistrationOpen($query)

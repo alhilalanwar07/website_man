@@ -8,6 +8,10 @@
         </div>
     </section>
 
+    @include('livewire.frontend.partials.ppdb-journey-nav', [
+        'active' => 'reregistration',
+    ])
+
     <section class="py-20 bg-slate-50">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -19,7 +23,7 @@
                 <div class="bg-white rounded-[24px] border border-slate-100 p-6 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Aksi</p>
                     <h3 class="text-lg font-black text-slate-900 mt-3">Kirim Konfirmasi</h3>
-                    <p class="text-sm text-slate-500 mt-2">Masukkan nomor pendaftaran lalu kirim catatan konfirmasi kehadiran untuk diverifikasi panitia.</p>
+                    <p class="text-sm text-slate-500 mt-2">Masukkan nomor pendaftaran atau NISN lalu kirim catatan konfirmasi kehadiran untuk diverifikasi panitia.</p>
                 </div>
                 <div class="bg-white rounded-[24px] border border-slate-100 p-6 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Lanjutan</p>
@@ -31,17 +35,24 @@
             <div class="bg-white rounded-[28px] border border-slate-100 shadow-sm p-8 md:p-10">
                 <form wire:submit="search" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Pendaftaran</label>
-                        <input wire:model="nomor_pendaftaran" type="text" placeholder="PPDB-2026-0001" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Pendaftaran / NISN</label>
+                        <input wire:model.blur="nomor_pendaftaran" type="text" placeholder="PPDB-2026-0001 atau 0012345678" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
+                        <p class="mt-1 text-xs text-slate-500">Boleh gunakan nomor pendaftaran atau NISN.</p>
                         @error('nomor_pendaftaran') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Lahir</label>
-                        <input wire:model="tanggal_lahir" type="date" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
+                        <input wire:model.blur="tanggal_lahir" type="date" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none">
                         @error('tanggal_lahir') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div class="md:col-span-3">
-                        <button type="submit" class="px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition">Cari Data Lulus</button>
+                    <div class="md:col-span-3 flex flex-wrap items-center gap-3">
+                        <button type="submit" wire:loading.attr="disabled" wire:target="search" class="px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="search">Cari Data Lulus</span>
+                            <span wire:loading wire:target="search">Mencari Data...</span>
+                        </button>
+                        @if($searched)
+                        <button type="button" wire:click="resetSearch" class="px-6 py-3 rounded-2xl border border-slate-300 bg-white text-sm font-bold text-slate-700 hover:bg-slate-100 transition">Cari Data Lain</button>
+                        @endif
                     </div>
                 </form>
             </div>
@@ -55,14 +66,14 @@
                         <p class="text-sm text-slate-500 mt-1">{{ $result->nomor_pendaftaran }} · {{ $result->programDiterima?->nama_jurusan ?? 'Belum ada program final' }}</p>
                     </div>
                     <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $result->status_daftar_ulang === 'verified' ? 'bg-emerald-50 text-emerald-700' : ($result->status_daftar_ulang === 'submitted' ? 'bg-blue-50 text-blue-700' : ($result->status_daftar_ulang === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700')) }}">
-                        {{ str($result->status_daftar_ulang)->replace('_', ' ')->title() }}
+                        {{ $result->status_daftar_ulang_label }}
                     </span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="rounded-3xl bg-slate-50 p-6 text-sm text-slate-700 space-y-2">
                         <p><span class="font-semibold">Jalur:</span> {{ $result->track->nama_jalur }}</p>
-                        <p><span class="font-semibold">Hasil Seleksi:</span> {{ str($result->hasil_seleksi)->replace('_', ' ')->title() }}</p>
+                        <p><span class="font-semibold">Hasil Seleksi:</span> {{ $result->hasil_seleksi_label }}</p>
                         <p><span class="font-semibold">Jadwal:</span> {{ $result->period->tanggal_mulai_daftar_ulang?->translatedFormat('d M Y') }} - {{ $result->period->tanggal_selesai_daftar_ulang?->translatedFormat('d M Y') }}</p>
                     </div>
                     <div class="rounded-3xl bg-slate-50 p-6 text-sm text-slate-700">
@@ -75,10 +86,13 @@
                 <form wire:submit="submitReRegistration" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Catatan Daftar Ulang</label>
-                        <textarea wire:model="catatan_daftar_ulang" rows="4" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none" placeholder="Tulis konfirmasi kehadiran, rencana kedatangan, atau catatan penting untuk panitia."></textarea>
+                        <textarea wire:model.blur="catatan_daftar_ulang" rows="4" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none" placeholder="Tulis konfirmasi kehadiran, rencana kedatangan, atau catatan penting untuk panitia."></textarea>
                         @error('catatan_daftar_ulang') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <button type="submit" class="px-6 py-3 bg-emerald-600 text-white text-sm font-bold rounded-2xl hover:bg-emerald-700 transition">Kirim Konfirmasi Daftar Ulang</button>
+                    <button type="submit" wire:loading.attr="disabled" wire:target="submitReRegistration" class="px-6 py-3 bg-emerald-600 text-white text-sm font-bold rounded-2xl hover:bg-emerald-700 transition disabled:cursor-not-allowed disabled:opacity-60">
+                        <span wire:loading.remove wire:target="submitReRegistration">Kirim Konfirmasi Daftar Ulang</span>
+                        <span wire:loading wire:target="submitReRegistration">Mengirim Konfirmasi...</span>
+                    </button>
                 </form>
                 @endif
 
@@ -90,7 +104,11 @@
             </div>
             @elseif($searched)
             <div class="rounded-[28px] bg-white border border-red-100 p-8 text-center text-red-600 font-semibold shadow-sm">
-                Data pendaftar tidak ditemukan. Periksa kembali nomor pendaftaran dan tanggal lahir.
+                Data pendaftar tidak ditemukan. Periksa kembali nomor pendaftaran atau NISN dan tanggal lahir.
+                <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <a href="{{ route('ppdb.status') }}" class="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition">Buka Cek Status</a>
+                    <a href="{{ route('ppdb.form') }}" class="rounded-xl border border-slate-300 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition">Buka Form Pendaftaran</a>
+                </div>
             </div>
             @endif
         </div>

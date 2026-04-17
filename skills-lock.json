@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "laravel-livewire": {
+      "source": "smithery.ai",
+      "sourceType": "well-known",
+      "computedHash": "17f8051f30080946e9c9f1b0ab1cc7bde15b3d83421f257c02fd3c52dbe0fd39"
+    }
+  }
+}
