@@ -28,6 +28,15 @@ yarn-error.log
 # Copilot/Agent local metadata
 /.agents/
 /.copilot/
+/.claude/
+/.kiro/
+/.mcp.json
+/.cursorrules
+/.opencode.json
+/.windsurfrules
+AGENTS.md
+CLAUDE.md
+GEMINI.md
 skills-lock.json
 
 # Dependencies
@@ -80,3 +89,5 @@ coverage/
 
 # Boost (if not needed in repo)
 boost.json
+# Added by code-review-graph
+.code-review-graph/
