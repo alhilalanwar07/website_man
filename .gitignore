@@ -86,6 +86,12 @@ coverage/
 /deploy/supervisor/*.conf
 /deploy/systemd/*.service
 
+# Root utility scripts (not for production)
+/check-webhook.php
+/set-webhook.php
+/test-telegram.php
+/test-webhook-manual.php
+
 # Boost (if not needed in repo)
 boost.json
 # Added by code-review-graph
