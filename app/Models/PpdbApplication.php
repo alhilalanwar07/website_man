@@ -23,13 +23,37 @@ class PpdbApplication extends Model
         'tanggal_lahir',
         'agama',
         'alamat_lengkap',
+        'rt_rw',
+        'kelurahan',
+        'kecamatan',
+        'tinggi_badan',
+        'berat_badan',
+        'gol_darah',
+        'ukuran_seragam',
         'nomor_hp',
         'email',
         'asal_sekolah',
+        'alamat_sekolah',
+        'anak_ke',
+        'jumlah_saudara',
         'nama_ayah',
+        'tempat_tanggal_lahir_ayah',
+        'pendidikan_terakhir_ayah',
         'pekerjaan_ayah',
+        'penghasilan_ayah',
+        'alamat_ayah',
+        'kelurahan_ayah',
+        'kecamatan_ayah',
+        'nomor_hp_ayah',
         'nama_ibu',
+        'tempat_tanggal_lahir_ibu',
+        'pendidikan_terakhir_ibu',
         'pekerjaan_ibu',
+        'penghasilan_ibu',
+        'alamat_ibu',
+        'kelurahan_ibu',
+        'kecamatan_ibu',
+        'nomor_hp_ibu',
         'nomor_hp_orang_tua',
         'pilihan_program_1_id',
         'pilihan_program_2_id',
@@ -44,6 +68,7 @@ class PpdbApplication extends Model
         'ranking_jalur',
         'ranking_program',
         'catatan_pendaftar',
+        'persetujuan_data_at',
         'catatan_verifikator',
         'status_pendaftaran',
         'status_berkas',
@@ -67,6 +92,7 @@ class PpdbApplication extends Model
             'tanggal_lahir' => 'date',
             'submitted_at' => 'datetime',
             'verified_at' => 'datetime',
+            'persetujuan_data_at' => 'datetime',
             'daftar_ulang_at' => 'datetime',
             'verified_daftar_ulang_at' => 'datetime',
             'scored_at' => 'datetime',
@@ -174,5 +200,12 @@ class PpdbApplication extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(PpdbDocument::class, 'application_id');
+    }
+
+    public function achievements(): HasMany
+    {
+        return $this->hasMany(PpdbAchievement::class, 'application_id')
+            ->orderBy('sort_order')
+            ->orderBy('id');
     }
 }

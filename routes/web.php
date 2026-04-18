@@ -2,10 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schema;
 
 use App\Http\Controllers\Admin\PpdbExportController;
+use App\Http\Controllers\Frontend\PpdbRegistrationDocumentController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Livewire\Home;
 use App\Livewire\Auth\Login;
@@ -20,6 +19,7 @@ use App\Livewire\Frontend\PpdbFormPage;
 use App\Livewire\Frontend\PpdbPage;
 use App\Livewire\Frontend\PpdbDaftarUlang;
 use App\Livewire\Frontend\PpdbStatus;
+use App\Livewire\Frontend\PpdbContactAdmin;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\ProfilSekolah;
 use App\Livewire\Admin\Pegawai;
@@ -59,8 +59,14 @@ Route::get('/galeri', GaleriPage::class)->name('galeri');
 Route::get('/agenda', AgendaIndex::class)->name('agenda.index');
 Route::get('/ppdb', PpdbPage::class)->name('ppdb.index');
 Route::get('/ppdb/formulir', PpdbFormPage::class)->name('ppdb.form');
+Route::get('/ppdb/formulir/{application}/unduh', [PpdbRegistrationDocumentController::class, 'download'])
+    ->middleware('signed')
+    ->name('ppdb.form.download');
+Route::get('/ppdb/verifikasi-dokumen/{application}', [PpdbRegistrationDocumentController::class, 'verify'])
+    ->name('ppdb.document.verify');
 Route::get('/ppdb/status', PpdbStatus::class)->name('ppdb.status');
 Route::get('/ppdb/daftar-ulang', PpdbDaftarUlang::class)->name('ppdb.daftar-ulang');
+Route::get('/ppdb/hubungi-admin', PpdbContactAdmin::class)->name('ppdb.contact');
 
 // Auth
 Route::get('/login', Login::class)->middleware('guest')->name('login');

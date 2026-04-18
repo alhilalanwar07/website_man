@@ -31,6 +31,13 @@
             'href' => route('ppdb.daftar-ulang'),
             'number' => '04',
         ],
+        [
+            'key' => 'contact',
+            'label' => 'Hubungi Admin',
+            'desc' => 'Ajukan bantuan perubahan data pendaftaran.',
+            'href' => route('ppdb.contact'),
+            'number' => '05',
+        ],
     ];
 @endphp
 
@@ -40,7 +47,7 @@
             <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Alur Cepat PPDB</p>
             <p class="text-xs text-slate-500">Ikuti urutan langkah agar proses lebih mudah dipahami.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
             @foreach ($steps as $step)
                 @php($isActive = $active === $step['key'])
                 <a

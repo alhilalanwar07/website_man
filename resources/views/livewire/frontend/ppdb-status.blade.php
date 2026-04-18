@@ -82,6 +82,35 @@
                         <p class="text-sm text-slate-700 leading-relaxed">Menunggu Verifikasi berarti berkas masih ditinjau. Perlu Revisi berarti Anda perlu memperbaiki data atau dokumen sesuai catatan panitia.</p>
                     </div>
 
+                    <div class="rounded-2xl border border-blue-200 bg-blue-50 p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 mb-2">Aksi Mandiri Pendaftar</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">Anda bisa mengunduh ulang formulir PDF pendaftaran dan mengirim ulang email konfirmasi jika dibutuhkan.</p>
+                        <div class="mt-3 flex flex-wrap items-center gap-3">
+                            @if($resultDownloadUrl)
+                            <a href="{{ $resultDownloadUrl }}" target="_blank" rel="noopener" class="inline-flex rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-800">Unduh Formulir PDF</a>
+                            @endif
+
+                            @if(filter_var((string) $result->email, FILTER_VALIDATE_EMAIL))
+                            <button type="button" wire:click="resendConfirmationEmail" wire:loading.attr="disabled" wire:target="resendConfirmationEmail" class="inline-flex rounded-xl border border-blue-300 bg-white px-4 py-2 text-xs font-bold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60">
+                                <span wire:loading.remove wire:target="resendConfirmationEmail">Kirim Ulang Email Konfirmasi</span>
+                                <span wire:loading wire:target="resendConfirmationEmail">Mengirim Ulang...</span>
+                            </button>
+                            @endif
+                        </div>
+
+                        @if(filter_var((string) $result->email, FILTER_VALIDATE_EMAIL))
+                        <p class="mt-2 text-xs text-slate-600">Email tujuan: {{ $result->email }}</p>
+                        @else
+                        <p class="mt-2 text-xs text-amber-700">Email pendaftar tidak tersedia atau tidak valid, sehingga kirim ulang email tidak bisa dilakukan otomatis.</p>
+                        @endif
+
+                        @if($actionFeedbackMessage)
+                        <div class="mt-3 rounded-xl border px-3 py-2 text-xs {{ $actionFeedbackType === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-rose-200 bg-rose-50 text-rose-700' }}">
+                            {{ $actionFeedbackMessage }}
+                        </div>
+                        @endif
+                    </div>
+
                     @if($result->period?->isAnnouncementPublished())
                     <div class="rounded-3xl border border-emerald-100 bg-emerald-50 p-6">
                         <p class="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">Pengumuman Resmi</p>

@@ -73,4 +73,9 @@ return [
         'static_params' => json_decode((string) env('WHATSAPP_GATEWAY_STATIC_PARAMS', '[]'), true) ?: [],
     ],
 
+    'ppdb_contact' => [
+        'admin_email' => env('PPDB_ADMIN_EMAIL'),
+        'admin_whatsapp' => env('PPDB_ADMIN_WHATSAPP'),
+    ],
+
 ];

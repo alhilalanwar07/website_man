@@ -1,10 +1,10 @@
 <div wire:poll.10s class="h-full flex flex-col min-h-[calc(100vh-8rem)]">
     <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
         <span wire:loading wire:target="search,statusFilter,selectSiswa,closeDetail">Memuat data pendaftar.</span>
-        <span wire:loading wire:target="verifySelected,verifySingle,rejectSingle,saveSiswaManual">Memproses perubahan data pendaftar.</span>
+        <span wire:loading wire:target="verifySelected,verifySingle,rejectSingle,saveSiswaManual,sendSecureDocumentEmailToSelected">Memproses perubahan data pendaftar.</span>
     </div>
 
-    <div wire:loading.flex wire:target="search,statusFilter,selectSiswa,closeDetail,verifySelected,saveSiswaManual" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+    <div wire:loading.flex wire:target="search,statusFilter,selectSiswa,closeDetail,verifySelected,saveSiswaManual,sendSecureDocumentEmailToSelected" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
         <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
         Memperbarui data verifikasi pendaftar...
     </div>
@@ -59,6 +59,33 @@
                 </div>
                 <div class="flex flex-shrink-0">
                     <button @click="show = false" type="button" class="inline-flex rounded-md text-slate-400 hover:text-white focus:outline-none dark:hover:text-slate-600">
+                        <x-admin.icon name="x" class="h-5 w-5" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div x-data="{ show: true }" 
+             x-show="show" 
+             x-init="setTimeout(() => show = false, 5000)" 
+             x-transition:enter="transform ease-out duration-300 transition" 
+             x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-4" 
+             x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0" 
+             x-transition:leave="transition ease-in duration-200" 
+             x-transition:leave-start="opacity-100" 
+             x-transition:leave-end="opacity-0 translate-x-4" 
+             class="fixed top-8 right-8 z-[100] flex w-full max-w-sm rounded-2xl bg-rose-600 p-4 text-white shadow-2xl ring-1 ring-black/10">
+            <div class="flex w-full items-center gap-3">
+                <div class="flex-shrink-0">
+                    <x-admin.icon name="x" class="h-6 w-6 text-rose-100" />
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold">{{ session('error') }}</p>
+                </div>
+                <div class="flex flex-shrink-0">
+                    <button @click="show = false" type="button" class="inline-flex rounded-md text-rose-100/70 hover:text-white focus:outline-none">
                         <x-admin.icon name="x" class="h-5 w-5" />
                     </button>
                 </div>
@@ -267,10 +294,61 @@
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status Pendaftaran</p>
                             <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->status_pendaftaran_label }}</p>
                         </div>
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Jalur Pendaftaran</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->track?->nama_jalur ?? '-' }}</p>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Pilihan Program 1</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->pilihanProgram1?->nama_jurusan ?? '-' }}</p>
+                        </div>
                         <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Catatan Verifikator</p>
                             <p class="mt-1 font-semibold text-slate-700 dark:text-slate-300">{{ $this->selectedSiswa->catatan_verifikator ?? 'Belum ada catatan verifikator.' }}</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Dokumen Formulir Aman -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Formulir Aman</h3>
+                    </div>
+
+                    <div class="p-4 grid grid-cols-1 xl:grid-cols-3 gap-3 text-sm">
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Kode Dokumen</p>
+                            <p class="mt-1 font-mono text-xs text-slate-900 dark:text-white break-all">{{ $selectedSecureDocument['document_code'] ?? '-' }}</p>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tanda Tangan Digital</p>
+                            <p class="mt-1 font-mono text-xs text-slate-900 dark:text-white break-all">{{ $selectedSecureDocument['signature_short'] ?? '-' }}</p>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Diterbitkan</p>
+                            <p class="mt-1 font-semibold text-slate-900 dark:text-white">{{ $selectedSecureDocument['issued_at_human'] ?? '-' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="px-4 pb-4 flex flex-wrap gap-2">
+                        @if($this->selectedFormulirDownloadUrl)
+                            <a href="{{ $this->selectedFormulirDownloadUrl }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-wide text-blue-700 hover:bg-blue-100 transition">
+                                <x-admin.icon name="document-text" class="w-4 h-4" /> Unduh Formulir Aman
+                            </a>
+                        @endif
+
+                        @if(!empty($selectedSecureDocument['verification_url']))
+                            <a href="{{ $selectedSecureDocument['verification_url'] }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-black uppercase tracking-wide text-emerald-700 hover:bg-emerald-100 transition">
+                                <x-admin.icon name="check-circle" class="w-4 h-4" /> Cek Keaslian
+                            </a>
+                        @endif
+
+                        <button type="button" wire:click="sendSecureDocumentEmailToSelected" wire:loading.attr="disabled" wire:target="sendSecureDocumentEmailToSelected" class="inline-flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-black uppercase tracking-wide text-amber-700 hover:bg-amber-100 transition disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="sendSecureDocumentEmailToSelected" class="inline-flex items-center gap-2">
+                                <x-admin.icon name="mail" class="w-4 h-4" /> Kirim Ulang ke Email
+                            </span>
+                            <span wire:loading wire:target="sendSecureDocumentEmailToSelected">Mengirim...</span>
+                        </button>
                     </div>
                 </div>
                 
@@ -373,20 +451,74 @@
                         <div>
                             <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Nama Lengkap (Sesuai Ijazah)</label>
                             <input type="text" wire:model="formSiswa.nama_lengkap" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 focus:ring-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Ahmad Budi..." required>
+                            @error('formSiswa.nama_lengkap') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">NISN</label>
                                 <input type="text" wire:model="formSiswa.nisn" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 font-mono tracking-widest outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="00123...">
+                                @error('formSiswa.nisn') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">No. WhatsApp Aktif</label>
                                 <input type="text" wire:model="formSiswa.nomor_hp" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="08...">
+                                @error('formSiswa.nomor_hp') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Email Aktif</label>
+                                <input type="email" wire:model="formSiswa.email" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="nama@email.com" required>
+                                @error('formSiswa.email') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
                             </div>
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Asal Sekolah</label>
-                            <input type="text" wire:model="formSiswa.asal_sekolah" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="SMPN ...">
+                            <input type="text" wire:model="formSiswa.asal_sekolah" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="SMPN ..." required>
+                            @error('formSiswa.asal_sekolah') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Jenis Kelamin</label>
+                                <select wire:model="formSiswa.jenis_kelamin" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" required>
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                                @error('formSiswa.jenis_kelamin') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Tanggal Lahir</label>
+                                <input type="date" wire:model="formSiswa.tanggal_lahir" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" required>
+                                @error('formSiswa.tanggal_lahir') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Tempat Lahir</label>
+                                <input type="text" wire:model="formSiswa.tempat_lahir" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Kolaka" required>
+                                @error('formSiswa.tempat_lahir') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Jalur Pendaftaran</label>
+                                <select wire:model="formSiswa.track_id" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" required>
+                                    <option value="">Pilih Jalur</option>
+                                    @foreach($availableTracksForManual as $trackOption)
+                                        <option value="{{ $trackOption['id'] }}">{{ $trackOption['label'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('formSiswa.track_id') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Pilihan Program Keahlian 1</label>
+                            <select wire:model="formSiswa.pilihan_program_1_id" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" required>
+                                <option value="">Pilih Program</option>
+                                @foreach($availableProgramsForManual as $programOption)
+                                    <option value="{{ $programOption['id'] }}">{{ $programOption['label'] }}</option>
+                                @endforeach
+                            </select>
+                            @error('formSiswa.pilihan_program_1_id') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Alamat Lengkap</label>
+                            <textarea wire:model="formSiswa.alamat_lengkap" wire:loading.attr="disabled" wire:target="saveSiswaManual" rows="3" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Jalan, RT/RW, Kelurahan, Kecamatan" required></textarea>
+                            @error('formSiswa.alamat_lengkap') <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p> @enderror
                         </div>
                     </div>
                     <div class="flex justify-end gap-3 p-5 bg-slate-50 rounded-b-2xl dark:bg-slate-800/50">
