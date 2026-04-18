@@ -52,7 +52,7 @@ Route::post('/telegram/webhook', TelegramWebhookController::class)
 // Contoh: /migrate-last-table?token=R4h4s14_S4ng4t_Kuat_2026
 Route::get('/migrate-last-table', function (\Illuminate\Http\Request $request) {
     // Validasi otorisasi primitif
-    if ($request->query('token') !== '12378t4b8c7213t487235c4tb78234') {
+    if ($request->query('token') !== 'R4h4s14_S4ng4t_Kuat_2026') {
         abort(403, 'Unauthorized action.');
     }
 
