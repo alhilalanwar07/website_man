@@ -28,6 +28,7 @@ use App\Livewire\Admin\BeritaEditor;
 use App\Livewire\Admin\Pengumuman;
 use App\Livewire\Admin\Agenda;
 use App\Livewire\Admin\Galeri;
+use App\Livewire\Admin\HariLibur;
 use App\Livewire\Admin\Ppdb;
 use App\Livewire\Admin\PpdbAnalytics;
 use App\Livewire\Admin\PpdbApplicants;
@@ -115,5 +116,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/pengumuman', Pengumuman::class)->name('pengumuman');
     Route::get('/agenda', Agenda::class)->name('agenda');
     Route::get('/galeri', Galeri::class)->name('galeri');
+    Route::get('/hari-libur', HariLibur::class)->name('hari-libur');
     Route::get('/settings', Settings::class)->name('settings');
 });

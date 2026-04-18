@@ -1,5 +1,22 @@
 <div>
-    <form wire:submit="save" class="space-y-6">
+    <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        <span wire:loading wire:target="save">Sedang menyimpan profil sekolah.</span>
+        <span wire:loading wire:target="logo,favicon,foto_kepsek">Sedang memproses file gambar profil sekolah.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="save" class="mb-4 items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor" stroke-width="4"></circle>
+            <path d="M4 12a8 8 0 0 1 8-8" class="opacity-75" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        </svg>
+        <span>Menyimpan perubahan profil sekolah...</span>
+    </div>
+
+    <form wire:submit="save" class="relative space-y-6">
+        <div wire:loading.flex wire:target="save" class="absolute inset-0 z-20 items-center justify-center rounded-xl bg-white/75 dark:bg-slate-900/75">
+            <div class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">Menyimpan profil...</div>
+        </div>
+
         {{-- Identitas Sekolah --}}
         <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4">Identitas Sekolah</h3>
@@ -57,10 +74,14 @@
         {{-- Upload Gambar --}}
         <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4">Gambar</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div wire:loading.block wire:target="logo,favicon,foto_kepsek" class="mb-4">
+                <x-admin.skeleton.card-grid :cards="3" columns="grid grid-cols-1 gap-4 md:grid-cols-3" :key-prefix="'profil-sekolah-upload'" />
+            </div>
+
+            <div wire:loading.remove wire:target="logo,favicon,foto_kepsek" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Logo</label>
-                    <input wire:model="logo" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
+                    <input wire:model="logo" wire:loading.attr="disabled" wire:target="logo" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
                     @if($logo)
                         <img src="{{ $logo->temporaryUrl() }}" class="mt-2 h-16 rounded">
                     @elseif($existing_logo)
@@ -70,7 +91,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Favicon</label>
-                    <input wire:model="favicon" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
+                    <input wire:model="favicon" wire:loading.attr="disabled" wire:target="favicon" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
                     @if($favicon)
                         <img src="{{ $favicon->temporaryUrl() }}" class="mt-2 h-16 rounded">
                     @elseif($existing_favicon)
@@ -80,7 +101,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Foto Kepsek</label>
-                    <input wire:model="foto_kepsek" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
+                    <input wire:model="foto_kepsek" wire:loading.attr="disabled" wire:target="foto_kepsek" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
                     @if($foto_kepsek)
                         <img src="{{ $foto_kepsek->temporaryUrl() }}" class="mt-2 h-20 rounded">
                     @elseif($existing_foto_kepsek)
@@ -116,7 +137,7 @@
 
         {{-- Submit --}}
         <div class="flex justify-end">
-            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm">
+            <button type="submit" wire:loading.attr="disabled" wire:target="save" class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:opacity-60">
                 <span wire:loading.remove wire:target="save">Simpan Profil</span>
                 <span wire:loading wire:target="save">Menyimpan...</span>
             </button>

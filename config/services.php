@@ -47,10 +47,30 @@ return [
         'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
         'allow_insecure_webhook' => filter_var(env('TELEGRAM_ALLOW_INSECURE_WEBHOOK', false), FILTER_VALIDATE_BOOLEAN),
         'allowed_chat_ids' => array_values(array_filter(array_map('trim', explode(',', (string) env('TELEGRAM_ALLOWED_CHAT_IDS', ''))))),
+        'admin_chat_ids' => array_values(array_filter(array_map('trim', explode(',', (string) env('TELEGRAM_ADMIN_CHAT_IDS', ''))))),
         'allow_all_chats' => filter_var(env('TELEGRAM_ALLOW_ALL_CHATS', false), FILTER_VALIDATE_BOOLEAN),
         'news_author_email' => env('TELEGRAM_NEWS_AUTHOR_EMAIL'),
         'news_default_category_slug' => env('TELEGRAM_NEWS_DEFAULT_CATEGORY_SLUG'),
         'news_auto_publish' => filter_var(env('TELEGRAM_NEWS_AUTO_PUBLISH', true), FILTER_VALIDATE_BOOLEAN),
+    ],
+
+    'school_calendar' => [
+        'enabled' => filter_var(env('SCHOOL_HOLIDAY_AUTO_CHECK', true), FILTER_VALIDATE_BOOLEAN),
+        'api_url' => env('SCHOOL_HOLIDAY_API_URL', 'https://libur.deno.dev/api'),
+    ],
+
+    'whatsapp_gateway' => [
+        'enabled' => filter_var(env('WHATSAPP_GATEWAY_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
+        'url' => env('WHATSAPP_GATEWAY_URL'),
+        'token' => env('WHATSAPP_GATEWAY_TOKEN'),
+        'timeout' => (int) env('WHATSAPP_GATEWAY_TIMEOUT', 20),
+        'authorization_header' => env('WHATSAPP_GATEWAY_AUTH_HEADER', 'Authorization'),
+        'authorization_prefix' => env('WHATSAPP_GATEWAY_AUTH_PREFIX', 'Bearer'),
+        'token_in_body' => filter_var(env('WHATSAPP_GATEWAY_TOKEN_IN_BODY', false), FILTER_VALIDATE_BOOLEAN),
+        'token_field' => env('WHATSAPP_GATEWAY_TOKEN_FIELD', 'token'),
+        'phone_field' => env('WHATSAPP_GATEWAY_PHONE_FIELD', 'to'),
+        'message_field' => env('WHATSAPP_GATEWAY_MESSAGE_FIELD', 'message'),
+        'static_params' => json_decode((string) env('WHATSAPP_GATEWAY_STATIC_PARAMS', '[]'), true) ?: [],
     ],
 
 ];

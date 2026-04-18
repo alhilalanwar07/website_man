@@ -1,4 +1,14 @@
 <div wire:poll.10s class="h-full flex flex-col min-h-[calc(100vh-8rem)]">
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        <span wire:loading wire:target="search,statusFilter,selectSiswa,closeDetail">Memuat data pendaftar.</span>
+        <span wire:loading wire:target="verifySelected,verifySingle,rejectSingle,saveSiswaManual">Memproses perubahan data pendaftar.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="search,statusFilter,selectSiswa,closeDetail,verifySelected,saveSiswaManual" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+        Memperbarui data verifikasi pendaftar...
+    </div>
+
     <!-- Header -->
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shrink-0">
         <div>
@@ -8,11 +18,17 @@
         <div class="flex flex-wrap items-center gap-2">
             <!-- Ekspor Group -->
             <div class="flex rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
-                <button wire:click="exportExcel" class="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 border-r border-slate-200 dark:border-slate-700 transition">
-                    <x-admin.icon name="document-text" class="w-4 h-4" /> Excel
+                <button wire:click="exportExcel" wire:loading.attr="disabled" wire:target="exportExcel" class="flex items-center px-4 py-2.5 text-sm font-bold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 border-r border-slate-200 dark:border-slate-700 transition disabled:cursor-not-allowed disabled:opacity-60">
+                    <span wire:loading.remove wire:target="exportExcel" class="inline-flex items-center gap-2">
+                        <x-admin.icon name="document-text" class="w-4 h-4" /> Excel
+                    </span>
+                    <span wire:loading wire:target="exportExcel">Menyiapkan...</span>
                 </button>
-                <button wire:click="exportPdf" class="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 transition">
-                    <x-admin.icon name="document-text" class="w-4 h-4" /> PDF
+                <button wire:click="exportPdf" wire:loading.attr="disabled" wire:target="exportPdf" class="flex items-center px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 transition disabled:cursor-not-allowed disabled:opacity-60">
+                    <span wire:loading.remove wire:target="exportPdf" class="inline-flex items-center gap-2">
+                        <x-admin.icon name="document-text" class="w-4 h-4" /> PDF
+                    </span>
+                    <span wire:loading wire:target="exportPdf">Menyiapkan...</span>
                 </button>
             </div>
             
@@ -65,11 +81,11 @@
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <x-admin.icon name="search" class="h-4 w-4 text-slate-400" />
                         </div>
-                        <input wire:model.live.debounce.300ms="search" type="text" class="block w-full rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Cari nama / NISN...">
+                        <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter" type="text" class="block w-full rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama / NISN...">
                     </div>
                     
                     <div class="flex gap-2 w-full">
-                        <select wire:model.live="statusFilter" class="w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white">
+                        <select wire:model.live="statusFilter" wire:loading.attr="disabled" wire:target="search,statusFilter" class="w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">Semua Berkas</option>
                             <option value="pending">Menunggu Verifikasi</option>
                             <option value="verified">Sah</option>
@@ -80,7 +96,10 @@
                     @if(!$selectedSiswaId && count($selectedRows) > 0)
                     <div class="flex items-center gap-2 shrink-0">
                         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ count($selectedRows) }} Dipilih</span>
-                        <button wire:click="verifySelected" class="px-3 py-1.5 bg-emerald-100 text-emerald-700 font-bold rounded-lg text-xs hover:bg-emerald-200">Verifikasi Massal</button>
+                        <button wire:click="verifySelected" wire:loading.attr="disabled" wire:target="verifySelected" class="px-3 py-1.5 bg-emerald-100 text-emerald-700 font-bold rounded-lg text-xs hover:bg-emerald-200 disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="verifySelected">Verifikasi Massal</span>
+                            <span wire:loading wire:target="verifySelected">Memproses...</span>
+                        </button>
                     </div>
                     @endif
                 </div>
@@ -88,86 +107,92 @@
 
             <!-- List/Tabel Area -->
             <div class="flex-1 overflow-y-auto">
-                @if(!$selectedSiswaId)
-                    <!-- TAMPILAN FULL TABLE JIKA TIDAK ADA YANG DIKLIK -->
-                    <table class="w-full text-left text-sm text-slate-500 dark:text-slate-400">
-                        <thead class="bg-white sticky top-0 text-xs uppercase text-slate-400 font-bold dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
-                            <tr>
-                                <th class="p-4 w-10"><input wire:model.live="selectAll" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600"></th>
-                                <th class="px-4 py-3">Nama Pendaftar</th>
-                                <th class="px-4 py-3">Asal Sekolah</th>
-                                <th class="px-4 py-3">No. Whatsapp</th>
-                                <th class="px-4 py-3">Status</th>
-                                <th class="px-4 py-3 text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            @forelse ($pendaftar as $item)
-                                <tr wire:key="pendaftar-table-{{ $item->id }}" wire:click="selectSiswa({{ $item->id }})" class="hover:bg-blue-50/50 dark:hover:bg-blue-900/20 cursor-pointer transition group">
-                                    <td class="p-4" wire:click.stop>
-                                        <input wire:model.live="selectedRows" value="{{ $item->id }}" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="font-bold text-slate-900 dark:text-white group-hover:text-blue-600">{{ $item->nama_lengkap }}</div>
-                                        <div class="text-[11px] mt-0.5 text-slate-500">Reg: {{ $item->nomor_pendaftaran }}</div>
-                                    </td>
-                                    <td class="px-4 py-3 font-medium">{{ $item->asal_sekolah ?? '-' }}</td>
-                                    <td class="px-4 py-3">{{ $item->nomor_hp ?? '-' }}</td>
-                                    <td class="px-4 py-3">
-                                        @if($item->status_berkas === 'verified')
-                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-bold border border-emerald-100"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Sah</span>
-                                        @elseif($item->status_berkas === 'revision')
-                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full text-xs font-bold border border-rose-100"><div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div> Perlu Revisi</span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-xs font-bold border border-amber-100"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div> Menunggu Verifikasi</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3 text-right">
-                                        <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-xl hover:bg-blue-600 hover:text-white transition">Buka File &rarr;</button>
-                                    </td>
-                                </tr>
-                            @empty
+                <div wire:loading.block wire:target="search,statusFilter,selectAll,page" class="p-4">
+                    <x-admin.skeleton.table :columns="6" :rows="8" />
+                </div>
+
+                <div wire:loading.remove wire:target="search,statusFilter,selectAll,page">
+                    @if(!$selectedSiswaId)
+                        <!-- TAMPILAN FULL TABLE JIKA TIDAK ADA YANG DIKLIK -->
+                        <table class="w-full text-left text-sm text-slate-500 dark:text-slate-400">
+                            <thead class="bg-white sticky top-0 text-xs uppercase text-slate-400 font-bold dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
                                 <tr>
-                                    <td colspan="6" class="py-16 text-center">
-                                        <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-slate-300 mb-4 dark:bg-slate-800">
-                                            <x-admin.icon name="document-search" class="w-8 h-8" />
-                                        </div>
-                                        <p class="font-bold text-slate-900 dark:text-white text-lg">Tidak ada pendaftar</p>
-                                        <p class="text-sm text-slate-500 mt-1">Belum ada data pendaftar yang memenuhi pencarian Anda.</p>
-                                    </td>
+                                    <th class="p-4 w-10"><input wire:model.live="selectAll" wire:loading.attr="disabled" wire:target="search,statusFilter,selectAll,page" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-60"></th>
+                                    <th class="px-4 py-3">Nama Pendaftar</th>
+                                    <th class="px-4 py-3">Asal Sekolah</th>
+                                    <th class="px-4 py-3">No. Whatsapp</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 text-right">Aksi</th>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                @else
-                    <!-- TAMPILAN COMPACT LIST JIKA DETAIL TERBUKA -->
-                    <div class="divide-y divide-slate-100 dark:divide-slate-800">
-                        @forelse ($pendaftar as $item)
-                        <div wire:key="pendaftar-compact-{{ $item->id }}" wire:click="selectSiswa({{ $item->id }})" class="p-4 cursor-pointer transition {{ $selectedSiswaId === $item->id ? 'bg-blue-50 border-l-4 border-blue-600 dark:bg-blue-900/20' : 'hover:bg-slate-50 border-l-4 border-transparent dark:hover:bg-slate-800/50' }}">
-                            <div class="flex justify-between items-start mb-1">
-                                <h4 class="font-bold {{ $selectedSiswaId === $item->id ? 'text-blue-700 dark:text-blue-400' : 'text-slate-900 dark:text-white' }} truncate pr-2">{{ $item->nama_lengkap }}</h4>
-                                
-                                <div class="shrink-0 mt-0.5">
-                                    @if($item->status_berkas === 'verified')
-                                        <x-admin.icon name="check-circle" class="w-5 h-5 text-emerald-500" />
-                                    @elseif($item->status_berkas === 'revision')
-                                        <x-admin.icon name="x" class="w-5 h-5 text-rose-500" />
-                                    @else
-                                        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] mt-1 animate-pulse"></div>
-                                    @endif
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                                @forelse ($pendaftar as $item)
+                                    <tr wire:key="pendaftar-table-{{ $item->id }}" wire:click="selectSiswa({{ $item->id }})" class="hover:bg-blue-50/50 dark:hover:bg-blue-900/20 cursor-pointer transition group">
+                                        <td class="p-4" wire:click.stop>
+                                            <input wire:model.live="selectedRows" value="{{ $item->id }}" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <div class="font-bold text-slate-900 dark:text-white group-hover:text-blue-600">{{ $item->nama_lengkap }}</div>
+                                            <div class="text-[11px] mt-0.5 text-slate-500">Reg: {{ $item->nomor_pendaftaran }}</div>
+                                        </td>
+                                        <td class="px-4 py-3 font-medium">{{ $item->asal_sekolah ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $item->nomor_hp ?? '-' }}</td>
+                                        <td class="px-4 py-3">
+                                            @if($item->status_berkas === 'verified')
+                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-bold border border-emerald-100"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Sah</span>
+                                            @elseif($item->status_berkas === 'revision')
+                                                <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full text-xs font-bold border border-rose-100"><div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div> Perlu Revisi</span>
+                                            @else
+                                                <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-xs font-bold border border-amber-100"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div> Menunggu Verifikasi</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-right">
+                                            <button class="text-xs font-bold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-xl hover:bg-blue-600 hover:text-white transition">Buka File &rarr;</button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="py-16 text-center">
+                                            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-slate-300 mb-4 dark:bg-slate-800">
+                                                <x-admin.icon name="document-search" class="w-8 h-8" />
+                                            </div>
+                                            <p class="font-bold text-slate-900 dark:text-white text-lg">Tidak ada pendaftar</p>
+                                            <p class="text-sm text-slate-500 mt-1">Belum ada data pendaftar yang memenuhi pencarian Anda.</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    @else
+                        <!-- TAMPILAN COMPACT LIST JIKA DETAIL TERBUKA -->
+                        <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                            @forelse ($pendaftar as $item)
+                            <div wire:key="pendaftar-compact-{{ $item->id }}" wire:click="selectSiswa({{ $item->id }})" class="p-4 cursor-pointer transition {{ $selectedSiswaId === $item->id ? 'bg-blue-50 border-l-4 border-blue-600 dark:bg-blue-900/20' : 'hover:bg-slate-50 border-l-4 border-transparent dark:hover:bg-slate-800/50' }}">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold {{ $selectedSiswaId === $item->id ? 'text-blue-700 dark:text-blue-400' : 'text-slate-900 dark:text-white' }} truncate pr-2">{{ $item->nama_lengkap }}</h4>
+                                    
+                                    <div class="shrink-0 mt-0.5">
+                                        @if($item->status_berkas === 'verified')
+                                            <x-admin.icon name="check-circle" class="w-5 h-5 text-emerald-500" />
+                                        @elseif($item->status_berkas === 'revision')
+                                            <x-admin.icon name="x" class="w-5 h-5 text-rose-500" />
+                                        @else
+                                            <div class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] mt-1 animate-pulse"></div>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex items-center text-xs text-slate-500 gap-2">
+                                    <span>{{ $item->nomor_pendaftaran }}</span>
+                                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                                    <span class="truncate">{{ $item->asal_sekolah ?? '-' }}</span>
                                 </div>
                             </div>
-                            <div class="flex items-center text-xs text-slate-500 gap-2">
-                                <span>{{ $item->nomor_pendaftaran }}</span>
-                                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                                <span class="truncate">{{ $item->asal_sekolah ?? '-' }}</span>
-                            </div>
+                            @empty
+                                <div class="p-8 text-center text-sm text-slate-400">Data pendaftar kosong.</div>
+                            @endforelse
                         </div>
-                        @empty
-                            <div class="p-8 text-center text-sm text-slate-400">Data pendaftar kosong.</div>
-                        @endforelse
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
             
             <!-- Pagination selalu di bawah -->
@@ -199,7 +224,7 @@
                     </div>
                 </div>
                 <div>
-                    <button wire:click="closeDetail" class="text-slate-400 hover:bg-slate-100 p-2 rounded-xl transition dark:hover:bg-slate-700">
+                    <button wire:click="closeDetail" wire:loading.attr="disabled" wire:target="closeDetail" class="text-slate-400 hover:bg-slate-100 p-2 rounded-xl transition dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60">
                         <x-admin.icon name="x" class="w-6 h-6"/>
                     </button>
                 </div>
@@ -298,7 +323,7 @@
                         <x-admin.icon name="check-circle" class="w-5 h-5"/> BERKAS TELAH DISAHKAN
                     </div>
                     <!-- Tombol Batal/Tukar untuk UX Aman -->
-                    <button wire:click="rejectSingle({{ $this->selectedSiswa->id }})" wire:loading.attr="disabled" class="shrink-0 px-6 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-rose-50 hover:text-rose-600 transition text-sm disabled:opacity-50" title="Batalkan & Tolak">
+                    <button wire:click="rejectSingle({{ $this->selectedSiswa->id }})" wire:loading.attr="disabled" wire:target="rejectSingle" class="shrink-0 px-6 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-rose-50 hover:text-rose-600 transition text-sm disabled:opacity-50" title="Batalkan & Tolak">
                         <span wire:loading.remove wire:target="rejectSingle">Tolak/Batal</span>
                         <span wire:loading wire:target="rejectSingle">Memproses...</span>
                     </button>
@@ -307,7 +332,7 @@
                     <div class="w-full py-3.5 bg-rose-50 border border-rose-200 text-rose-700 font-black rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm dark:bg-rose-900/30 dark:border-rose-800">
                         <x-admin.icon name="x" class="w-5 h-5"/> BERKAS DITOLAK (REVISI)
                     </div>
-                    <button wire:click="verifySingle({{ $this->selectedSiswa->id }})" wire:loading.attr="disabled" class="shrink-0 px-6 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-emerald-50 hover:text-emerald-600 transition text-sm disabled:opacity-50" title="Ralat Menjadi Sah">
+                    <button wire:click="verifySingle({{ $this->selectedSiswa->id }})" wire:loading.attr="disabled" wire:target="verifySingle" class="shrink-0 px-6 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-emerald-50 hover:text-emerald-600 transition text-sm disabled:opacity-50" title="Ralat Menjadi Sah">
                         <span wire:loading.remove wire:target="verifySingle">Ubah SAH</span>
                         <span wire:loading wire:target="verifySingle">Memproses...</span>
                     </button>
@@ -334,37 +359,41 @@
     @if($showAddModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-slate-900/60 p-4 backdrop-blur-sm">
             <div class="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                <div wire:loading.flex wire:target="saveSiswaManual" class="absolute inset-0 z-20 items-center justify-center rounded-2xl bg-white/80 text-sm font-bold text-blue-600 backdrop-blur-sm dark:bg-slate-900/80 dark:text-blue-300">
+                    Menyimpan data pendaftar...
+                </div>
                 <form wire:submit.prevent="saveSiswaManual">
                     <div class="flex items-center justify-between border-b border-slate-100 p-5 dark:border-slate-800">
                         <h3 class="text-xl font-black text-slate-900 dark:text-white">Form Input Manual</h3>
-                        <button type="button" wire:click="$set('showAddModal', false)" class="rounded-full bg-slate-100 p-2 text-slate-500 hover:bg-rose-100 hover:text-rose-600 transition dark:bg-slate-800">
+                        <button type="button" wire:click="$set('showAddModal', false)" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="rounded-full bg-slate-100 p-2 text-slate-500 hover:bg-rose-100 hover:text-rose-600 transition dark:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60">
                             <x-admin.icon name="x" class="h-4 w-4" />
                         </button>
                     </div>
                     <div class="space-y-5 p-6">
                         <div>
                             <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Nama Lengkap (Sesuai Ijazah)</label>
-                            <input type="text" wire:model="formSiswa.nama_lengkap" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 focus:ring-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700" placeholder="Ahmad Budi..." required>
+                            <input type="text" wire:model="formSiswa.nama_lengkap" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 focus:ring-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Ahmad Budi..." required>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">NISN</label>
-                                <input type="text" wire:model="formSiswa.nisn" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 font-mono tracking-widest outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700" placeholder="00123...">
+                                <input type="text" wire:model="formSiswa.nisn" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 font-mono tracking-widest outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="00123...">
                             </div>
                             <div>
                                 <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">No. WhatsApp Aktif</label>
-                                <input type="text" wire:model="formSiswa.nomor_hp" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700" placeholder="08...">
+                                <input type="text" wire:model="formSiswa.nomor_hp" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="08...">
                             </div>
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Asal Sekolah</label>
-                            <input type="text" wire:model="formSiswa.asal_sekolah" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700" placeholder="SMPN ...">
+                            <input type="text" wire:model="formSiswa.asal_sekolah" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="block w-full rounded-xl border-slate-300 p-3 text-sm focus:border-blue-500 outline-none transition bg-slate-50 dark:bg-slate-950 dark:border-slate-700 disabled:cursor-not-allowed disabled:opacity-60" placeholder="SMPN ...">
                         </div>
                     </div>
                     <div class="flex justify-end gap-3 p-5 bg-slate-50 rounded-b-2xl dark:bg-slate-800/50">
-                        <button type="button" wire:click="$set('showAddModal', false)" class="rounded-xl px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-200 transition text-sm">Kembali</button>
-                        <button type="submit" class="rounded-xl bg-blue-600 px-7 py-2.5 font-bold text-white hover:bg-blue-700 transition shadow-lg shadow-blue-600/30 text-sm">
-                            Simpan Data
+                        <button type="button" wire:click="$set('showAddModal', false)" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="rounded-xl px-5 py-2.5 font-bold text-slate-600 hover:bg-slate-200 transition text-sm disabled:cursor-not-allowed disabled:opacity-60">Kembali</button>
+                        <button type="submit" wire:loading.attr="disabled" wire:target="saveSiswaManual" class="rounded-xl bg-blue-600 px-7 py-2.5 font-bold text-white hover:bg-blue-700 transition shadow-lg shadow-blue-600/30 text-sm disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="saveSiswaManual">Simpan Data</span>
+                            <span wire:loading wire:target="saveSiswaManual">Menyimpan...</span>
                         </button>
                     </div>
                 </form>

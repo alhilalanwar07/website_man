@@ -1,4 +1,14 @@
 <div>
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        <span wire:loading wire:target="search,statusFilter">Memuat daftar daftar ulang.</span>
+        <span wire:loading wire:target="toggleStatus">Memproses status daftar ulang.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="search,statusFilter,toggleStatus" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+        Memuat pembaruan daftar ulang...
+    </div>
+
     <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Verifikasi Daftar Ulang</h1>
@@ -33,17 +43,17 @@
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <x-admin.icon name="search" class="h-4 w-4 text-slate-400" />
                 </div>
-                <input wire:model.live.debounce.300ms="search" type="text" class="block w-full rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Cari nama siswa...">
+                <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter" type="text" class="block w-full rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama siswa...">
             </div>
             
             <div class="flex rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 p-1">
-                <button wire:click="$set('statusFilter', '')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition {{ $statusFilter === '' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Semua</button>
-                <button wire:click="$set('statusFilter', 'belum')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition {{ $statusFilter === 'belum' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Belum Selesai</button>
-                <button wire:click="$set('statusFilter', 'selesai')" class="px-4 py-1.5 text-xs font-bold rounded-lg transition {{ $statusFilter === 'selesai' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Sudah Selesai</button>
+                <button wire:click="$set('statusFilter', '')" wire:loading.attr="disabled" wire:target="statusFilter" class="px-4 py-1.5 text-xs font-bold rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60 {{ $statusFilter === '' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Semua</button>
+                <button wire:click="$set('statusFilter', 'belum')" wire:loading.attr="disabled" wire:target="statusFilter" class="px-4 py-1.5 text-xs font-bold rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60 {{ $statusFilter === 'belum' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Belum Selesai</button>
+                <button wire:click="$set('statusFilter', 'selesai')" wire:loading.attr="disabled" wire:target="statusFilter" class="px-4 py-1.5 text-xs font-bold rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60 {{ $statusFilter === 'selesai' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Sudah Selesai</button>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto" wire:loading.remove wire:target="search,statusFilter,toggleStatus">
             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
                 <thead class="bg-slate-50/80 text-xs uppercase text-slate-700 dark:bg-slate-900 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
                     <tr>
@@ -58,7 +68,7 @@
                         @php
                             $isSelesai = $item->status_daftar_ulang === 'verified';
                         @endphp
-                        <tr class="{{ $isSelesai ? 'bg-emerald-50/10 dark:bg-emerald-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }} transition">
+                        <tr wire:key="daftar-ulang-row-{{ $item->id }}" class="{{ $isSelesai ? 'bg-emerald-50/10 dark:bg-emerald-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }} transition">
                             <td class="px-4 py-3 text-center text-slate-400 font-medium">{{ $index + 1 }}</td>
                             <td class="px-4 py-3">
                                 <div class="font-bold {{ $isSelesai ? 'text-slate-500 line-through' : 'text-slate-900 dark:text-white' }}">{{ $item->nama_lengkap }}</div>
@@ -69,12 +79,19 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <button wire:click="toggleStatus({{ $item->id }})" 
-                                        class="inline-flex items-center gap-2 rounded-xl border px-5 py-2 text-sm font-bold shadow-sm transition {{ $isSelesai ? 'border-emerald-200 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:border-emerald-800/50 dark:bg-emerald-900/40 dark:text-emerald-400 hover:dark:bg-emerald-900/60' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }}">
+                                        wire:loading.attr="disabled"
+                                        wire:target="toggleStatus({{ $item->id }})"
+                                        class="inline-flex items-center gap-2 rounded-xl border px-5 py-2 text-sm font-bold shadow-sm transition disabled:cursor-not-allowed disabled:opacity-60 {{ $isSelesai ? 'border-emerald-200 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:border-emerald-800/50 dark:bg-emerald-900/40 dark:text-emerald-400 hover:dark:bg-emerald-900/60' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200' }}">
                                     @if($isSelesai)
-                                        <x-admin.icon name="check" class="w-4 h-4" /> BATALKAN
+                                        <span wire:loading.remove wire:target="toggleStatus({{ $item->id }})" class="inline-flex items-center gap-2">
+                                            <x-admin.icon name="check" class="w-4 h-4" /> BATALKAN
+                                        </span>
                                     @else
-                                        <div class="h-4 w-4 border-2 border-slate-400 rounded-sm"></div> TANDAI SELESAI
+                                        <span wire:loading.remove wire:target="toggleStatus({{ $item->id }})" class="inline-flex items-center gap-2">
+                                            <div class="h-4 w-4 border-2 border-slate-400 rounded-sm"></div> TANDAI SELESAI
+                                        </span>
                                     @endif
+                                    <span wire:loading wire:target="toggleStatus({{ $item->id }})">Memproses...</span>
                                 </button>
                                 
                                 @if($isSelesai)
@@ -99,6 +116,10 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <div wire:loading.block wire:target="search,statusFilter,toggleStatus" class="p-4">
+            <x-admin.skeleton.table :columns="4" :rows="6" />
         </div>
     </div>
 </div>

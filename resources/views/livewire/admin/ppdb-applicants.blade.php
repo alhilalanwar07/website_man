@@ -11,7 +11,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model.live="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model.live="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 @foreach($availablePeriods as $periodOption)
                     <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
@@ -21,6 +21,39 @@
             <a href="{{ route('admin.ppdb.re-registration', $periodQuery) }}" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-blue-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">Verifikasi daftar ulang</a>
         </div>
     </div>
+
+    <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        <span wire:loading wire:target="period">Sedang memuat ulang data periode pendaftar.</span>
+        <span wire:loading wire:target="search,statusFilter,trackFilter,selectionFilter,previousPage,nextPage,gotoPage">Sedang memuat daftar pendaftar.</span>
+        <span wire:loading wire:target="openReview">Sedang membuka data review pendaftar.</span>
+        <span wire:loading wire:target="saveReview">Sedang menyimpan hasil review pendaftar.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="period" class="items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor" stroke-width="4"></circle>
+            <path d="M4 12a8 8 0 0 1 8-8" class="opacity-75" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        </svg>
+        <span>Menyegarkan data periode pendaftar...</span>
+    </div>
+
+    <div wire:loading.block wire:target="period" class="space-y-4">
+        <x-admin.skeleton.card-grid :cards="4" columns="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" :key-prefix="'ppdb-applicants-summary'" />
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <x-admin.skeleton.card-grid :cards="4" columns="grid grid-cols-1 gap-3 xl:grid-cols-[1.6fr_repeat(3,minmax(0,1fr))]" :key-prefix="'ppdb-applicants-filters'" />
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-[1.7fr_1fr]">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <x-admin.skeleton.table :columns="6" :rows="8" :key-prefix="'ppdb-applicants-table'" :show-actions="true" />
+            </div>
+
+            <x-admin.skeleton.card-grid :cards="2" columns="space-y-4" :key-prefix="'ppdb-applicants-side'" />
+        </div>
+    </div>
+
+    <div wire:loading.remove wire:target="period" class="space-y-6">
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -71,61 +104,70 @@
 
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-[1.7fr_1fr]">
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead class="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/70">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Pendaftar</th>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Jalur / Pilihan 1</th>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Skor / Ranking</th>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Hasil Seleksi</th>
-                            <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Status</th>
-                            <th class="px-4 py-3 text-right font-semibold text-slate-600 dark:text-slate-300">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                        @forelse($applications as $application)
-                            <tr wire:key="application-row-{{ $application->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                                <td class="px-4 py-3 align-top">
-                                    <p class="font-semibold text-slate-900 dark:text-white">{{ $application->nama_lengkap }}</p>
-                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $application->nomor_pendaftaran }} · {{ $application->asal_sekolah }}</p>
-                                </td>
-                                <td class="px-4 py-3 align-top text-slate-600 dark:text-slate-300">
-                                    <p>{{ $application->track->nama_jalur }}</p>
-                                    <p class="mt-1 text-xs text-slate-400">{{ $application->pilihanProgram1->nama_jurusan }}</p>
-                                </td>
-                                <td class="px-4 py-3 align-top text-slate-600 dark:text-slate-300">
-                                    <p class="font-semibold text-slate-900 dark:text-white">{{ number_format((float) ($application->skor_seleksi ?? 0), 2) }}</p>
-                                    <p class="mt-1 text-xs text-slate-400">Jalur #{{ $application->ranking_jalur ?? '-' }} · Program #{{ $application->ranking_program ?? '-' }}</p>
-                                </td>
-                                <td class="px-4 py-3 align-top text-slate-600 dark:text-slate-300">
-                                    <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ match ($application->hasil_seleksi) {
-                                        'passed' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
-                                        'reserve' => 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
-                                        'failed' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-                                        default => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-                                    } }}">{{ $application->hasil_seleksi_label }}</span>
-                                    <p class="mt-2 text-xs text-slate-400">{{ $application->programDiterima?->nama_jurusan ?? 'Belum ada program final' }}</p>
-                                </td>
-                                <td class="px-4 py-3 align-top">
-                                    <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ in_array($application->status_pendaftaran, ['accepted', 'verified'], true) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($application->status_pendaftaran === 'needs_revision' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' : ($application->status_pendaftaran === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300')) }}">
-                                        {{ $application->status_pendaftaran_label }}
-                                    </span>
-                                    <p class="mt-2 text-xs text-slate-400">Berkas: {{ $application->status_berkas_label }}</p>
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <button wire:click="openReview({{ $application->id }})" class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700">Review</button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-4 py-10 text-center text-slate-400">Belum ada data pendaftar yang sesuai filter.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div wire:loading.block wire:target="search,statusFilter,trackFilter,selectionFilter,previousPage,nextPage,gotoPage" class="p-4">
+                <x-admin.skeleton.table :columns="6" :rows="8" :key-prefix="'ppdb-applicants-table-filter'" :show-actions="true" />
             </div>
-            <div class="border-t border-slate-200 px-4 py-3 dark:border-slate-800">{{ $applications->links() }}</div>
+
+            <div wire:loading.remove wire:target="search,statusFilter,trackFilter,selectionFilter,previousPage,nextPage,gotoPage">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/70">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Pendaftar</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Jalur / Pilihan 1</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Skor / Ranking</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Hasil Seleksi</th>
+                                <th class="px-4 py-3 text-left font-semibold text-slate-600 dark:text-slate-300">Status</th>
+                                <th class="px-4 py-3 text-right font-semibold text-slate-600 dark:text-slate-300">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                            @forelse($applications as $application)
+                                <tr wire:key="application-row-{{ $application->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                                    <td class="px-4 py-3 align-top">
+                                        <p class="font-semibold text-slate-900 dark:text-white">{{ $application->nama_lengkap }}</p>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $application->nomor_pendaftaran }} · {{ $application->asal_sekolah }}</p>
+                                    </td>
+                                    <td class="px-4 py-3 align-top text-slate-600 dark:text-slate-300">
+                                        <p>{{ $application->track->nama_jalur }}</p>
+                                        <p class="mt-1 text-xs text-slate-400">{{ $application->pilihanProgram1->nama_jurusan }}</p>
+                                    </td>
+                                    <td class="px-4 py-3 align-top text-slate-600 dark:text-slate-300">
+                                        <p class="font-semibold text-slate-900 dark:text-white">{{ number_format((float) ($application->skor_seleksi ?? 0), 2) }}</p>
+                                        <p class="mt-1 text-xs text-slate-400">Jalur #{{ $application->ranking_jalur ?? '-' }} · Program #{{ $application->ranking_program ?? '-' }}</p>
+                                    </td>
+                                    <td class="px-4 py-3 align-top text-slate-600 dark:text-slate-300">
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ match ($application->hasil_seleksi) {
+                                            'passed' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+                                            'reserve' => 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
+                                            'failed' => 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+                                            default => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+                                        } }}">{{ $application->hasil_seleksi_label }}</span>
+                                        <p class="mt-2 text-xs text-slate-400">{{ $application->programDiterima?->nama_jurusan ?? 'Belum ada program final' }}</p>
+                                    </td>
+                                    <td class="px-4 py-3 align-top">
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ in_array($application->status_pendaftaran, ['accepted', 'verified'], true) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($application->status_pendaftaran === 'needs_revision' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' : ($application->status_pendaftaran === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300')) }}">
+                                            {{ $application->status_pendaftaran_label }}
+                                        </span>
+                                        <p class="mt-2 text-xs text-slate-400">Berkas: {{ $application->status_berkas_label }}</p>
+                                    </td>
+                                    <td class="px-4 py-3 text-right">
+                                        <button wire:click="openReview({{ $application->id }})" wire:loading.attr="disabled" wire:target="openReview({{ $application->id }})" class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60">
+                                            <span wire:loading.remove wire:target="openReview({{ $application->id }})">Review</span>
+                                            <span wire:loading wire:target="openReview({{ $application->id }})">Membuka...</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-10 text-center text-slate-400">Belum ada data pendaftar yang sesuai filter.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="border-t border-slate-200 px-4 py-3 dark:border-slate-800">{{ $applications->links() }}</div>
+            </div>
         </div>
 
         <div class="space-y-4">
@@ -155,10 +197,15 @@
             </div>
         </div>
     </div>
+    </div>
 
     @if($showReviewModal && $selectedApplication)
         <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60 py-8 backdrop-blur-sm">
-            <div class="mx-4 w-full max-w-5xl space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <div class="relative mx-4 w-full max-w-5xl space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+                <div wire:loading.flex wire:target="saveReview" class="absolute inset-0 z-20 items-center justify-center rounded-2xl bg-white/75 dark:bg-slate-900/75">
+                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">Menyimpan review...</div>
+                </div>
+
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <h3 class="text-xl font-bold text-slate-900 dark:text-white">Review Pendaftar PPDB</h3>
@@ -269,8 +316,11 @@
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <button type="button" wire:click="$set('showReviewModal', false)" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">Batal</button>
-                        <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">Simpan Review</button>
+                        <button type="button" wire:click="$set('showReviewModal', false)" wire:loading.attr="disabled" wire:target="saveReview" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 disabled:opacity-60">Batal</button>
+                        <button type="submit" wire:loading.attr="disabled" wire:target="saveReview" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-60">
+                            <span wire:loading.remove wire:target="saveReview">Simpan Review</span>
+                            <span wire:loading wire:target="saveReview">Menyimpan...</span>
+                        </button>
                     </div>
                 </form>
             </div>

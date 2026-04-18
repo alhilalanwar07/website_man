@@ -1,17 +1,28 @@
 <div wire:poll.10s>
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        <span wire:loading wire:target="statusFilter,pilihanFilter,search">Memuat daftar siswa untuk penentuan jurusan.</span>
+        <span wire:loading wire:target="setBatchTo">Memproses penetapan jurusan massal.</span>
+        <span wire:loading wire:target="assignedMajors">Menyimpan penentuan jurusan siswa.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="statusFilter,pilihanFilter,search,setBatchTo" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+        Memperbarui data penentuan jurusan...
+    </div>
+
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shrink-0">
         <div>
             <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Penentuan Jurusan</h1>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Input manual menetapkan keputusan jurusan akhir siswa berdasarkan hasil tes wawancara.</p>
         </div>
         <div class="w-full lg:w-auto mt-2 sm:mt-0 flex flex-col sm:flex-row gap-3">
-            <select wire:model.live="statusFilter" class="rounded-xl border-slate-300 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white bg-white">
+            <select wire:model.live="statusFilter" wire:loading.attr="disabled" wire:target="statusFilter,pilihanFilter,search,setBatchTo" class="rounded-xl border-slate-300 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white bg-white disabled:cursor-not-allowed disabled:opacity-60">
                 <option value="semua">Semua Status</option>
                 <option value="belum_ditentukan">Belum Ditentukan (Prioritas)</option>
                 <option value="sudah_ditentukan">Sudah Diputus</option>
             </select>
             
-            <select wire:model.live="pilihanFilter" class="rounded-xl border-slate-300 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white bg-white w-full sm:w-48 truncate">
+            <select wire:model.live="pilihanFilter" wire:loading.attr="disabled" wire:target="statusFilter,pilihanFilter,search,setBatchTo" class="rounded-xl border-slate-300 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white bg-white w-full sm:w-48 truncate disabled:cursor-not-allowed disabled:opacity-60">
                 <option value="">Semua Pilihan (Awal)</option>
                 @foreach($majors as $m)
                     <option value="{{ $m->id }}">{{ $m->kode_jurusan ?? $m->nama_jurusan }}</option>
@@ -22,7 +33,7 @@
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <x-admin.icon name="search" class="h-4 w-4 text-slate-400" />
                 </div>
-                <input wire:model.live.debounce.300ms="search" type="text" class="block w-full rounded-xl border-slate-300 pl-10 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white" placeholder="Cari nama / NISN...">
+                <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="statusFilter,pilihanFilter,search,setBatchTo" type="text" class="block w-full rounded-xl border-slate-300 pl-10 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama / NISN...">
             </div>
         </div>
     </div>
@@ -75,19 +86,20 @@
                             <option value="{{ $m->id }}">{{ $m->kode_jurusan ?? $m->nama_jurusan }}</option>
                         @endforeach
                     </select>
-                    <button x-show="majorId" @click="$wire.setBatchTo(majorId)" class="shrink-0 bg-slate-900 text-white hover:bg-slate-800 text-sm px-4 py-2 rounded-lg font-bold transition shadow-sm dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 whitespace-nowrap">
-                        Eksekusi
+                    <button x-show="majorId" @click="$wire.setBatchTo(majorId)" wire:loading.attr="disabled" wire:target="setBatchTo" class="shrink-0 bg-slate-900 text-white hover:bg-slate-800 text-sm px-4 py-2 rounded-lg font-bold transition shadow-sm dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60">
+                        <span wire:loading.remove wire:target="setBatchTo">Eksekusi</span>
+                        <span wire:loading wire:target="setBatchTo">Memproses...</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto" wire:loading.remove wire:target="statusFilter,pilihanFilter,search,setBatchTo">
             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400 min-w-[700px]">
                 <thead class="bg-white sticky top-0 text-[11px] uppercase tracking-wider text-slate-400 font-bold dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
                     <tr>
                         <th scope="col" class="px-5 py-4 w-12 text-center">
-                            <input wire:model.live="selectAll" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer">
+                            <input wire:model.live="selectAll" wire:loading.attr="disabled" wire:target="statusFilter,pilihanFilter,search,setBatchTo" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60">
                         </th>
                         <th scope="col" class="px-4 py-4 w-1/3">Identitas Calon Siswa</th>
                         <th scope="col" class="px-4 py-4 w-1/4">Preferensi Jurusan Awal</th>
@@ -100,7 +112,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse ($pendaftar as $index => $item)
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition group {{ isset($assignedMajors[$item->id]) && $assignedMajors[$item->id] ? 'bg-blue-50/20' : '' }}">
+                        <tr wire:key="penentuan-jurusan-row-{{ $item->id }}" class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition group {{ isset($assignedMajors[$item->id]) && $assignedMajors[$item->id] ? 'bg-blue-50/20' : '' }}">
                             <td class="px-5 py-4 text-center">
                                 <input wire:model.live="selectedRows" value="{{ $item->id }}" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer">
                             </td>
@@ -168,6 +180,10 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        <div wire:loading.block wire:target="statusFilter,pilihanFilter,search,setBatchTo" class="p-4">
+            <x-admin.skeleton.table :columns="4" :rows="6" />
         </div>
     </div>
 </div>

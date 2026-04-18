@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ProcessTelegramNewsSubmission;
+use App\Support\SchoolHolidayWorkflow;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -44,6 +45,14 @@ class TelegramWebhookController extends Controller
         }
 
         $text = trim((string) data_get($message, 'text', ''));
+
+        $holidayReply = app(SchoolHolidayWorkflow::class)->handleAdminResponse($chatId, $text);
+
+        if ($holidayReply !== null) {
+            $this->sendTelegramMessage($chatId, $holidayReply);
+
+            return response()->json(['ok' => true]);
+        }
 
         if ($text === '/start') {
             $this->sendTelegramMessage($chatId, 'Kirim foto dengan caption judul berita, atau kirim foto dulu lalu lanjutkan kirim judul di pesan berikutnya.');
@@ -111,8 +120,19 @@ class TelegramWebhookController extends Controller
     private function isAllowedChat(string $chatId): bool
     {
         $allowedChats = config('services.telegram.allowed_chat_ids', []);
+        $adminChats = config('services.telegram.admin_chat_ids', []);
 
-        if (! is_array($allowedChats) || $allowedChats === []) {
+        if (! is_array($allowedChats)) {
+            $allowedChats = [];
+        }
+
+        if (! is_array($adminChats)) {
+            $adminChats = [];
+        }
+
+        $allAllowedChats = array_values(array_unique(array_map('strval', array_merge($allowedChats, $adminChats))));
+
+        if ($allAllowedChats === []) {
             if (app()->environment('local', 'testing')) {
                 return true;
             }
@@ -120,7 +140,7 @@ class TelegramWebhookController extends Controller
             return (bool) config('services.telegram.allow_all_chats', false);
         }
 
-        return in_array($chatId, array_map('strval', $allowedChats), true);
+        return in_array($chatId, $allAllowedChats, true);
     }
 
     private function extractLargestPhotoId(mixed $photos): ?string

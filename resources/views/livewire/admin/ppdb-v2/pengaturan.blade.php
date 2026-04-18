@@ -1,4 +1,14 @@
 <div class="space-y-6">
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        <span wire:loading wire:target="period">Memuat konfigurasi periode PPDB.</span>
+        <span wire:loading wire:target="openActionModal,confirmAction">Memproses perubahan pengaturan PPDB.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="period,openActionModal,confirmAction" class="items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+        Menyinkronkan pengaturan PPDB...
+    </div>
+
     @php($periodQuery = $selectedPeriodId ? ['periode' => $selectedPeriodId] : [])
 
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -12,7 +22,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model.live.debounce.300ms="period" class="min-w-[320px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model.live.debounce.300ms="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[320px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
                 @foreach($availablePeriods as $periodOption)
                     <option wire:key="settings-period-option-{{ $periodOption->id }}" value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
@@ -22,6 +32,12 @@
         </div>
     </div>
 
+    <div wire:loading.block wire:target="period" class="space-y-4">
+        <x-admin.skeleton.card-grid :cards="4" />
+        <x-admin.skeleton.table :columns="2" :rows="6" />
+    </div>
+
+    <div wire:loading.remove wire:target="period">
     @if($activePeriod)
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -55,20 +71,24 @@
                     Periode aktif default dipakai sebagai fallback utama oleh resolver admin dan frontend ketika parameter periode tidak dikirim.
                 </p>
                 <div class="mt-4 flex flex-wrap gap-3">
-                    <button wire:click="openActionModal('activate-period')" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900">
+                    <button wire:click="openActionModal('activate-period')" wire:loading.attr="disabled" wire:target="openActionModal" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60">
                         Jadikan Aktif Default
                     </button>
                     <button
                         wire:click="openActionModal('archive-period')"
+                        wire:loading.attr="disabled"
+                        wire:target="openActionModal"
                         type="button"
-                        class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-bold text-amber-700 transition hover:bg-amber-100"
+                        class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-bold text-amber-700 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         Arsipkan dari Frontend
                     </button>
                     <button
                         wire:click="openActionModal('delete-period')"
+                        wire:loading.attr="disabled"
+                        wire:target="openActionModal"
                         type="button"
-                        class="rounded-xl border border-rose-300 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-100"
+                        class="rounded-xl border border-rose-300 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         Hapus Periode
                     </button>
@@ -181,8 +201,9 @@
                             </div>
 
                             <div class="flex justify-end">
-                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
-                                    Buat Periode Baru
+                                <button type="submit" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <span wire:loading.remove wire:target="openActionModal">Buat Periode Baru</span>
+                                    <span wire:loading wire:target="openActionModal">Memproses...</span>
                                 </button>
                             </div>
                         </form>
@@ -292,8 +313,9 @@
                                 <input wire:model="periodForm.is_active" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                             </label>
                             <div class="flex justify-end">
-                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
-                                    Simpan Pengaturan Periode
+                                <button type="submit" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <span wire:loading.remove wire:target="openActionModal">Simpan Pengaturan Periode</span>
+                                    <span wire:loading wire:target="openActionModal">Memproses...</span>
                                 </button>
                             </div>
                         </form>
@@ -340,8 +362,9 @@
                                 @endforelse
                             </div>
                             <div class="flex justify-end">
-                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
-                                    Simpan Pengaturan Jalur
+                                <button type="submit" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <span wire:loading.remove wire:target="openActionModal">Simpan Pengaturan Jalur</span>
+                                    <span wire:loading wire:target="openActionModal">Memproses...</span>
                                 </button>
                             </div>
                         </form>
@@ -387,8 +410,9 @@
                                 @endforelse
                             </div>
                             <div class="flex justify-end">
-                                <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700">
-                                    Simpan Pengaturan Kuota
+                                <button type="submit" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <span wire:loading.remove wire:target="openActionModal">Simpan Pengaturan Kuota</span>
+                                    <span wire:loading wire:target="openActionModal">Memproses...</span>
                                 </button>
                             </div>
                         </form>
@@ -401,6 +425,7 @@
             Belum ada periode PPDB yang dapat dikelola. Buat periode baru terlebih dahulu agar pengaturan operasional bisa diaktifkan.
         </div>
     @endif
+    </div>
 
     @if($showActionModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm" wire:click="closeActionModal">

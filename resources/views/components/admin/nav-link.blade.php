@@ -25,7 +25,10 @@
         : 'text-slate-400 hover:bg-slate-800 hover:text-white';
 @endphp
 
-<a href="{{ $href }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors {{ $activeClass }}">
+<a href="{{ $href }}"
+   data-admin-nav-link="true"
+    @click="startNavigation($event)"
+   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors {{ $activeClass }}">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">{!! $svgPath !!}</svg>
     <span class="whitespace-nowrap overflow-hidden" x-show="sidebarOpen" x-transition>{{ $slot }}</span>
 </a>

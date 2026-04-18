@@ -1,6 +1,17 @@
 <div class="space-y-6">
     @php($periodQuery = $selectedPeriodId ? ['periode' => $selectedPeriodId] : [])
 
+    <div wire:loading.flex wire:target="period" class="items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
+        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500"></span>
+        Memuat ringkasan periode PPDB...
+    </div>
+
+    <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        <span wire:loading wire:target="period">Sedang memuat data ringkasan PPDB untuk periode terpilih.</span>
+        <span wire:loading wire:target="runSelection">Sedang memproses seleksi tahap 2.</span>
+        <span wire:loading wire:target="publishAnnouncement">Sedang mempublikasikan hasil resmi PPDB.</span>
+    </div>
+
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
             <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-500">Ringkasan PPDB</p>
@@ -13,7 +24,7 @@
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
             <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:col-span-2 xl:col-span-5">
                 <label class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">Periode Kerja</label>
-                <select wire:model.live="period" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+                <select wire:model.live="period" wire:loading.attr="disabled" wire:target="period" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-950">
                     @foreach($availablePeriods as $periodOption)
                         <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                     @endforeach
@@ -54,6 +65,17 @@
         </div>
     </div>
 
+    <div wire:loading.block wire:target="period" class="space-y-4">
+        <x-admin.skeleton.card-grid :cards="6" columns="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6" :key-prefix="'ppdb-ringkasan-summary'" />
+        <x-admin.skeleton.card-grid :cards="2" columns="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]" :key-prefix="'ppdb-ringkasan-highlight'" />
+        <x-admin.skeleton.card-grid :cards="3" columns="grid grid-cols-1 gap-4 xl:grid-cols-3" :key-prefix="'ppdb-ringkasan-quota'" />
+
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <x-admin.skeleton.table :columns="5" :rows="6" :key-prefix="'ppdb-ringkasan-recent'" />
+        </div>
+    </div>
+
+    <div wire:loading.remove wire:target="period" class="space-y-6">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-2">
             <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Periode Dipilih</p>
@@ -98,12 +120,14 @@
                 <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ $activePeriod->catatan_pengumuman ?: 'Publikasikan hasil resmi setelah proses verifikasi, penilaian, dan seleksi tahap 2 selesai.' }}</p>
 
                 <div class="mt-4 flex flex-wrap gap-3">
-                    <button wire:click="runSelection" wire:loading.attr="disabled" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:opacity-60">
-                        Proses Seleksi Tahap 2
+                    <button wire:click="runSelection" wire:loading.attr="disabled" wire:target="runSelection" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:opacity-60">
+                        <span wire:loading.remove wire:target="runSelection">Proses Seleksi Tahap 2</span>
+                        <span wire:loading wire:target="runSelection">Memproses...</span>
                     </button>
                     @if(! $activePeriod->isAnnouncementPublished())
-                        <button wire:click="publishAnnouncement" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800">
-                            Publikasikan Hasil Resmi
+                        <button wire:click="publishAnnouncement" wire:loading.attr="disabled" wire:target="publishAnnouncement" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-60">
+                            <span wire:loading.remove wire:target="publishAnnouncement">Publikasikan Hasil Resmi</span>
+                            <span wire:loading wire:target="publishAnnouncement">Mempublikasikan...</span>
                         </button>
                     @else
                         <div class="rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-slate-900 dark:text-emerald-300">
@@ -199,4 +223,5 @@
             Belum ada periode PPDB aktif dan terpublikasi. Siapkan periode terlebih dahulu pada menu Pengaturan PPDB.
         </div>
     @endif
+    </div>
 </div>

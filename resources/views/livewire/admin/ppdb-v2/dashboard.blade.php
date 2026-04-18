@@ -1,4 +1,14 @@
 <div>
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        <span wire:loading>Memuat data dashboard PPDB.</span>
+    </div>
+
+    <div wire:loading class="space-y-6">
+        <x-admin.skeleton.card-grid :cards="4" />
+        <x-admin.skeleton.table :columns="2" :rows="5" />
+    </div>
+
+    <div wire:loading.remove>
     <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard PPDB</h1>
@@ -78,7 +88,7 @@
                 <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                         @forelse($pendaftarTerbaru as $siswa)
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                            <tr wire:key="dashboard-pendaftar-{{ $siswa->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                                 <td class="px-5 py-3">
                                     <div class="font-bold text-slate-900 dark:text-white">{{ $siswa->nama_lengkap }}</div>
                                     <div class="text-[11px] text-slate-500">{{ $siswa->created_at->diffForHumans() }}</div>
@@ -107,5 +117,6 @@
                 <p>Belum ada data distribusi jurusan.</p>
             </div>
         </div>
+    </div>
     </div>
 </div>

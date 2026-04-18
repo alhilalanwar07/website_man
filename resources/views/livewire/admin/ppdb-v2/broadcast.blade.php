@@ -1,4 +1,14 @@
 <div class="space-y-6">
+    <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        <span wire:loading wire:target="sendBroadcast">Mengirim broadcast PPDB.</span>
+        <span wire:loading wire:target="applyTemplate">Menerapkan template broadcast.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="sendBroadcast,applyTemplate" class="items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+        <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+        Menyinkronkan konten broadcast...
+    </div>
+
     <div class="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-cyan-50 to-white p-6 shadow-sm dark:border-blue-900 dark:from-blue-950/30 dark:via-slate-900 dark:to-slate-900">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
@@ -31,7 +41,11 @@
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_1fr]">
         <div class="space-y-6">
-            <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div wire:loading.flex wire:target="sendBroadcast" class="absolute inset-0 z-10 items-center justify-center rounded-2xl bg-white/80 text-sm font-bold text-blue-600 backdrop-blur-sm dark:bg-slate-900/80 dark:text-blue-300">
+                    Menyiapkan antrean broadcast...
+                </div>
+
                 <div class="mb-4 flex items-center justify-between gap-3">
                     <h3 class="text-lg font-black text-slate-900 dark:text-white">Composer Pesan Massal</h3>
                     <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
@@ -42,7 +56,7 @@
                 <form wire:submit.prevent="sendBroadcast" class="space-y-4">
                     <div>
                         <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Target Penerima</label>
-                        <select wire:model="targetAudience" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950">
+                        <select wire:model="targetAudience" wire:loading.attr="disabled" wire:target="sendBroadcast" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="all">Semua Pendaftar Terdaftar</option>
                             <option value="verified">Siswa Terverifikasi Berkas (Tunggu Ujian)</option>
                             <option value="lulus">Siswa Lulus (Semua Jurusan)</option>
@@ -61,12 +75,12 @@
                         <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Jalur Pengiriman</label>
                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <label class="flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition {{ $channel === 'whatsapp' ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/20' : 'border-slate-200 dark:border-slate-700' }}">
-                                <input type="radio" wire:model="channel" value="whatsapp" class="text-emerald-500 focus:ring-emerald-500">
+                                <input type="radio" wire:model="channel" wire:loading.attr="disabled" wire:target="sendBroadcast" value="whatsapp" class="text-emerald-500 focus:ring-emerald-500 disabled:cursor-not-allowed disabled:opacity-60">
                                 <x-admin.icon name="chat" class="h-5 w-5 text-emerald-500" />
                                 <span class="text-sm font-bold text-slate-700 dark:text-slate-300">WhatsApp</span>
                             </label>
                             <label class="flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition {{ $channel === 'email' ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700' }}">
-                                <input type="radio" wire:model="channel" value="email" class="text-blue-500 focus:ring-blue-500">
+                                <input type="radio" wire:model="channel" wire:loading.attr="disabled" wire:target="sendBroadcast" value="email" class="text-blue-500 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60">
                                 <x-admin.icon name="mail" class="h-5 w-5 text-blue-500" />
                                 <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Email Utama</span>
                             </label>
@@ -81,7 +95,7 @@
 
                     <div>
                         <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Isi Pesan/Pengumuman</label>
-                        <textarea wire:model.blur="messageText" rows="6" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm shadow-inner focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950" placeholder="Tulis pengingat jadwal, pengumuman hasil, atau instruksi daftar ulang di sini..."></textarea>
+                        <textarea wire:model.blur="messageText" wire:loading.attr="disabled" wire:target="sendBroadcast" rows="6" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm shadow-inner focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Tulis pengingat jadwal, pengumuman hasil, atau instruksi daftar ulang di sini..."></textarea>
                         @error('messageText')
                             <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
                         @enderror
@@ -109,8 +123,11 @@
 
                     <div class="pt-2">
                         <button type="submit" wire:loading.attr="disabled" wire:target="sendBroadcast" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                            <x-admin.icon name="paper-airplane" class="h-5 w-5" />
-                            Arahkan ke Antrean Kirim (Queue)
+                            <span wire:loading.remove wire:target="sendBroadcast" class="inline-flex items-center gap-2">
+                                <x-admin.icon name="paper-airplane" class="h-5 w-5" />
+                                Arahkan ke Antrean Kirim (Queue)
+                            </span>
+                            <span wire:loading wire:target="sendBroadcast">Mengirim...</span>
                         </button>
                         <div wire:loading wire:target="sendBroadcast" class="mt-2 w-full text-center text-sm font-bold text-blue-600">
                             Memproses pengiriman...
@@ -127,13 +144,19 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div wire:loading.block wire:target="applyTemplate" class="mb-4">
+                    <x-admin.skeleton.card-grid :cards="4" />
+                </div>
+
+                <div wire:loading.remove wire:target="applyTemplate" class="grid grid-cols-1 gap-3 md:grid-cols-2">
                     @foreach ($quickTemplates as $template)
                         <button
                             wire:key="broadcast-template-{{ $template['key'] }}"
                             type="button"
-                            class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-blue-700 dark:hover:bg-blue-950/20"
+                            class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left transition hover:border-blue-300 hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-800/50 dark:hover:border-blue-700 dark:hover:bg-blue-950/20 disabled:cursor-not-allowed disabled:opacity-60"
                             wire:click="applyTemplate('{{ $template['key'] }}')"
+                            wire:loading.attr="disabled"
+                            wire:target="applyTemplate"
                         >
                             <p class="text-sm font-black text-slate-800 dark:text-slate-100">{{ $template['title'] }}</p>
                             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Target: {{ str($template['audience'])->replace('_', ' ')->title() }} | Channel: {{ strtoupper($template['channel']) }}</p>

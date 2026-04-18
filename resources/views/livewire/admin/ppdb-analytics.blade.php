@@ -17,7 +17,7 @@
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:w-[30rem]">
             <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:col-span-2">
                 <label class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">Periode Analisa</label>
-                <select wire:model.live="period" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+                <select wire:model.live="period" wire:loading.attr="disabled" wire:target="period" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                     @foreach($availablePeriods as $periodOption)
                         <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                     @endforeach
@@ -30,6 +30,32 @@
             </a>
         </div>
     </div>
+
+    <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        <span wire:loading wire:target="period">Sedang memuat ulang analytics periode PPDB.</span>
+    </div>
+
+    <div wire:loading.flex wire:target="period" class="items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-300">
+        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor" stroke-width="4"></circle>
+            <path d="M4 12a8 8 0 0 1 8-8" class="opacity-75" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        </svg>
+        <span>Menyegarkan data analytics PPDB...</span>
+    </div>
+
+    <div wire:loading.block wire:target="period" class="space-y-4">
+        <x-admin.skeleton.card-grid :cards="4" columns="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" :key-prefix="'ppdb-analytics-snapshot'" />
+
+        <x-admin.skeleton.card-grid :cards="2" columns="grid grid-cols-1 gap-4 xl:grid-cols-[1.35fr_1fr]" :key-prefix="'ppdb-analytics-short'" />
+
+        <x-admin.skeleton.card-grid :cards="2" columns="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1.2fr]" :key-prefix="'ppdb-analytics-medium'" />
+
+        <div class="rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <x-admin.skeleton.table :columns="5" :rows="6" :key-prefix="'ppdb-analytics-history'" />
+        </div>
+    </div>
+
+    <div wire:loading.remove wire:target="period" class="space-y-6">
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -207,4 +233,5 @@
             Belum ada periode PPDB yang bisa dianalisa. Siapkan atau aktifkan periode terlebih dahulu pada menu Pengaturan PPDB.
         </div>
     @endif
+    </div>
 </div>
