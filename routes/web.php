@@ -47,42 +47,7 @@ use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
-
-// TEMPORARY ROUTE: Wajib sertakan token rahasia di URL.
-// Contoh: /migrate-last-table?token=R4h4s14_S4ng4t_Kuat_2026
-Route::get('/migrate-last-table', function (\Illuminate\Http\Request $request) {
-    // Validasi otorisasi primitif
-    if ($request->query('token') !== 'R4h4s14_S4ng4t_Kuat_2026') {
-        abort(403, 'Unauthorized action.');
-    }
-
-    if (Schema::hasTable('school_holidays')) {
-        return response()->json([
-            'ok' => true,
-            'message' => 'Tabel school_holidays sudah ada, migrasi dilewati.',
-        ]);
-    }
-
-    Artisan::call('migrate', [
-        '--path' => 'database/migrations/2026_04_18_000014_create_school_holidays_table.php',
-        '--force' => true,
-    ]);
-
-    $tableCreated = Schema::hasTable('school_holidays');
-
-    return response()->json([
-        'ok' => $tableCreated,
-        'message' => $tableCreated
-            ? 'Migrasi school_holidays berhasil dijalankan.'
-            : 'Perintah migrasi dijalankan, tetapi tabel belum terdeteksi.',
-        'output' => trim(Artisan::output()),
-    ]);
-});
-
-// Alias path lama menggunakan metode bawaan Laravel yang lebih ringan
-Route::redirect('/__ops/migrate-last-table', '/migrate-last-table');
-
-
+    
 // Frontend
 Route::get('/', Home::class)->name('home');
 Route::get('/profil', Profil::class)->name('profil');
