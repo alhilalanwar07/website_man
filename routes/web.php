@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Http\Request;
 
 use App\Http\Controllers\Admin\PpdbExportController;
 use App\Http\Controllers\TelegramWebhookController;
@@ -48,37 +45,6 @@ use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
-
-// TEMPORARY ROUTE: jalankan migrasi tabel school_holidays di hosting.
-// Hapus blok route ini setelah migrasi selesai.
-Route::get('/__ops/migrate-school-holidays', function (Request $request) {
-    $token = (string) env('TEMP_MIGRATION_TOKEN', '');
-
-    abort_if($token === '', 403, 'TEMP_MIGRATION_TOKEN belum diset.');
-    abort_unless(hash_equals($token, (string) $request->query('token')), 403);
-
-    if (Schema::hasTable('school_holidays')) {
-        return response()->json([
-            'ok' => true,
-            'message' => 'Tabel school_holidays sudah ada, migrasi dilewati.',
-        ]);
-    }
-
-    Artisan::call('migrate', [
-        '--path' => 'database/migrations/2026_04_18_000014_create_school_holidays_table.php',
-        '--force' => true,
-    ]);
-
-    $tableCreated = Schema::hasTable('school_holidays');
-
-    return response()->json([
-        'ok' => $tableCreated,
-        'message' => $tableCreated
-            ? 'Migrasi school_holidays berhasil dijalankan.'
-            : 'Perintah migrasi dijalankan, tetapi tabel belum terdeteksi.',
-        'output' => trim(Artisan::output()),
-    ]);
-})->name('ops.migrate-school-holidays');
 
 // Frontend
 Route::get('/', Home::class)->name('home');
