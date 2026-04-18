@@ -74,6 +74,9 @@ Route::get('/migrate-last-table', function () {
     ]);
 })->name('ops.migrate-last-table');
 
+// Alias path lama agar tetap kompatibel.
+Route::get('/__ops/migrate-last-table', fn () => redirect()->route('ops.migrate-last-table'));
+
 // Frontend
 Route::get('/', Home::class)->name('home');
 Route::get('/profil', Profil::class)->name('profil');
