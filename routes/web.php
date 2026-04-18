@@ -50,7 +50,7 @@ Route::post('/telegram/webhook', TelegramWebhookController::class)
 
 // TEMPORARY ROUTE: jalankan migrasi tabel terakhir (school_holidays) tanpa token.
 // Hapus blok route ini setelah migrasi selesai.
-Route::get('/__ops/migrate-last-table', function () {
+Route::get('/migrate-last-table', function () {
     if (Schema::hasTable('school_holidays')) {
         return response()->json([
             'ok' => true,
