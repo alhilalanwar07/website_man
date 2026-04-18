@@ -48,9 +48,14 @@ Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
 
-// TEMPORARY ROUTE: jalankan migrasi tabel terakhir (school_holidays) tanpa token.
-// Hapus blok route ini setelah migrasi selesai.
-Route::get('/migrate-last-table', function () {
+// TEMPORARY ROUTE: Wajib sertakan token rahasia di URL.
+// Contoh: /migrate-last-table?token=R4h4s14_S4ng4t_Kuat_2026
+Route::get('/migrate-last-table', function (\Illuminate\Http\Request $request) {
+    // Validasi otorisasi primitif
+    if ($request->query('token') !== 'GANTI_DENGAN_STRING_ACAK_YANG_PANJANG_DAN_RAHASIA') {
+        abort(403, 'Unauthorized action.');
+    }
+
     if (Schema::hasTable('school_holidays')) {
         return response()->json([
             'ok' => true,
@@ -72,10 +77,11 @@ Route::get('/migrate-last-table', function () {
             : 'Perintah migrasi dijalankan, tetapi tabel belum terdeteksi.',
         'output' => trim(Artisan::output()),
     ]);
-})->name('ops.migrate-last-table');
+});
 
-// Alias path lama agar tetap kompatibel.
-Route::get('/__ops/migrate-last-table', fn () => redirect()->route('ops.migrate-last-table'));
+// Alias path lama menggunakan metode bawaan Laravel yang lebih ringan
+Route::redirect('/__ops/migrate-last-table', '/migrate-last-table');
+
 
 // Frontend
 Route::get('/', Home::class)->name('home');
