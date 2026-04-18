@@ -1,7 +1,7 @@
 <div class="space-y-6">
     <div
         wire:loading.delay.longer.flex
-        wire:target="triggerHolidayCheck,saveHoliday"
+        wire:target="triggerHolidayCheck,saveHoliday,deleteHoliday"
         class="items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300"
     >
         <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500"></span>
@@ -13,7 +13,7 @@
         <span wire:loading wire:target="saveHoliday">Sedang menyimpan data libur.</span>
         <span wire:loading wire:target="previousCalendarMonth,nextCalendarMonth,jumpToCurrentCalendarMonth,calendarMonth">Sedang memuat data kalender.</span>
         <span wire:loading wire:target="search,filterStatus,filterType,gotoPage,previousPage,nextPage">Sedang memuat daftar libur.</span>
-        <span wire:loading wire:target="editHoliday,toggleHolidayStatus,deleteHoliday">Sedang memperbarui data libur.</span>
+        <span wire:loading wire:target="editHoliday,toggleHolidayStatus,openDeleteHolidayModal,deleteHoliday">Sedang memperbarui data libur.</span>
     </div>
 
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -285,9 +285,9 @@
                                         <span wire:loading.remove wire:target="toggleHolidayStatus({{ $holiday->id }})">{{ $holiday->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</span>
                                         <span wire:loading wire:target="toggleHolidayStatus({{ $holiday->id }})">Memproses...</span>
                                     </button>
-                                    <button type="button" wire:click="deleteHoliday({{ $holiday->id }})" wire:loading.attr="disabled" wire:target="deleteHoliday({{ $holiday->id }})" onclick="return confirm('Hapus data libur manual ini?')" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60">
-                                        <span wire:loading.remove wire:target="deleteHoliday({{ $holiday->id }})">Hapus</span>
-                                        <span wire:loading wire:target="deleteHoliday({{ $holiday->id }})">Menghapus...</span>
+                                    <button type="button" wire:click="openDeleteHolidayModal({{ $holiday->id }})" wire:loading.attr="disabled" wire:target="openDeleteHolidayModal({{ $holiday->id }})" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60">
+                                        <span wire:loading.remove wire:target="openDeleteHolidayModal({{ $holiday->id }})">Hapus</span>
+                                        <span wire:loading wire:target="openDeleteHolidayModal({{ $holiday->id }})">Memuat...</span>
                                     </button>
                                 </div>
                             </td>
@@ -373,6 +373,36 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    @if($isDeleteHolidayModalOpen)
+        <div class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm" wire:click="closeDeleteHolidayModal" aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4" wire:keydown.escape.window="closeDeleteHolidayModal" role="dialog" aria-modal="true" aria-labelledby="delete-holiday-modal-title">
+            <div class="w-full max-w-lg rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900" wire:click.stop>
+                <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-rose-500">Konfirmasi Hapus</p>
+                    <h3 id="delete-holiday-modal-title" class="mt-1 text-base font-black text-slate-900 dark:text-white">Hapus Data Libur Manual</h3>
+                </div>
+
+                <div class="space-y-2 px-5 py-4 text-sm text-slate-600 dark:text-slate-300">
+                    <p>Data libur berikut akan dihapus permanen:</p>
+                    <p class="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-900/20 dark:text-rose-200">{{ $deletingHolidayName }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Aksi ini tidak dapat dibatalkan.</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 border-t border-slate-200 px-5 py-4 dark:border-slate-800">
+                    <button type="button" wire:click="closeDeleteHolidayModal" wire:loading.attr="disabled" wire:target="deleteHoliday({{ $deletingHolidayId }})" class="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                        Batal
+                    </button>
+
+                    <button type="button" wire:click="deleteHoliday({{ $deletingHolidayId }})" wire:loading.attr="disabled" wire:target="deleteHoliday({{ $deletingHolidayId }})" class="rounded-lg border border-rose-300 bg-rose-50 px-4 py-2 text-sm font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-900/60 dark:bg-rose-900/20 dark:text-rose-200">
+                        <span wire:loading.remove wire:target="deleteHoliday({{ $deletingHolidayId }})">Ya, Hapus</span>
+                        <span wire:loading wire:target="deleteHoliday({{ $deletingHolidayId }})">Menghapus...</span>
+                    </button>
+                </div>
             </div>
         </div>
     @endif

@@ -23,7 +23,10 @@ class HariLibur extends Component
     use WithPagination;
 
     public ?int $editingHolidayId = null;
+    public ?int $deletingHolidayId = null;
     public bool $isHolidayModalOpen = false;
+    public bool $isDeleteHolidayModalOpen = false;
+    public string $deletingHolidayName = '';
     public array $holidayForm = [];
     public string $search = '';
     public string $filterStatus = 'all';
@@ -154,6 +157,24 @@ class HariLibur extends Component
         $this->closeHolidayModal();
     }
 
+    public function openDeleteHolidayModal(int $holidayId): void
+    {
+        $holiday = SchoolHoliday::query()
+            ->select(['id', 'name'])
+            ->findOrFail($holidayId);
+
+        $this->deletingHolidayId = $holiday->id;
+        $this->deletingHolidayName = $holiday->name;
+        $this->isDeleteHolidayModalOpen = true;
+    }
+
+    public function closeDeleteHolidayModal(): void
+    {
+        $this->isDeleteHolidayModalOpen = false;
+        $this->deletingHolidayId = null;
+        $this->deletingHolidayName = '';
+    }
+
     public function toggleHolidayStatus(int $holidayId): void
     {
         $holiday = SchoolHoliday::findOrFail($holidayId);
@@ -176,6 +197,10 @@ class HariLibur extends Component
 
         if ($this->editingHolidayId === $holidayId) {
             $this->closeHolidayModal();
+        }
+
+        if ($this->deletingHolidayId === $holidayId) {
+            $this->closeDeleteHolidayModal();
         }
 
         $this->dispatch('toast', type: 'success', message: 'Libur manual "' . $label . '" berhasil dihapus.');
