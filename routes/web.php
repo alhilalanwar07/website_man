@@ -128,6 +128,32 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/hari-libur', HariLibur::class)->name('hari-libur');
     Route::get('/settings', Settings::class)->name('settings');
 
+    Route::post('/maintenance/migrate-supporting-tables', function () {
+        $migrationPath = 'database/migrations/2026_04_19_130000_create_ppdb_supporting_information_tables.php';
+        $tables = [
+            'ppdb_contact_persons',
+            'ppdb_important_dates',
+            'ppdb_document_requirements',
+            'ppdb_map_color_rules',
+        ];
+
+        $exitCode = Artisan::call('migrate', [
+            '--force' => true,
+            '--path' => $migrationPath,
+        ]);
+
+        return response()->json([
+            'ok' => $exitCode === 0,
+            'message' => $exitCode === 0
+                ? 'Migrasi 4 tabel pendukung PPDB berhasil dijalankan.'
+                : 'Migrasi 4 tabel pendukung PPDB gagal dijalankan. Cek output artisan untuk detail.',
+            'tables' => $tables,
+            'migration_path' => $migrationPath,
+            'exit_code' => $exitCode,
+            'output' => trim(Artisan::output()),
+        ], $exitCode === 0 ? 200 : 500);
+    })->middleware('throttle:3,1')->name('maintenance.migrate-supporting-tables');
+
     Route::post('/maintenance/migrate-table/{table}', function (string $table) {
         $tableToMigrationMap = [
             'ppdb_contact_persons' => '2026_04_19_130000_create_ppdb_supporting_information_tables.php',
