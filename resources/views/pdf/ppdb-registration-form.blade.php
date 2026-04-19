@@ -274,7 +274,7 @@
             font-size: 10pt;
             color: #111;
             line-height: 1.25;
-            margin: 0;
+            margin: 20px;
         }
 
         .sheet {
