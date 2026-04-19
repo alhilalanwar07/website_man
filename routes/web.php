@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 
 use App\Http\Controllers\Admin\PpdbExportController;
 use App\Http\Controllers\Frontend\PpdbRegistrationDocumentController;
@@ -126,4 +127,39 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/galeri', Galeri::class)->name('galeri');
     Route::get('/hari-libur', HariLibur::class)->name('hari-libur');
     Route::get('/settings', Settings::class)->name('settings');
+
+    Route::post('/maintenance/migrate-table/{table}', function (string $table) {
+        $tableToMigrationMap = [
+            'ppdb_contact_persons' => '2026_04_19_130000_create_ppdb_supporting_information_tables.php',
+            'ppdb_important_dates' => '2026_04_19_130000_create_ppdb_supporting_information_tables.php',
+            'ppdb_document_requirements' => '2026_04_19_130000_create_ppdb_supporting_information_tables.php',
+            'ppdb_map_color_rules' => '2026_04_19_130000_create_ppdb_supporting_information_tables.php',
+        ];
+
+        if (! array_key_exists($table, $tableToMigrationMap)) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Tabel tidak diizinkan untuk endpoint migrasi ini.',
+                'table' => $table,
+                'allowed_tables' => array_keys($tableToMigrationMap),
+            ], 422);
+        }
+
+        $migrationPath = 'database/migrations/' . $tableToMigrationMap[$table];
+        $exitCode = Artisan::call('migrate', [
+            '--force' => true,
+            '--path' => $migrationPath,
+        ]);
+
+        return response()->json([
+            'ok' => $exitCode === 0,
+            'message' => $exitCode === 0
+                ? 'Migrasi tabel spesifik berhasil dijalankan.'
+                : 'Migrasi tabel spesifik gagal dijalankan. Cek output artisan untuk detail.',
+            'table' => $table,
+            'migration_path' => $migrationPath,
+            'exit_code' => $exitCode,
+            'output' => trim(Artisan::output()),
+        ], $exitCode === 0 ? 200 : 500);
+    })->middleware('throttle:3,1')->name('maintenance.migrate-table');
 });
