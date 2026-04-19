@@ -243,6 +243,13 @@
             });
         }
     }
+
+    $tahunAjaranLabel = str_replace('/', '-', $tahunAjaran);
+    $jenisKelaminLabel = $application->jenis_kelamin === 'L' ? 'LAKI - LAKI' : 'PEREMPUAN';
+    $pilihanJurusan1 = (string) ($application->pilihanProgram1?->nama_jurusan ?? '-');
+    $pilihanJurusan2 = (string) ($application->pilihanProgram2?->nama_jurusan ?? '-');
+    $pilihanJurusan3 = (string) ($application->pilihanProgram3?->nama_jurusan ?? '-');
+    $tanggalCetak = now()->translatedFormat('F Y');
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -253,7 +260,7 @@
     <style>
         @page {
             size: 210mm 330mm;
-            margin: 13mm 12mm 13mm 12mm;
+            margin: 12mm 11mm 12mm 11mm;
         }
 
         * {
@@ -264,9 +271,10 @@
 
         body {
             font-family: "Times New Roman", Times, serif;
-            font-size: 10.5pt;
+            font-size: 10pt;
             color: #111;
-            line-height: 1.35;
+            line-height: 1.25;
+            margin: 0;
         }
 
         .sheet {
@@ -277,235 +285,301 @@
             page-break-before: always;
         }
 
-        .kop-table {
+        .page-one .kop-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
-        .kop-table td {
+        .page-one .kop-table td {
             border: 0;
             vertical-align: middle;
             padding: 0;
         }
 
-        .logo-cell {
-            width: 64px;
+        .page-one .logo-cell {
+            width: 72px;
             text-align: center;
         }
 
-        .logo-cell img {
-            width: 54px;
+        .page-one .logo-cell img {
+            width: 58px;
             height: auto;
         }
 
-        .kop-text {
+        .page-one .kop-text {
             text-align: center;
         }
 
-        .kop-text .line1,
-        .kop-text .line2 {
-            font-size: 10.5pt;
-            font-weight: 700;
-        }
-
-        .kop-text .line3 {
-            font-size: 14pt;
-            font-weight: 700;
-            letter-spacing: 0.7px;
-        }
-
-        .kop-text .line4,
-        .kop-text .line5 {
-            font-size: 8.7pt;
-        }
-
-        .kop-line {
-            border-top: 2.3px solid #000;
-            border-bottom: 1px solid #000;
-            height: 4px;
-            margin: 4px 0 8px 0;
-        }
-
-        .header-grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 8px;
-        }
-
-        .header-grid td {
-            border: 0;
-            vertical-align: top;
-        }
-
-        .title-cell {
-            padding-right: 8px;
-        }
-
-        .form-title {
-            text-align: center;
+        .page-one .kop-text .line1,
+        .page-one .kop-text .line2 {
             font-size: 10.8pt;
             font-weight: 700;
-            margin-top: 4px;
         }
 
-        .form-subtitle {
-            text-align: center;
-            font-size: 10.6pt;
+        .page-one .kop-text .line3 {
+            font-size: 15pt;
+            font-weight: 700;
+            letter-spacing: 0.45px;
+        }
+
+        .page-one .kop-text .line4,
+        .page-one .kop-text .line5 {
+            font-size: 9pt;
+        }
+
+        .page-one .kop-line {
+            border-top: 2px solid #000;
+            border-bottom: 1px solid #000;
+            height: 4px;
+            margin: 4px 0 6px 0;
+        }
+
+        .page-one .header-grid {
+            width: 100%;
+            margin-bottom: 3px;
+        }
+
+        .page-one .header-panel {
+            float: right;
+            width: 112px;
+            margin-left: 8px;
+        }
+
+        .page-one .title-cell {
+            min-height: 38px;
+        }
+
+        .page-one .float-clear {
+            clear: both;
+        }
+
+        .page-one .form-title {
+            text-align: left;
+            font-size: 11pt;
             font-weight: 700;
             margin-top: 2px;
         }
 
-        .registration-box {
+        .page-one .form-subtitle {
+            text-align: left;
+            font-size: 10.8pt;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .page-one .registration-box {
             width: 112px;
             border: 1px solid #111;
             text-align: center;
+            margin-bottom: 5px;
         }
 
-        .registration-label {
+        .page-one .registration-label {
             border-bottom: 1px solid #111;
-            font-size: 8pt;
+            font-size: 8.2pt;
             font-weight: 700;
             padding: 2px 4px;
             line-height: 1.2;
         }
 
-        .registration-number {
-            border-bottom: 1px solid #111;
+        .page-one .registration-number {
             font-size: 16pt;
             font-weight: 700;
-            padding: 4px 4px;
+            padding: 7px 4px;
         }
 
-        .photo-box {
-            height: 102px;
+        .page-one .photo-box {
+            width: 112px;
+            height: 116px;
+            border: 1px solid #111;
             display: table;
-            width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
         }
 
-        .photo-box-inner {
+        .page-one .photo-box-inner {
             display: table-cell;
             text-align: center;
             vertical-align: middle;
-            padding: 4px;
+            padding: 6px;
+            font-size: 14pt;
+            line-height: 1.15;
         }
 
-        .photo-box img {
-            width: 78px;
-            height: 94px;
+        .page-one .photo-label {
+            font-size: 17pt;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .page-one .photo-size {
+            font-size: 13pt;
+            line-height: 1;
+        }
+
+        .page-one .photo-box img {
+            width: 80px;
+            height: 98px;
             object-fit: cover;
         }
 
-        .section-title {
-            margin: 9px 0 4px;
-            font-size: 10.7pt;
+        .page-one .section-title {
+            margin: 7px 0 3px;
+            font-size: 11pt;
             font-weight: 700;
         }
 
-        .info-table {
+        .page-one .info-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .info-table td {
+        .page-one .info-table td {
             border: 0;
-            padding: 1.2px 0;
+            padding: 0.7px 0;
             vertical-align: top;
-            font-size: 10pt;
+            font-size: 9.9pt;
         }
 
-        .num-col {
+        .page-one .num-col {
             width: 20px;
             text-align: right;
             padding-right: 4px;
         }
 
-        .label-col {
-            width: 195px;
+        .page-one .label-col {
+            width: 215px;
             text-transform: uppercase;
             font-weight: 700;
         }
 
-        .sep-col {
+        .page-one .sep-col {
             width: 10px;
             text-align: center;
         }
 
-        .value-col {
+        .page-one .value-col {
             font-weight: 400;
         }
 
-        .boxed-table {
+        .page-one .achievement-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 4px;
+            margin-top: 1px;
         }
 
-        .boxed-table th,
-        .boxed-table td {
+        .page-one .achievement-table th,
+        .page-one .achievement-table td {
             border: 1px solid #111;
-            padding: 4px 6px;
-            font-size: 9.6pt;
+            padding: 3px 5px;
+            font-size: 9.7pt;
         }
 
-        .boxed-table th {
-            background: #f2f2f2;
+        .page-one .achievement-table th {
             text-align: center;
             font-weight: 700;
         }
 
-        .muted-note {
-            margin-top: 4px;
-            font-size: 8.5pt;
+        .page-one .jurusan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2px;
         }
 
-        .statement-box {
+        .page-one .jurusan-table td {
+            border: 0;
+            padding: 0.7px 0;
+            font-size: 10.2pt;
+        }
+
+        .page-one .jurusan-label {
+            width: 145px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .page-one .parent-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1px;
+        }
+
+        .page-one .parent-grid td {
+            width: 50%;
+            border: 0;
+            vertical-align: top;
+        }
+
+        .page-one .parent-grid td:first-child {
+            padding-right: 9px;
+        }
+
+        .page-one .parent-grid td:last-child {
+            padding-left: 9px;
+        }
+
+        .page-one .parent-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .page-one .parent-table td {
+            border: 0;
+            padding: 0.55px 0;
+            font-size: 9.8pt;
+            vertical-align: top;
+        }
+
+        .page-one .parent-label {
+            width: 154px;
+        }
+
+        .page-one .declaration-title {
             margin-top: 8px;
-            border: 1px solid #111;
-            padding: 6px 8px;
-        }
-
-        .statement-title {
-            font-size: 10.4pt;
+            font-size: 11pt;
             font-weight: 700;
             text-align: center;
-            text-decoration: underline;
-            margin-bottom: 5px;
         }
 
-        .statement-box ol {
-            margin: 4px 0 0 18px;
+        .page-one .declaration-intro {
+            margin-top: 5px;
+            font-size: 10pt;
+        }
+
+        .page-one .declaration-list {
+            margin: 4px 0 0 16px;
             padding: 0;
         }
 
-        .statement-box li {
+        .page-one .declaration-list li {
             margin-bottom: 2px;
-            font-size: 9.6pt;
+            font-size: 9.8pt;
+            line-height: 1.28;
         }
 
-        .signature-table {
+        .page-one .signature-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
-        .signature-table td {
+        .page-one .signature-table td {
             width: 50%;
             text-align: center;
             vertical-align: top;
-            font-size: 9.8pt;
+            font-size: 10pt;
         }
 
-        .sign-space {
-            height: 52px;
+        .page-one .sign-space {
+            height: 47px;
         }
 
-        .sign-line {
-            border-bottom: 1px solid #111;
-            width: 205px;
+        .page-one .sign-line {
+            border-bottom: 1px dotted #111;
+            width: 220px;
             margin: 0 auto;
-            padding-bottom: 2px;
+            padding-bottom: 1px;
         }
 
         .security-box {
@@ -556,11 +630,35 @@
             font-size: 8.5pt;
             line-height: 1.4;
         }
+
+        .boxed-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+        }
+
+        .boxed-table th,
+        .boxed-table td {
+            border: 1px solid #111;
+            padding: 4px 6px;
+            font-size: 9.6pt;
+        }
+
+        .boxed-table th {
+            background: #f2f2f2;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .muted-note {
+            margin-top: 4px;
+            font-size: 8.5pt;
+        }
     </style>
 </head>
 
 <body>
-    <div class="sheet">
+    <div class="sheet page-one">
         <table class="kop-table">
             <tr>
                 <td class="logo-cell">
@@ -585,27 +683,30 @@
 
         <div class="kop-line"></div>
 
-        <table class="header-grid">
-            <tr>
-                <td class="title-cell">
-                    <div class="form-title">FORMULIR PENDAFTARAN SPMB (SISTEM PENERIMAAN MURID BARU)</div>
-                    <div class="form-subtitle">SMK NEGERI 1 KOLAKA TP. {{ $tahunAjaran }}</div>
-                </td>
-                <td style="width: 116px;">
+        <div class="header-grid">
+            <div class="header-panel">
+                <div style="width: 116px;">
                     <div class="registration-box">
                         <div class="registration-label">NO. PENDAFTARAN</div>
                         <div class="registration-number">{{ $noPendaftaranAngka }}</div>
-                        <div class="photo-box">
-                            <div class="photo-box-inner">
-                                @if($pasFotoBase64)
-                                    <img src="{{ $pasFotoBase64 }}" alt="Pas Foto">
-                                @endif
-                            </div>
+                    </div>
+                    <div class="photo-box">
+                        <div class="photo-box-inner">
+                            @if($pasFotoBase64)
+                                <img src="{{ $pasFotoBase64 }}" alt="Pas Foto">
+                            @else
+                                <div class="photo-label">PHOTO</div>
+                                <div class="photo-size">3 X 4</div>
+                            @endif
                         </div>
                     </div>
-                </td>
-            </tr>
-        </table>
+                </div>
+            </div>
+            <div class="title-cell">
+                <div class="form-title">FORMULIR PENDAFTARAN SPMB (SISTEM PENERIMAAN MURID BARU)</div>
+                <div class="form-subtitle">SMK NEGERI 1 KOLAKA TP. {{ $tahunAjaranLabel }}</div>
+            </div>
+        </div>
 
         <div class="section-title">A. DATA CALON PESERTA DIDIK</div>
         <table class="info-table">
@@ -643,13 +744,13 @@
                 <td class="num-col">6.</td>
                 <td class="label-col">Jenis kelamin</td>
                 <td class="sep-col">:</td>
-                <td class="value-col">{{ $application->jenis_kelamin === 'L' ? 'LAKI-LAKI' : 'PEREMPUAN' }}</td>
+                <td class="value-col">{{ $jenisKelaminLabel }}</td>
             </tr>
             <tr>
                 <td class="num-col">7.</td>
                 <td class="label-col">Jumlah saudara</td>
                 <td class="sep-col">:</td>
-                <td class="value-col">Anak ke-{{ $application->anak_ke ?: '-' }} dari {{ $application->jumlah_saudara ?: '-' }} saudara</td>
+                <td class="value-col">Anak ke : {{ $application->anak_ke ?: '-' }} dari : {{ $application->jumlah_saudara ?: '-' }} saudara</td>
             </tr>
             <tr>
                 <td class="num-col">8.</td>
@@ -661,7 +762,7 @@
                 <td class="num-col">9.</td>
                 <td class="label-col">RT/RW, Kel., Kec.</td>
                 <td class="sep-col">:</td>
-                <td class="value-col">{{ $application->rt_rw ?: '-' }}, Kel. {{ $application->kelurahan ?: '-' }}, Kec. {{ $application->kecamatan ?: '-' }}</td>
+                <td class="value-col">{{ $application->rt_rw ?: '-' }} | Kel : {{ $application->kelurahan ?: '-' }} | Kec : {{ $application->kecamatan ?: '-' }}</td>
             </tr>
             <tr>
                 <td class="num-col">10.</td>
@@ -687,16 +788,23 @@
                 <td class="sep-col">:</td>
                 <td class="value-col">{{ $application->ukuran_seragam ?: '-' }}</td>
             </tr>
+            <tr>
+                <td class="num-col">14.</td>
+                <td class="label-col">Prestasi yang pernah di raih</td>
+                <td class="sep-col">:</td>
+                <td class="value-col"></td>
+            </tr>
         </table>
 
-        <div class="section-title">B. PRESTASI DAN PILIHAN JURUSAN</div>
-        <table class="boxed-table">
+        <div class="float-clear"></div>
+
+        <table class="achievement-table">
             <thead>
                 <tr>
-                    <th style="width: 34px;">No</th>
-                    <th>Prestasi yang pernah diraih</th>
-                    <th style="width: 94px;">Juara</th>
-                    <th style="width: 100px;">Tingkat</th>
+                    <th style="width: 58px;">NO</th>
+                    <th>Prestasi Yang Pernah Di Raih:</th>
+                    <th style="width: 128px;">Juara</th>
+                    <th style="width: 128px;">Tingkat</th>
                 </tr>
             </thead>
             <tbody>
@@ -714,90 +822,137 @@
             </tbody>
         </table>
 
-        <table class="info-table" style="margin-top: 5px;">
+        <div class="section-title">B. PILIHAN JURUSAN :</div>
+        <table class="jurusan-table">
             <tr>
-                <td class="num-col"></td>
-                <td class="label-col">Jurusan pilihan 1</td>
+                <td class="jurusan-label">JURUSAN KE - 1</td>
                 <td class="sep-col">:</td>
-                <td class="value-col">{{ $application->pilihanProgram1?->nama_jurusan ?? '-' }}</td>
+                <td>{{ $pilihanJurusan1 }}</td>
             </tr>
             <tr>
-                <td class="num-col"></td>
-                <td class="label-col">Jurusan pilihan 2</td>
+                <td class="jurusan-label">JURUSAN KE - 2</td>
                 <td class="sep-col">:</td>
-                <td class="value-col">{{ $application->pilihanProgram2?->nama_jurusan ?? '-' }}</td>
+                <td>{{ $pilihanJurusan2 }}</td>
             </tr>
             <tr>
-                <td class="num-col"></td>
-                <td class="label-col">Jurusan pilihan 3</td>
+                <td class="jurusan-label">JURUSAN KE - 3</td>
                 <td class="sep-col">:</td>
-                <td class="value-col">{{ $application->pilihanProgram3?->nama_jurusan ?? '-' }}</td>
+                <td>{{ $pilihanJurusan3 }}</td>
             </tr>
         </table>
 
         <div class="section-title">C. DATA ORANG TUA</div>
-        <table class="boxed-table">
-            <thead>
-                <tr>
-                    <th style="width: 170px;">Item</th>
-                    <th>Data Ayah</th>
-                    <th>Data Ibu</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Nama</strong></td>
-                    <td>{{ strtoupper((string) ($application->nama_ayah ?: '-')) }}</td>
-                    <td>{{ strtoupper((string) ($application->nama_ibu ?: '-')) }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Tempat/Tgl Lahir</strong></td>
-                    <td>{{ $application->tempat_tanggal_lahir_ayah ?: '-' }}</td>
-                    <td>{{ $application->tempat_tanggal_lahir_ibu ?: '-' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Pendidikan Terakhir</strong></td>
-                    <td>{{ $application->pendidikan_terakhir_ayah ?: '-' }}</td>
-                    <td>{{ $application->pendidikan_terakhir_ibu ?: '-' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Pekerjaan</strong></td>
-                    <td>{{ $application->pekerjaan_ayah ?: '-' }}</td>
-                    <td>{{ $application->pekerjaan_ibu ?: '-' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Penghasilan</strong></td>
-                    <td>{{ $application->penghasilan_ayah ?: '-' }}</td>
-                    <td>{{ $application->penghasilan_ibu ?: '-' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Alamat</strong></td>
-                    <td>{{ $application->alamat_ayah ?: '-' }}</td>
-                    <td>{{ $application->alamat_ibu ?: '-' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>Kelurahan/Kecamatan</strong></td>
-                    <td>{{ $application->kelurahan_ayah ?: '-' }} / {{ $application->kecamatan_ayah ?: '-' }}</td>
-                    <td>{{ $application->kelurahan_ibu ?: '-' }} / {{ $application->kecamatan_ibu ?: '-' }}</td>
-                </tr>
-                <tr>
-                    <td><strong>No. HP/WA</strong></td>
-                    <td>{{ $application->nomor_hp_ayah ?: '-' }}</td>
-                    <td>{{ $application->nomor_hp_ibu ?: '-' }}</td>
-                </tr>
-            </tbody>
+        <table class="parent-grid">
+            <tr>
+                <td>
+                    <table class="parent-table">
+                        <tr>
+                            <td class="parent-label">Nama Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ strtoupper((string) ($application->nama_ayah ?: '-')) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Tempat/Tanggal Lahir Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->tempat_tanggal_lahir_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Pendidikan Terakhir Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->pendidikan_terakhir_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Pekerjaan Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->pekerjaan_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Penghasilan Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->penghasilan_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Alamat Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->alamat_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Kelurahan Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->kelurahan_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Kecamatan Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->kecamatan_ayah ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">No. Tlp/HP/Wa Ayah</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->nomor_hp_ayah ?: '-' }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table class="parent-table">
+                        <tr>
+                            <td class="parent-label">Nama Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ strtoupper((string) ($application->nama_ibu ?: '-')) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Tempat/Tanggal Lahir Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->tempat_tanggal_lahir_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Pendidikan Terakhir Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->pendidikan_terakhir_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Pekerjaan Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->pekerjaan_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Penghasilan Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->penghasilan_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Alamat Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->alamat_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Kelurahan Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->kelurahan_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">Kecamatan Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->kecamatan_ibu ?: '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="parent-label">No. Tlp/HP/Wa Ibu</td>
+                            <td class="sep-col">:</td>
+                            <td>{{ $application->nomor_hp_ibu ?: '-' }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
 
-        <div class="statement-box">
-            <div class="statement-title">PERNYATAAN CALON MURID BARU</div>
-            <p style="font-size: 9.7pt;">Saya bertanggung jawab atas kebenaran data yang diinput dan bersedia untuk:</p>
-            <ol>
-                <li>Menerima konsekuensi pembatalan jika data terbukti tidak benar.</li>
-                <li>Mematuhi seluruh tata tertib SMK Negeri 1 Kolaka selama masa pendidikan.</li>
-                <li>Menjaga nama baik diri sendiri, keluarga, dan sekolah di lingkungan manapun.</li>
-                <li>Orang tua/wali bersedia bekerja sama dengan sekolah dalam pembinaan peserta didik.</li>
-            </ol>
-        </div>
+        <div class="declaration-title">PERNYATAAN CALON MURID BARU</div>
+        <p class="declaration-intro">Saya bertanggung jawab kebenaran data dan bersedia untuk :</p>
+        <ol class="declaration-list">
+            <li>Dicabut status peserta tes calon murid baru di SMK Negeri 1 Kolaka jika memberikan data palsu.</li>
+            <li>Belajar sungguh-sungguh serta mematuhi seluruh peraturan dan tata tertib sekolah hingga tamat.</li>
+            <li>Berakhlak mulia di mana pun berada serta menjaga nama baik diri sendiri, keluarga, dan sekolah.</li>
+            <li>Orang tua/wali bersedia bekerja sama dengan pihak sekolah dalam pembinaan calon murid baru.</li>
+        </ol>
 
         <table class="signature-table">
             <tr>
@@ -805,26 +960,18 @@
                     <p>Mengetahui,</p>
                     <p>Orang Tua / Wali</p>
                     <div class="sign-space"></div>
-                    <div class="sign-line">Tanda Tangan dan Nama Jelas</div>
+                    <div class="sign-line"></div>
+                    <p style="margin-top: 4px;">Tanda Tangan Dan Nama Jelas</p>
                 </td>
                 <td>
-                    <p>Kolaka, {{ now()->translatedFormat('d F Y') }}</p>
+                    <p>Kolaka, {{ $tanggalCetak }}</p>
                     <p>Calon Murid Baru</p>
                     <div class="sign-space"></div>
-                    <div class="sign-line">Tanda Tangan dan Nama Jelas</div>
+                    <div class="sign-line"></div>
+                    <p style="margin-top: 4px;">Tanda Tangan Dan Nama Jelas</p>
                 </td>
             </tr>
         </table>
-
-        @if(isset($documentSecurity) && is_array($documentSecurity))
-            <div class="security-box">
-                <strong>KEAMANAN DOKUMEN DIGITAL</strong><br>
-                Kode: {{ $documentSecurity['document_code'] ?? '-' }} | 
-                Tanda Tangan Sistem: {{ $documentSecurity['signature_short'] ?? '-' }} | 
-                Terbit: {{ $documentSecurity['issued_at_human'] ?? '-' }}<br>
-                Verifikasi: {{ $documentSecurity['verification_url'] ?? '-' }}
-            </div>
-        @endif
     </div>
 
     <div class="page-break"></div>
