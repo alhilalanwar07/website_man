@@ -20,6 +20,7 @@ class PpdbRegistrationDocumentController extends Controller
             'track',
             'pilihanProgram1',
             'pilihanProgram2',
+            'pilihanProgram3',
             'achievements',
         ]);
 

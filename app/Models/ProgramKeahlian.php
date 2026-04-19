@@ -37,6 +37,11 @@ class ProgramKeahlian extends Model
         return $this->hasMany(PpdbQuota::class, 'program_keahlian_id');
     }
 
+    public function ppdbMapColorRules(): HasMany
+    {
+        return $this->hasMany(PpdbMapColorRule::class, 'program_keahlian_id');
+    }
+
     public function ppdbPilihanUtama(): HasMany
     {
         return $this->hasMany(PpdbApplication::class, 'pilihan_program_1_id');
@@ -45,6 +50,11 @@ class ProgramKeahlian extends Model
     public function ppdbPilihanCadangan(): HasMany
     {
         return $this->hasMany(PpdbApplication::class, 'pilihan_program_2_id');
+    }
+
+    public function ppdbPilihanKetiga(): HasMany
+    {
+        return $this->hasMany(PpdbApplication::class, 'pilihan_program_3_id');
     }
 
     public function scopeTampil($query)

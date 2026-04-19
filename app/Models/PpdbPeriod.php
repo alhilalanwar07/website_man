@@ -55,6 +55,26 @@ class PpdbPeriod extends Model
         return $this->hasMany(PpdbQuota::class, 'period_id');
     }
 
+    public function contactPersons(): HasMany
+    {
+        return $this->hasMany(PpdbContactPerson::class, 'period_id')->orderBy('urutan');
+    }
+
+    public function importantDates(): HasMany
+    {
+        return $this->hasMany(PpdbImportantDate::class, 'period_id')->orderBy('urutan');
+    }
+
+    public function documentRequirements(): HasMany
+    {
+        return $this->hasMany(PpdbDocumentRequirement::class, 'period_id')->orderBy('urutan');
+    }
+
+    public function mapColorRules(): HasMany
+    {
+        return $this->hasMany(PpdbMapColorRule::class, 'period_id')->orderBy('urutan');
+    }
+
     public function applications(): HasMany
     {
         return $this->hasMany(PpdbApplication::class, 'period_id');

@@ -57,6 +57,7 @@ class PpdbApplication extends Model
         'nomor_hp_orang_tua',
         'pilihan_program_1_id',
         'pilihan_program_2_id',
+        'pilihan_program_3_id',
         'nilai_rata_rata',
         'skor_akademik',
         'skor_prestasi',
@@ -180,6 +181,11 @@ class PpdbApplication extends Model
     public function pilihanProgram2(): BelongsTo
     {
         return $this->belongsTo(ProgramKeahlian::class, 'pilihan_program_2_id');
+    }
+
+    public function pilihanProgram3(): BelongsTo
+    {
+        return $this->belongsTo(ProgramKeahlian::class, 'pilihan_program_3_id');
     }
 
     public function programDiterima(): BelongsTo

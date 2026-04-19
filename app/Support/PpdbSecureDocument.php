@@ -46,10 +46,24 @@ class PpdbSecureDocument
     {
         $context = $this->createDocumentContext($application, $issuedAt);
 
+        $application->loadMissing([
+            'period',
+            'period.contactPersons',
+            'period.importantDates',
+            'period.documentRequirements',
+            'period.mapColorRules.programKeahlian',
+            'track',
+            'pilihanProgram1',
+            'pilihanProgram2',
+            'pilihanProgram3',
+            'achievements',
+            'documents',
+        ]);
+
         $pdf = Pdf::loadView('pdf.ppdb-registration-form', [
             'application' => $application,
             'documentSecurity' => $context,
-        ])->setPaper('a4');
+        ])->setPaper([0, 0, 595.28, 935.43], 'portrait');
 
         $dompdf = $pdf->getDomPDF();
         $dompdf->render();
