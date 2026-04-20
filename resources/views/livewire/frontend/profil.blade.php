@@ -168,8 +168,8 @@
                 @foreach($pegawai as $p)
                 <div class="group bg-white rounded-[24px] border border-slate-100 overflow-hidden text-center card-hover">
                     <div class="aspect-square bg-slate-100 overflow-hidden">
-                        @if($p->foto_path)
-                            <img src="{{ Storage::url($p->foto_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $p->nama_lengkap }}">
+                        @if($p->foto_profil)
+                            <img src="{{ Storage::url($p->foto_profil) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $p->nama_lengkap }}">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
