@@ -86,26 +86,38 @@
             </div>
 
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4">{{ $editId ? 'Edit Pegawai' : 'Tambah Pegawai' }}</h3>
+
+            @if($errors->any())
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-300">
+                    <p class="font-semibold">Data belum bisa disimpan. Periksa kembali input berikut:</p>
+                    <ul class="mt-2 list-disc space-y-1 pl-5 text-xs">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form wire:submit="save" class="space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap *</label>
-                        <input wire:model.blur="nama_lengkap" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="nama_lengkap" type="text" class="w-full px-3 py-2 rounded-lg border {{ $errors->has('nama_lengkap') ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-blue-500/20 focus:border-blue-500' }} bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none">
                         @error('nama_lengkap') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">NIP</label>
-                        <input wire:model.blur="nip" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="nip" type="text" class="w-full px-3 py-2 rounded-lg border {{ $errors->has('nip') ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-blue-500/20 focus:border-blue-500' }} bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none">
                         @error('nip') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Jabatan</label>
-                        <input wire:model.blur="jabatan" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="jabatan" type="text" class="w-full px-3 py-2 rounded-lg border {{ $errors->has('jabatan') ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-blue-500/20 focus:border-blue-500' }} bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none">
                         @error('jabatan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bidang Tugas</label>
-                        <input wire:model.blur="bidang_tugas" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="bidang_tugas" type="text" class="w-full px-3 py-2 rounded-lg border {{ $errors->has('bidang_tugas') ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500' : 'border-slate-200 dark:border-slate-700 focus:ring-blue-500/20 focus:border-blue-500' }} bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none">
                         @error('bidang_tugas') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex items-end">
@@ -118,15 +130,25 @@
                     <div class="col-span-2 space-y-2">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Foto Profil</label>
                         <input wire:model="foto_profil" wire:loading.attr="disabled" wire:target="foto_profil" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300">
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Format: JPG, PNG, WEBP. Maksimum 2MB.</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Format yang didukung: JPG, JPEG, PNG, WEBP. Maksimum 2MB.</p>
 
-                        @if($foto_profil)
+                        @php
+                            $uploadedFotoPreviewUrl = $foto_profil ? $this->fotoProfilPreviewUrl() : null;
+                            $uploadedFotoPreviewNotice = $foto_profil ? $this->fotoProfilPreviewNotice() : null;
+                        @endphp
+
+                        @if($foto_profil && $uploadedFotoPreviewUrl)
                             <div class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm dark:border-blue-900/50 dark:bg-blue-900/20">
-                                <img src="{{ $foto_profil->temporaryUrl() }}" alt="Preview foto baru" class="h-14 w-14 rounded-lg object-cover">
+                                <img src="{{ $uploadedFotoPreviewUrl }}" alt="Preview foto baru" class="h-14 w-14 rounded-lg object-cover">
                                 <div>
                                     <p class="font-medium text-blue-700 dark:text-blue-300">Foto baru siap disimpan</p>
                                     <p class="text-xs text-blue-600 dark:text-blue-400">Foto lama akan diganti setelah data disimpan.</p>
                                 </div>
+                            </div>
+                        @elseif($foto_profil)
+                            <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm dark:border-amber-900/50 dark:bg-amber-900/20">
+                                <p class="font-medium text-amber-700 dark:text-amber-300">Preview foto tidak tersedia</p>
+                                <p class="text-xs text-amber-600 dark:text-amber-400">{{ $uploadedFotoPreviewNotice ?? 'Lanjutkan simpan untuk validasi format file.' }}</p>
                             </div>
                         @elseif($existing_foto && ! $remove_existing_foto)
                             <div class="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">

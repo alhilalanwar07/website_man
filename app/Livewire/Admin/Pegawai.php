@@ -130,6 +130,62 @@ class Pegawai extends Component
         }
     }
 
+    public function fotoProfilPreviewUrl(): ?string
+    {
+        if (! $this->foto_profil || ! method_exists($this->foto_profil, 'temporaryUrl')) {
+            return null;
+        }
+
+        $extension = strtolower((string) $this->foto_profil->getClientOriginalExtension());
+
+        if (! $this->isPreviewableUploadExtension($extension)) {
+            return null;
+        }
+
+        try {
+            return $this->foto_profil->temporaryUrl();
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    public function fotoProfilPreviewNotice(): ?string
+    {
+        if (! $this->foto_profil || ! method_exists($this->foto_profil, 'getClientOriginalExtension')) {
+            return null;
+        }
+
+        $extension = strtolower((string) $this->foto_profil->getClientOriginalExtension());
+
+        if ($extension === '' || $this->isPreviewableUploadExtension($extension)) {
+            return null;
+        }
+
+        return 'Preview untuk file '.strtoupper($extension).' tidak tersedia. Lanjutkan simpan untuk melihat validasi file.';
+    }
+
+    protected function isPreviewableUploadExtension(string $extension): bool
+    {
+        return in_array($extension, $this->previewableUploadExtensions(), true);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function previewableUploadExtensions(): array
+    {
+        $configuredPreviewMimes = config('livewire.temporary_file_upload.preview_mimes', []);
+
+        if (! is_array($configuredPreviewMimes)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_map(
+            static fn ($item): string => strtolower((string) $item),
+            $configuredPreviewMimes,
+        )));
+    }
+
     protected function rules(): array
     {
         $nipUniqueRule = Rule::unique('pegawai', 'nip');
@@ -151,6 +207,21 @@ class Pegawai extends Component
             'status_aktif' => ['required', 'boolean'],
             'foto_profil' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'remove_existing_foto' => ['boolean'],
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'nama_lengkap.max' => 'Nama lengkap maksimal 255 karakter.',
+            'nip.max' => 'NIP maksimal 30 karakter.',
+            'nip.unique' => 'NIP sudah dipakai oleh pegawai lain.',
+            'jabatan.max' => 'Jabatan maksimal 255 karakter.',
+            'bidang_tugas.max' => 'Bidang tugas maksimal 255 karakter.',
+            'foto_profil.image' => 'File foto profil harus berupa gambar.',
+            'foto_profil.mimes' => 'Format foto profil harus JPG, JPEG, PNG, atau WEBP. AVIF belum didukung untuk simpan foto profil.',
+            'foto_profil.max' => 'Ukuran foto profil maksimal 2 MB.',
         ];
     }
 
