@@ -3,7 +3,10 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Pegawai as PegawaiModel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,6 +19,7 @@ class Pegawai extends Component
     use WithPagination, WithFileUploads;
 
     public bool $showModal = false;
+    #[Locked]
     public ?int $editId = null;
     public string $search = '';
 
@@ -26,6 +30,7 @@ class Pegawai extends Component
     public bool $status_aktif = true;
     public $foto_profil;
     public ?string $existing_foto = null;
+    public bool $remove_existing_foto = false;
 
     public function create(): void
     {
@@ -43,41 +48,110 @@ class Pegawai extends Component
         $this->bidang_tugas = $pegawai->bidang_tugas ?? '';
         $this->status_aktif = $pegawai->status_aktif;
         $this->existing_foto = $pegawai->foto_profil;
+        $this->foto_profil = null;
+        $this->remove_existing_foto = false;
+        $this->resetValidation();
         $this->showModal = true;
     }
 
     public function save(): void
     {
-        $this->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'nip' => 'nullable|string|max:30',
-            'jabatan' => 'nullable|string|max:255',
-            'foto_profil' => 'nullable|image|max:2048',
-        ]);
+        $validated = $this->validate($this->rules());
+        $isEditing = $this->editId !== null;
 
         $data = [
-            'nip' => $this->nip ?: null,
-            'nama_lengkap' => $this->nama_lengkap,
-            'jabatan' => $this->jabatan,
-            'bidang_tugas' => $this->bidang_tugas,
-            'status_aktif' => $this->status_aktif,
+            'nip' => filled($validated['nip']) ? trim($validated['nip']) : null,
+            'nama_lengkap' => trim($validated['nama_lengkap']),
+            'jabatan' => filled($validated['jabatan']) ? trim($validated['jabatan']) : null,
+            'bidang_tugas' => filled($validated['bidang_tugas']) ? trim($validated['bidang_tugas']) : null,
+            'status_aktif' => (bool) $validated['status_aktif'],
         ];
 
+        $pegawai = $isEditing
+            ? PegawaiModel::findOrFail($this->editId)
+            : new PegawaiModel();
+
+        $oldFotoPath = $pegawai->foto_profil;
+        $newFotoPath = null;
+        $removeCurrentPhoto = $isEditing && $this->remove_existing_foto && ! $this->foto_profil;
+
         if ($this->foto_profil) {
-            $data['foto_profil'] = $this->foto_profil->store('pegawai', 'public');
+            $newFotoPath = $this->foto_profil->store('pegawai', 'public');
+            $data['foto_profil'] = $newFotoPath;
+        } elseif ($removeCurrentPhoto) {
+            $data['foto_profil'] = null;
         }
 
-        PegawaiModel::updateOrCreate(['id' => $this->editId], $data);
+        try {
+            $pegawai->fill($data);
+            $pegawai->save();
+        } catch (\Throwable $exception) {
+            if ($newFotoPath) {
+                Storage::disk('public')->delete($newFotoPath);
+            }
 
-        $this->showModal = false;
-        $this->resetForm();
-        $this->dispatch('toast', type: 'success', message: $this->editId ? 'Data pegawai diperbarui.' : 'Pegawai berhasil ditambahkan.');
+            throw $exception;
+        }
+
+        if ($oldFotoPath) {
+            $shouldDeleteOldPhoto = ($newFotoPath && $oldFotoPath !== $newFotoPath) || $removeCurrentPhoto;
+
+            if ($shouldDeleteOldPhoto) {
+                Storage::disk('public')->delete($oldFotoPath);
+            }
+        }
+
+        $this->closeModal();
+        $this->dispatch('toast', type: 'success', message: $isEditing ? 'Data pegawai diperbarui.' : 'Pegawai berhasil ditambahkan.');
     }
 
     public function delete(int $id): void
     {
-        PegawaiModel::findOrFail($id)->delete();
+        $pegawai = PegawaiModel::findOrFail($id);
+
+        if ($pegawai->foto_profil) {
+            Storage::disk('public')->delete($pegawai->foto_profil);
+        }
+
+        $pegawai->delete();
         $this->dispatch('toast', type: 'success', message: 'Pegawai berhasil dihapus.');
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->resetForm();
+    }
+
+    public function updatedFotoProfil(): void
+    {
+        if ($this->foto_profil) {
+            $this->remove_existing_foto = false;
+        }
+    }
+
+    protected function rules(): array
+    {
+        $nipUniqueRule = Rule::unique('pegawai', 'nip');
+
+        if ($this->editId !== null) {
+            $nipUniqueRule->ignore($this->editId);
+        }
+
+        return [
+            'nama_lengkap' => ['required', 'string', 'max:255'],
+            'nip' => [
+                'nullable',
+                'string',
+                'max:30',
+                $nipUniqueRule,
+            ],
+            'jabatan' => ['nullable', 'string', 'max:255'],
+            'bidang_tugas' => ['nullable', 'string', 'max:255'],
+            'status_aktif' => ['required', 'boolean'],
+            'foto_profil' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'remove_existing_foto' => ['boolean'],
+        ];
     }
 
     public function resetForm(): void
@@ -90,6 +164,7 @@ class Pegawai extends Component
         $this->status_aktif = true;
         $this->foto_profil = null;
         $this->existing_foto = null;
+        $this->remove_existing_foto = false;
         $this->resetValidation();
     }
 

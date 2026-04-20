@@ -48,7 +48,10 @@
                                 @else
                                     <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xs font-bold">{{ strtoupper(substr($item->nama_lengkap, 0, 1)) }}</div>
                                 @endif
-                                <span class="font-medium text-slate-800 dark:text-white">{{ $item->nama_lengkap }}</span>
+                                <div>
+                                    <p class="font-medium text-slate-800 dark:text-white">{{ $item->nama_lengkap }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $item->bidang_tugas ?: 'Bidang belum diisi' }}</p>
+                                </div>
                             </td>
                             <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $item->nip ?? '-' }}</td>
                             <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $item->jabatan ?? '-' }}</td>
@@ -87,34 +90,70 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nama Lengkap *</label>
-                        <input wire:model="nama_lengkap" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="nama_lengkap" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
                         @error('nama_lengkap') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">NIP</label>
-                        <input wire:model="nip" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="nip" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        @error('nip') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Jabatan</label>
-                        <input wire:model="jabatan" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="jabatan" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        @error('jabatan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bidang Tugas</label>
-                        <input wire:model="bidang_tugas" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input wire:model.blur="bidang_tugas" type="text" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        @error('bidang_tugas') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div class="flex items-end">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input wire:model="status_aktif" type="checkbox" class="rounded border-slate-300 dark:border-slate-600 text-blue-600 dark:bg-slate-800">
+                            <input wire:model.live="status_aktif" type="checkbox" class="rounded border-slate-300 dark:border-slate-600 text-blue-600 dark:bg-slate-800">
                             <span class="text-sm text-slate-700 dark:text-slate-300">Aktif</span>
                         </label>
+                        @error('status_aktif') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div class="col-span-2">
+                    <div class="col-span-2 space-y-2">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Foto Profil</label>
                         <input wire:model="foto_profil" wire:loading.attr="disabled" wire:target="foto_profil" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300">
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Format: JPG, PNG, WEBP. Maksimum 2MB.</p>
+
+                        @if($foto_profil)
+                            <div class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm dark:border-blue-900/50 dark:bg-blue-900/20">
+                                <img src="{{ $foto_profil->temporaryUrl() }}" alt="Preview foto baru" class="h-14 w-14 rounded-lg object-cover">
+                                <div>
+                                    <p class="font-medium text-blue-700 dark:text-blue-300">Foto baru siap disimpan</p>
+                                    <p class="text-xs text-blue-600 dark:text-blue-400">Foto lama akan diganti setelah data disimpan.</p>
+                                </div>
+                            </div>
+                        @elseif($existing_foto && ! $remove_existing_foto)
+                            <div class="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                <img src="{{ Storage::url($existing_foto) }}" alt="Foto saat ini" class="h-14 w-14 rounded-lg object-cover">
+                                <div>
+                                    <p class="font-medium text-slate-700 dark:text-slate-300">Foto saat ini</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Unggah file baru bila ingin mengganti foto.</p>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($editId && $existing_foto)
+                            <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                <input wire:model.live="remove_existing_foto" type="checkbox" class="rounded border-slate-300 dark:border-slate-600 text-blue-600 dark:bg-slate-800">
+                                Hapus foto saat ini ketika disimpan
+                            </label>
+
+                            @if($remove_existing_foto && ! $foto_profil)
+                                <p class="text-xs text-amber-600 dark:text-amber-400">Foto saat ini akan dihapus saat data disimpan.</p>
+                            @endif
+                        @endif
+
+                        @error('foto_profil') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" wire:click="$set('showModal', false)" wire:loading.attr="disabled" wire:target="save" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition disabled:opacity-60">Batal</button>
+                    <button type="button" wire:click="closeModal" wire:loading.attr="disabled" wire:target="save" class="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition disabled:opacity-60">Batal</button>
                     <button type="submit" wire:loading.attr="disabled" wire:target="save" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition disabled:opacity-60">
                         <span wire:loading.remove wire:target="save">Simpan</span>
                         <span wire:loading wire:target="save">Menyimpan...</span>
