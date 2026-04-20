@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\PpdbV2;
 use App\Mail\PpdbRegistrationSubmittedMail;
 use App\Models\PpdbApplication;
 use App\Models\PpdbPeriod;
+use App\Models\PpdbTrack;
 use App\Models\ProgramKeahlian;
 use App\Support\PpdbSecureDocument;
 use Illuminate\Support\Facades\Cache;
@@ -22,6 +23,10 @@ class Pendaftar extends Component
 
     public $search = '';
     public $statusFilter = '';
+    public $statusPendaftaranFilter = '';
+    public $periodFilter = '';
+    public $trackFilter = '';
+    public $programFilter = '';
 
     // Bulk selection
     public $selectedRows = [];
@@ -51,6 +56,7 @@ class Pendaftar extends Component
 
     public function mount(): void
     {
+        $this->periodFilter = (string) ($this->getDefaultPeriodId() ?? '');
         $this->prepareManualOptions();
         $this->applyManualDefaults();
     }
@@ -113,24 +119,60 @@ class Pendaftar extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+        $this->resetBulkSelection();
+    }
+
+    public function updatingStatusFilter()
+    {
+        $this->resetPage();
+        $this->resetBulkSelection();
+    }
+
+    public function updatingStatusPendaftaranFilter()
+    {
+        $this->resetPage();
+        $this->resetBulkSelection();
+    }
+
+    public function updatingPeriodFilter()
+    {
+        $this->trackFilter = '';
+        $this->resetPage();
+        $this->resetBulkSelection();
+    }
+
+    public function updatingTrackFilter()
+    {
+        $this->resetPage();
+        $this->resetBulkSelection();
+    }
+
+    public function updatingProgramFilter()
+    {
+        $this->resetPage();
+        $this->resetBulkSelection();
+    }
+
+    public function resetFilters(): void
+    {
+        $this->search = '';
+        $this->statusFilter = '';
+        $this->statusPendaftaranFilter = '';
+        $this->trackFilter = '';
+        $this->programFilter = '';
+        $this->periodFilter = (string) ($this->getDefaultPeriodId() ?? '');
+
+        $this->resetPage();
+        $this->resetBulkSelection();
     }
 
     public function updatedSelectAll($value)
     {
         if ($value) {
-            $period = PpdbPeriod::where('is_active', true)->first();
-            if ($period) {
-                // Select only IDs of current page if possible, or all
-                $this->selectedRows = PpdbApplication::where('period_id', $period->id)
-                    ->when($this->search, function ($q) {
-                        $q->where(function ($subQ) {
-                            $subQ->where('nama_lengkap', 'like', '%' . $this->search . '%')
-                                 ->orWhere('nomor_pendaftaran', 'like', '%' . $this->search . '%')
-                                 ->orWhere('nisn', 'like', '%' . $this->search . '%');
-                        });
-                    })
-                    ->pluck('id')->map(fn($id) => (string) $id)->toArray();
-            }
+            $this->selectedRows = $this->getFilteredPendaftarQuery()
+                ->pluck('id')
+                ->map(fn ($id) => (string) $id)
+                ->toArray();
         } else {
             $this->selectedRows = [];
         }
@@ -435,32 +477,100 @@ class Pendaftar extends Component
         return $candidate;
     }
 
-    public function render()
+    protected function getDefaultPeriodId(): ?int
     {
-        $period = PpdbPeriod::where('is_active', true)->first();
-        $query = PpdbApplication::query();
+        $activeId = PpdbPeriod::query()->where('is_active', true)->value('id');
 
-        if ($period) {
-            $query->where('period_id', $period->id);
+        return $activeId ? (int) $activeId : null;
+    }
+
+    protected function resolvePeriodFilterId(): ?int
+    {
+        if ($this->periodFilter === 'all') {
+            return null;
         }
 
-        if ($this->search) {
-            $query->where(function($q) {
+        if ($this->periodFilter !== '' && is_numeric($this->periodFilter)) {
+            return (int) $this->periodFilter;
+        }
+
+        return $this->getDefaultPeriodId();
+    }
+
+    protected function getFilteredPendaftarQuery()
+    {
+        $query = PpdbApplication::query();
+        $periodId = $this->resolvePeriodFilterId();
+
+        if ($periodId) {
+            $query->where('period_id', $periodId);
+        }
+
+        if ($this->search !== '') {
+            $query->where(function ($q) {
                 $q->where('nama_lengkap', 'like', '%' . $this->search . '%')
-                  ->orWhere('nomor_pendaftaran', 'like', '%' . $this->search . '%')
-                  ->orWhere('nisn', 'like', '%' . $this->search . '%');
+                    ->orWhere('nomor_pendaftaran', 'like', '%' . $this->search . '%')
+                    ->orWhere('nisn', 'like', '%' . $this->search . '%')
+                    ->orWhere('nomor_hp', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%');
             });
         }
 
-        if ($this->statusFilter) {
+        if ($this->statusFilter !== '') {
             $query->where('status_berkas', $this->statusFilter);
         }
 
-        $pendaftar = $query->latest()->paginate(15);
+        if ($this->statusPendaftaranFilter !== '') {
+            $query->where('status_pendaftaran', $this->statusPendaftaranFilter);
+        }
+
+        if ($this->trackFilter !== '' && is_numeric($this->trackFilter)) {
+            $query->where('track_id', (int) $this->trackFilter);
+        }
+
+        if ($this->programFilter !== '' && is_numeric($this->programFilter)) {
+            $query->where('pilihan_program_1_id', (int) $this->programFilter);
+        }
+
+        return $query;
+    }
+
+    protected function resetBulkSelection(): void
+    {
+        $this->selectedRows = [];
+        $this->selectAll = false;
+    }
+
+    public function render()
+    {
+        $periodId = $this->resolvePeriodFilterId();
+        $period = $periodId ? PpdbPeriod::query()->find($periodId) : null;
+
+        $pendaftar = $this->getFilteredPendaftarQuery()
+            ->latest()
+            ->paginate(15);
+
+        $periodFilterOptions = PpdbPeriod::query()
+            ->orderForSelection()
+            ->get(['id', 'nama_periode', 'tahun_ajaran', 'gelombang_label']);
+
+        $trackFilterOptions = PpdbTrack::query()
+            ->when($periodId, fn ($q) => $q->where('period_id', $periodId))
+            ->orderBy('urutan')
+            ->orderBy('nama_jalur')
+            ->get(['id', 'nama_jalur', 'period_id']);
+
+        $programFilterOptions = ProgramKeahlian::query()
+            ->tampil()
+            ->orderBy('nama_jurusan')
+            ->get(['id', 'nama_jurusan']);
 
         return view('livewire.admin.ppdb-v2.pendaftar', [
             'pendaftar' => $pendaftar,
-            'period' => $period
+            'period' => $period,
+            'periodFilterOptions' => $periodFilterOptions,
+            'trackFilterOptions' => $trackFilterOptions,
+            'programFilterOptions' => $programFilterOptions,
         ])->layout('components.layouts.admin', ['title' => 'Data Pendaftar PPDB']);
     }
 }
