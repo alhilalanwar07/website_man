@@ -128,24 +128,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/hari-libur', HariLibur::class)->name('hari-libur');
     Route::get('/settings', Settings::class)->name('settings');
 
-    Route::match(['get', 'post'], '/maintenance/migrate-ppdb-achievements', function () {
-        $migrationPath = 'database/migrations/2026_04_19_000015_extend_ppdb_application_form_fields_and_create_achievements_table.php';
-
-        $exitCode = Artisan::call('migrate', [
-            '--force' => true,
-            '--path' => $migrationPath,
-        ]);
-
-        return response()->json([
-            'ok' => $exitCode === 0,
-            'message' => $exitCode === 0
-                ? 'Migrasi ppdb_achievements berhasil dijalankan.'
-                : 'Migrasi ppdb_achievements gagal dijalankan. Cek output artisan untuk detail.',
-            'table' => 'ppdb_achievements',
-            'migration_path' => $migrationPath,
-            'exit_code' => $exitCode,
-            'output' => trim(Artisan::output()),
-        ], $exitCode === 0 ? 200 : 500);
-    })->middleware('throttle:3,1')->name('maintenance.migrate-ppdb-achievements');
-
 });
