@@ -8,6 +8,7 @@ use App\Models\PpdbPeriod;
 use App\Models\PpdbTrack;
 use App\Models\ProgramKeahlian;
 use App\Support\PpdbSecureDocument;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -23,7 +24,6 @@ class Pendaftar extends Component
 
     public $search = '';
     public $statusFilter = '';
-    public $statusPendaftaranFilter = '';
     public $periodFilter = '';
     public $trackFilter = '';
     public $programFilter = '';
@@ -128,12 +128,6 @@ class Pendaftar extends Component
         $this->resetBulkSelection();
     }
 
-    public function updatingStatusPendaftaranFilter()
-    {
-        $this->resetPage();
-        $this->resetBulkSelection();
-    }
-
     public function updatingPeriodFilter()
     {
         $this->trackFilter = '';
@@ -157,7 +151,6 @@ class Pendaftar extends Component
     {
         $this->search = '';
         $this->statusFilter = '';
-        $this->statusPendaftaranFilter = '';
         $this->trackFilter = '';
         $this->programFilter = '';
         $this->periodFilter = (string) ($this->getDefaultPeriodId() ?? '');
@@ -497,7 +490,35 @@ class Pendaftar extends Component
         return $this->getDefaultPeriodId();
     }
 
-    protected function getFilteredPendaftarQuery()
+    protected function applyCombinedStatusFilter(Builder $query): void
+    {
+        if ($this->statusFilter === 'process') {
+            $query->where(function (Builder $statusQuery): void {
+                $statusQuery->whereIn('status_berkas', ['pending', 'incomplete', 'revision'])
+                    ->orWhereIn('status_pendaftaran', ['draft', 'submitted', 'under_review', 'needs_revision']);
+            });
+
+            return;
+        }
+
+        if ($this->statusFilter === 'approved') {
+            $query->where(function (Builder $statusQuery): void {
+                $statusQuery->whereIn('status_berkas', ['verified', 'complete'])
+                    ->orWhereIn('status_pendaftaran', ['verified', 'accepted']);
+            });
+
+            return;
+        }
+
+        if ($this->statusFilter === 'rejected') {
+            $query->where(function (Builder $statusQuery): void {
+                $statusQuery->where('status_berkas', 'rejected')
+                    ->orWhere('status_pendaftaran', 'rejected');
+            });
+        }
+    }
+
+    protected function getFilteredPendaftarQuery(): Builder
     {
         $query = PpdbApplication::query();
         $periodId = $this->resolvePeriodFilterId();
@@ -516,13 +537,7 @@ class Pendaftar extends Component
             });
         }
 
-        if ($this->statusFilter !== '') {
-            $query->where('status_berkas', $this->statusFilter);
-        }
-
-        if ($this->statusPendaftaranFilter !== '') {
-            $query->where('status_pendaftaran', $this->statusPendaftaranFilter);
-        }
+        $this->applyCombinedStatusFilter($query);
 
         if ($this->trackFilter !== '' && is_numeric($this->trackFilter)) {
             $query->where('track_id', (int) $this->trackFilter);
@@ -552,7 +567,7 @@ class Pendaftar extends Component
 
         $periodFilterOptions = PpdbPeriod::query()
             ->orderForSelection()
-            ->get(['id', 'nama_periode', 'tahun_ajaran', 'gelombang_label']);
+            ->get(['id', 'nama_periode', 'tahun_ajaran', 'gelombang_label', 'gelombang_ke', 'is_active']);
 
         $trackFilterOptions = PpdbTrack::query()
             ->when($periodId, fn ($q) => $q->where('period_id', $periodId))

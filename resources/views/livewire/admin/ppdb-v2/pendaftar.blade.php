@@ -1,10 +1,10 @@
 <div wire:poll.10s class="h-full flex flex-col min-h-[calc(100vh-8rem)]">
     <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
-        <span wire:loading wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter,selectSiswa,closeDetail">Memuat data pendaftar.</span>
+        <span wire:loading wire:target="search,statusFilter,periodFilter,trackFilter,programFilter,selectSiswa,closeDetail">Memuat data pendaftar.</span>
         <span wire:loading wire:target="verifySelected,verifySingle,rejectSingle,saveSiswaManual,sendSecureDocumentEmailToSelected">Memproses perubahan data pendaftar.</span>
     </div>
 
-    <div wire:loading.flex wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter,selectSiswa,closeDetail,verifySelected,saveSiswaManual,sendSecureDocumentEmailToSelected" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+    <div wire:loading.flex wire:target="search,statusFilter,periodFilter,trackFilter,programFilter,selectSiswa,closeDetail,verifySelected,saveSiswaManual,sendSecureDocumentEmailToSelected" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
         <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
         Memperbarui data verifikasi pendaftar...
     </div>
@@ -149,45 +149,34 @@
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <x-admin.icon name="search" class="h-4 w-4 text-slate-400" />
                             </div>
-                            <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter" type="text" class="block h-11 w-full min-w-0 rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama / NISN / no pendaftaran / no HP / email...">
+                            <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" type="text" class="block h-11 w-full min-w-0 rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama / NISN / no pendaftaran / no HP / email...">
                         </div>
 
-                        <select wire:model.live="statusFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
-                            <option value="">Semua Berkas</option>
-                            <option value="pending">Menunggu Verifikasi</option>
-                            <option value="verified">Sah</option>
-                            <option value="revision">Perlu Revisi</option>
-                            <option value="rejected">Ditolak</option>
-                            <option value="complete">Lengkap</option>
-                            <option value="incomplete">Belum Lengkap</option>
-                        </select>
-
-                        <select wire:model.live="statusPendaftaranFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
-                            <option value="">Semua Status Daftar</option>
-                            <option value="draft">Draft</option>
-                            <option value="submitted">Menunggu Verifikasi</option>
-                            <option value="under_review">Sedang Ditinjau</option>
-                            <option value="needs_revision">Perlu Revisi</option>
-                            <option value="verified">Terverifikasi</option>
-                            <option value="accepted">Diterima</option>
+                        <select wire:model="statusFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                            <option value="">Semua Status</option>
+                            <option value="process">Dalam Proses</option>
+                            <option value="approved">Terverifikasi / Diterima</option>
                             <option value="rejected">Ditolak</option>
                         </select>
 
-                        <select wire:model.live="periodFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model="periodFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="all">Semua Periode</option>
                             @foreach($periodFilterOptions as $periodOption)
-                                <option value="{{ $periodOption->id }}">{{ $periodOption->tahun_ajaran }} - {{ $periodOption->gelombang_label ?: $periodOption->nama_periode }}</option>
+                                @php
+                                    $gelombangLabel = $periodOption->gelombang_label ?: ('Gelombang ' . ($periodOption->gelombang_ke ?: '-'));
+                                @endphp
+                                <option value="{{ $periodOption->id }}">{{ $periodOption->tahun_ajaran }} - {{ $gelombangLabel }}{{ $periodOption->is_active ? ' (Aktif)' : '' }}</option>
                             @endforeach
                         </select>
 
-                        <select wire:model.live="trackFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model="trackFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">Semua Jalur</option>
                             @foreach($trackFilterOptions as $trackOption)
                                 <option value="{{ $trackOption->id }}">{{ $trackOption->nama_jalur }}</option>
                             @endforeach
                         </select>
 
-                        <select wire:model.live="programFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model="programFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">Semua Program</option>
                             @foreach($programFilterOptions as $programOption)
                                 <option value="{{ $programOption->id }}">{{ $programOption->nama_jurusan }}</option>
@@ -215,17 +204,17 @@
 
             <!-- List/Tabel Area -->
             <div class="flex-1 overflow-y-auto">
-                <div wire:loading.block wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter,selectAll,page" class="p-4">
+                <div wire:loading.block wire:target="search,statusFilter,periodFilter,trackFilter,programFilter,selectAll,page" class="p-4">
                     <x-admin.skeleton.table :columns="6" :rows="8" />
                 </div>
 
-                <div wire:loading.remove wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter,selectAll,page">
+                <div wire:loading.remove wire:target="search,statusFilter,periodFilter,trackFilter,programFilter,selectAll,page">
                     @if(!$selectedSiswaId)
                         <!-- TAMPILAN FULL TABLE JIKA TIDAK ADA YANG DIKLIK -->
                         <table class="w-full text-left text-sm text-slate-500 dark:text-slate-400">
                             <thead class="bg-white sticky top-0 text-xs uppercase text-slate-400 font-bold dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10">
                                 <tr>
-                                    <th class="p-4 w-10"><input wire:model.live="selectAll" wire:loading.attr="disabled" wire:target="search,statusFilter,statusPendaftaranFilter,periodFilter,trackFilter,programFilter,selectAll,page" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-60"></th>
+                                    <th class="p-4 w-10"><input wire:model.live="selectAll" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter,selectAll,page" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-60"></th>
                                     <th class="px-4 py-3">Nama Pendaftar</th>
                                     <th class="px-4 py-3">Asal Sekolah</th>
                                     <th class="px-4 py-3">No. Whatsapp</th>
