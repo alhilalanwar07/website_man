@@ -94,7 +94,47 @@
     @endif
 
     <!-- MASTER-DETAIL LAYOUT -->
-    <div class="flex-1 overflow-hidden grid grid-cols-1 {{ $selectedSiswaId ? 'lg:grid-cols-12' : 'lg:grid-cols-1' }} gap-6 transition-all duration-300">
+    <div class="relative flex-1 overflow-hidden grid grid-cols-1 {{ $selectedSiswaId ? 'lg:grid-cols-12' : 'lg:grid-cols-1' }} gap-6 transition-all duration-300">
+        <div wire:loading.flex wire:target="selectSiswa" class="absolute inset-0 z-20 items-stretch justify-end bg-white/70 p-4 backdrop-blur-[1px] dark:bg-slate-950/70 lg:p-0 lg:pl-6">
+            <div class="w-full lg:w-2/3">
+                <div class="h-full rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-inner dark:border-slate-700 dark:bg-slate-900/60">
+                    <div class="animate-pulse space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="h-12 w-12 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                                <div class="space-y-2">
+                                    <div class="h-4 w-40 rounded bg-slate-200 dark:bg-slate-700"></div>
+                                    <div class="h-3 w-56 rounded bg-slate-200 dark:bg-slate-700"></div>
+                                </div>
+                            </div>
+                            <div class="h-9 w-9 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+                        </div>
+
+                        <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                            <div class="mb-4 h-3 w-36 rounded bg-slate-200 dark:bg-slate-700"></div>
+                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                                @for($i = 0; $i < 9; $i++)
+                                    <div class="h-16 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                            <div class="mb-3 h-3 w-32 rounded bg-slate-200 dark:bg-slate-700"></div>
+                            <div class="space-y-3">
+                                <div class="h-12 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+                                <div class="h-56 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="h-12 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+                            <div class="col-span-2 h-12 rounded-xl bg-slate-200 dark:bg-slate-700"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- ==========================================
              BAGIAN KIRI: DAFTAR SISWA (MASTER)
