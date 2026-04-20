@@ -1,10 +1,12 @@
 @php
     $profil = \App\Models\ProfilSekolah::first();
     $logoPath = $profil && $profil->logo_path ? storage_path('app/public/' . $profil->logo_path) : null;
-    $logoBase64 = null;
+    $toBase64Image = static function (?string $path): ?string {
+        if (! $path || ! file_exists($path)) {
+            return null;
+        }
 
-    if ($logoPath && file_exists($logoPath)) {
-        $ext = strtolower((string) pathinfo($logoPath, PATHINFO_EXTENSION));
+        $ext = strtolower((string) pathinfo($path, PATHINFO_EXTENSION));
         $mime = match ($ext) {
             'png' => 'image/png',
             'jpg', 'jpeg' => 'image/jpeg',
@@ -14,8 +16,12 @@
             default => 'image/png',
         };
 
-        $logoBase64 = 'data:' . $mime . ';base64,' . base64_encode((string) file_get_contents($logoPath));
-    }
+        return 'data:' . $mime . ';base64,' . base64_encode((string) file_get_contents($path));
+    };
+
+    $defaultLogoBase64 = $toBase64Image($logoPath);
+    $leftLogoBase64 = $toBase64Image(storage_path('app/public/sultra_logo.png')) ?? $defaultLogoBase64;
+    $rightLogoBase64 = $toBase64Image(storage_path('app/public/smk1kolaka.jpg')) ?? $defaultLogoBase64;
 
     $pasFotoDoc = $application->documents->firstWhere('jenis_dokumen', 'Pas Foto');
     $pasFotoPath = $pasFotoDoc ? storage_path('app/public/' . $pasFotoDoc->file_path) : null;
@@ -662,8 +668,8 @@
         <table class="kop-table">
             <tr>
                 <td class="logo-cell">
-                    @if($logoBase64)
-                        <img src="{{ $logoBase64 }}" alt="Logo Sekolah">
+                    @if($leftLogoBase64)
+                        <img src="{{ $leftLogoBase64 }}" alt="Logo Sultra">
                     @endif
                 </td>
                 <td class="kop-text">
@@ -674,8 +680,8 @@
                     <div class="line5">Email: smk1kolaka@gmail.com</div>
                 </td>
                 <td class="logo-cell">
-                    @if($logoBase64)
-                        <img src="{{ $logoBase64 }}" alt="Logo Sekolah">
+                    @if($rightLogoBase64)
+                        <img src="{{ $rightLogoBase64 }}" alt="Logo SMK">
                     @endif
                 </td>
             </tr>
