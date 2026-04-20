@@ -156,8 +156,136 @@ return [
     'uuid' => ':attribute harus berupa UUID yang valid.',
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'pesan-kustom',
+        'persetujuan_data' => [
+            'accepted' => 'Anda harus menyetujui pernyataan untuk melanjutkan.',
+        ],
+        'nisn' => [
+            'required' => 'NISN wajib diisi.',
+            'digits' => 'NISN harus 10 digit angka.',
+            'unique' => 'NISN sudah terdaftar di sistem.',
+        ],
+        'nik' => [
+            'required' => 'NIK wajib diisi.',
+            'unique' => 'NIK sudah terdaftar di sistem.',
+        ],
+        'tanggal_lahir' => [
+            'before_or_equal' => 'Usia minimal 14 tahun untuk mendaftar.',
+        ],
+        'kelurahan' => [
+            'required' => 'Kelurahan wajib diisi.',
+        ],
+        'kecamatan' => [
+            'required' => 'Kecamatan wajib diisi.',
+        ],
+        'anak_ke' => [
+            'required' => 'Anak ke- wajib diisi.',
+        ],
+        'jumlah_saudara' => [
+            'required' => 'Jumlah saudara wajib diisi.',
+        ],
+        'tinggi_badan' => [
+            'required' => 'Tinggi badan wajib diisi.',
+        ],
+        'berat_badan' => [
+            'required' => 'Berat badan wajib diisi.',
+        ],
+        'gol_darah' => [
+            'required' => 'Golongan darah wajib diisi.',
+        ],
+        'ukuran_seragam' => [
+            'required' => 'Ukuran seragam wajib diisi.',
+        ],
+        'nomor_hp' => [
+            'regex' => 'Nomor HP wajib format Indonesia (08... atau 62...).',
+            'unique' => 'Nomor HP sudah terdaftar di sistem.',
+        ],
+        'email' => [
+            'unique' => 'Email sudah terdaftar. Gunakan email lain.',
+        ],
+        'alamat_sekolah' => [
+            'required' => 'Alamat sekolah wajib diisi.',
+        ],
+        'nilai_rata_rata' => [
+            'required' => 'Nilai rata-rata rapor wajib diisi.',
+        ],
+        'pilihan_program_2_id' => [
+            'required' => 'Jurusan pilihan 2 wajib dipilih.',
+        ],
+        'pilihan_program_3_id' => [
+            'required' => 'Jurusan pilihan 3 wajib dipilih.',
+        ],
+        'nama_ayah' => [
+            'required' => 'Nama ayah wajib diisi.',
+        ],
+        'nama_ibu' => [
+            'required' => 'Nama ibu wajib diisi.',
+        ],
+        'tempat_lahir_ayah' => [
+            'required' => 'Tempat lahir ayah wajib diisi.',
+        ],
+        'tanggal_lahir_ayah' => [
+            'required' => 'Tanggal lahir ayah wajib diisi.',
+        ],
+        'tempat_lahir_ibu' => [
+            'required' => 'Tempat lahir ibu wajib diisi.',
+        ],
+        'tanggal_lahir_ibu' => [
+            'required' => 'Tanggal lahir ibu wajib diisi.',
+        ],
+        'pekerjaan_ayah' => [
+            'required' => 'Pekerjaan ayah wajib diisi.',
+        ],
+        'pekerjaan_ibu' => [
+            'required' => 'Pekerjaan ibu wajib diisi.',
+        ],
+        'penghasilan_ayah' => [
+            'required' => 'Penghasilan ayah wajib diisi.',
+        ],
+        'penghasilan_ibu' => [
+            'required' => 'Penghasilan ibu wajib diisi.',
+        ],
+        'alamat_ayah' => [
+            'required' => 'Alamat ayah wajib diisi.',
+        ],
+        'alamat_ibu' => [
+            'required' => 'Alamat ibu wajib diisi.',
+        ],
+        'kelurahan_ayah' => [
+            'required' => 'Kelurahan ayah wajib diisi.',
+        ],
+        'kecamatan_ayah' => [
+            'required' => 'Kecamatan ayah wajib diisi.',
+        ],
+        'kelurahan_ibu' => [
+            'required' => 'Kelurahan ibu wajib diisi.',
+        ],
+        'kecamatan_ibu' => [
+            'required' => 'Kecamatan ibu wajib diisi.',
+        ],
+        'nomor_hp_ayah' => [
+            'regex' => 'Format nomor HP ayah tidak valid.',
+        ],
+        'nomor_hp_ibu' => [
+            'regex' => 'Format nomor HP ibu tidak valid.',
+        ],
+        'file_kk' => [
+            'mimes' => 'KK harus berformat PDF.',
+        ],
+        'file_akta' => [
+            'mimes' => 'Akta harus berformat PDF.',
+        ],
+        'file_rapor_cover' => [
+            'mimes' => 'Halaman depan rapor harus PDF.',
+        ],
+        'file_rapor_nilai' => [
+            'mimes' => 'Nilai rapor harus PDF.',
+        ],
+        'file_pas_foto' => [
+            'image' => 'Pas foto harus berupa gambar (JPG/PNG).',
+            'max' => 'Ukuran pas foto maksimal 2 MB.',
+        ],
+        'file_skl' => [
+            'mimes' => 'Ijazah/SKL harus berformat PDF.',
         ],
     ],
 
@@ -249,6 +377,7 @@ return [
         'quotaSettings.*.kuota' => 'kuota',
 
         'nama_lengkap' => 'nama lengkap',
+        'persetujuan_data' => 'persetujuan data',
         'nisn' => 'NISN',
         'nik' => 'NIK',
         'jenis_kelamin' => 'jenis kelamin',
@@ -256,17 +385,45 @@ return [
         'tanggal_lahir' => 'tanggal lahir',
         'agama' => 'agama',
         'alamat_lengkap' => 'alamat lengkap',
+        'rt_rw' => 'RT/RW',
+        'kelurahan' => 'kelurahan',
+        'kecamatan' => 'kecamatan',
+        'anak_ke' => 'anak ke-',
+        'jumlah_saudara' => 'jumlah saudara',
+        'tinggi_badan' => 'tinggi badan',
+        'berat_badan' => 'berat badan',
+        'gol_darah' => 'golongan darah',
+        'ukuran_seragam' => 'ukuran seragam',
         'nomor_hp' => 'nomor HP',
         'email_or_phone' => 'email atau nomor HP',
         'asal_sekolah' => 'asal sekolah',
+        'alamat_sekolah' => 'alamat sekolah',
         'nama_ayah' => 'nama ayah',
+        'tempat_lahir_ayah' => 'tempat lahir ayah',
+        'tanggal_lahir_ayah' => 'tanggal lahir ayah',
+        'pendidikan_terakhir_ayah' => 'pendidikan terakhir ayah',
         'pekerjaan_ayah' => 'pekerjaan ayah',
+        'penghasilan_ayah' => 'penghasilan ayah',
+        'alamat_ayah' => 'alamat ayah',
+        'kelurahan_ayah' => 'kelurahan ayah',
+        'kecamatan_ayah' => 'kecamatan ayah',
+        'nomor_hp_ayah' => 'nomor HP ayah',
         'nama_ibu' => 'nama ibu',
+        'tempat_lahir_ibu' => 'tempat lahir ibu',
+        'tanggal_lahir_ibu' => 'tanggal lahir ibu',
+        'pendidikan_terakhir_ibu' => 'pendidikan terakhir ibu',
         'pekerjaan_ibu' => 'pekerjaan ibu',
+        'penghasilan_ibu' => 'penghasilan ibu',
+        'alamat_ibu' => 'alamat ibu',
+        'kelurahan_ibu' => 'kelurahan ibu',
+        'kecamatan_ibu' => 'kecamatan ibu',
+        'nomor_hp_ibu' => 'nomor HP ibu',
+        'alamat_ibu_sama' => 'alamat ibu sama dengan ayah',
         'nomor_hp_orang_tua' => 'nomor HP orang tua',
         'track_id' => 'jalur pendaftaran',
         'pilihan_program_1_id' => 'pilihan jurusan utama',
         'pilihan_program_2_id' => 'pilihan jurusan cadangan',
+        'pilihan_program_3_id' => 'pilihan jurusan ketiga',
         'nilai_rata_rata' => 'nilai rata-rata',
         'catatan_pendaftar' => 'catatan pendaftar',
         'nomor_pendaftaran' => 'nomor pendaftaran',
@@ -281,7 +438,13 @@ return [
         'file_kk' => 'file kartu keluarga',
         'file_akta' => 'file akta kelahiran',
         'file_rapor' => 'file rapor',
+        'file_rapor_cover' => 'file halaman depan rapor',
+        'file_rapor_nilai' => 'file nilai rapor',
         'file_pas_foto' => 'file pas foto',
         'file_skl' => 'file surat keterangan lulus',
+
+        'prestasi.*.achievement_name' => 'nama prestasi',
+        'prestasi.*.achievement_rank' => 'peringkat prestasi',
+        'prestasi.*.achievement_level' => 'tingkat prestasi',
     ],
 ];

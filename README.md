@@ -151,3 +151,9 @@ Untuk shared hosting (mis. cPanel):
 2. Buat Cron Job per menit untuk `queue:work --stop-when-empty`.
 3. Gunakan path PHP CLI hasil `which php` dari terminal hosting.
 4. Pantau log di `storage/logs/queue-worker.log`.
+
+## Workflow MCP Assistant Tools
+
+Panduan penggunaan TeamCreate, Context7, dan Sniper tersedia di:
+
+- [docs/mcp-assistant-tools-workflow.md](docs/mcp-assistant-tools-workflow.md)
