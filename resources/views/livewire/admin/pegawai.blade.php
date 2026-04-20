@@ -65,7 +65,7 @@
                                     <span wire:loading.remove wire:target="edit({{ $item->id }})">Edit</span>
                                     <span wire:loading wire:target="edit({{ $item->id }})">Memuat...</span>
                                 </button>
-                                <button @click="openConfirm('delete', {{ $item->id }}, 'Hapus data pegawai ini?', 'Data pegawai akan dihapus permanen dari sistem.', 'Ya, Hapus', 'danger')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-800 transition">Hapus</button>
+                                <button x-on:click="openConfirm('delete', {{ $item->id }}, 'Hapus data pegawai ini?', 'Data pegawai akan dihapus permanen dari sistem.', 'Ya, Hapus', 'danger')" class="px-3 py-1 text-xs font-medium bg-red-50 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-100 dark:hover:bg-red-800 transition">Hapus</button>
                             </td>
                         </tr>
                     @empty
@@ -127,26 +127,57 @@
                         </label>
                         @error('status_aktif') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
-                    <div class="col-span-2 space-y-2">
+                    <div
+                        class="col-span-2 space-y-2"
+                        x-data="{
+                            clientPreviewUrl: null,
+                            clientPreviewFailed: false,
+                            setClientPreview(event) {
+                                const file = event?.target?.files?.[0] ?? null;
+
+                                this.clientPreviewFailed = false;
+
+                                if (this.clientPreviewUrl) {
+                                    URL.revokeObjectURL(this.clientPreviewUrl);
+                                }
+
+                                this.clientPreviewUrl = file ? URL.createObjectURL(file) : null;
+                            },
+                            markClientPreviewFailed() {
+                                this.clientPreviewFailed = true;
+                            }
+                        }"
+                    >
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Foto Profil</label>
-                        <input wire:model="foto_profil" wire:loading.attr="disabled" wire:target="foto_profil" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300">
+                        <input wire:model="foto_profil" wire:loading.attr="disabled" wire:target="foto_profil" x-on:change="setClientPreview($event)" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300">
                         <p class="text-xs text-slate-500 dark:text-slate-400">Format yang didukung: JPG, JPEG, PNG, WEBP. Maksimum 2MB.</p>
 
                         @php
                             $uploadedFotoPreviewUrl = $foto_profil ? $this->fotoProfilPreviewUrl() : null;
                             $uploadedFotoPreviewNotice = $foto_profil ? $this->fotoProfilPreviewNotice() : null;
+                            $hasUploadedFotoServerPreview = (bool) $uploadedFotoPreviewUrl;
                         @endphp
 
-                        @if($foto_profil && $uploadedFotoPreviewUrl)
-                            <div class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm dark:border-blue-900/50 dark:bg-blue-900/20">
-                                <img src="{{ $uploadedFotoPreviewUrl }}" alt="Preview foto baru" class="h-14 w-14 rounded-lg object-cover">
+                        @if($foto_profil)
+                            <div x-cloak x-show="clientPreviewUrl && !clientPreviewFailed" class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm dark:border-blue-900/50 dark:bg-blue-900/20">
+                                <img :src="clientPreviewUrl" x-on:error="markClientPreviewFailed()" alt="Preview foto baru" class="h-14 w-14 rounded-lg object-cover">
                                 <div>
                                     <p class="font-medium text-blue-700 dark:text-blue-300">Foto baru siap disimpan</p>
                                     <p class="text-xs text-blue-600 dark:text-blue-400">Foto lama akan diganti setelah data disimpan.</p>
                                 </div>
                             </div>
-                        @elseif($foto_profil)
-                            <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm dark:border-amber-900/50 dark:bg-amber-900/20">
+
+                            @if($uploadedFotoPreviewUrl)
+                                <div x-cloak x-show="!clientPreviewUrl && !clientPreviewFailed" class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm dark:border-blue-900/50 dark:bg-blue-900/20">
+                                        <img src="{{ $uploadedFotoPreviewUrl }}" x-on:error="markClientPreviewFailed()" alt="Preview foto baru" class="h-14 w-14 rounded-lg object-cover">
+                                    <div>
+                                        <p class="font-medium text-blue-700 dark:text-blue-300">Foto baru siap disimpan</p>
+                                        <p class="text-xs text-blue-600 dark:text-blue-400">Foto lama akan diganti setelah data disimpan.</p>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div x-cloak x-show="clientPreviewFailed || (!clientPreviewUrl && !@js($hasUploadedFotoServerPreview))" class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm dark:border-amber-900/50 dark:bg-amber-900/20">
                                 <p class="font-medium text-amber-700 dark:text-amber-300">Preview foto tidak tersedia</p>
                                 <p class="text-xs text-amber-600 dark:text-amber-400">{{ $uploadedFotoPreviewNotice ?? 'Lanjutkan simpan untuk validasi format file.' }}</p>
                             </div>
@@ -184,7 +215,7 @@
             </form>
         </div>
     </div>
+    
     @endif
-
     <x-admin.confirm-modal />
 </div>

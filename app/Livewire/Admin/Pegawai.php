@@ -41,6 +41,10 @@ class Pegawai extends Component
     public function edit(int $id): void
     {
         $pegawai = PegawaiModel::findOrFail($id);
+
+        // Always start from a clean form state when switching the edited employee.
+        $this->resetForm();
+
         $this->editId = $pegawai->id;
         $this->nip = $pegawai->nip ?? '';
         $this->nama_lengkap = $pegawai->nama_lengkap;
@@ -48,8 +52,6 @@ class Pegawai extends Component
         $this->bidang_tugas = $pegawai->bidang_tugas ?? '';
         $this->status_aktif = $pegawai->status_aktif;
         $this->existing_foto = $pegawai->foto_profil;
-        $this->foto_profil = null;
-        $this->remove_existing_foto = false;
         $this->resetValidation();
         $this->showModal = true;
     }
@@ -143,7 +145,7 @@ class Pegawai extends Component
         }
 
         try {
-            return $this->foto_profil->temporaryUrl();
+            return $this->normalizePreviewUrl($this->foto_profil->temporaryUrl());
         } catch (\Throwable) {
             return null;
         }
@@ -184,6 +186,31 @@ class Pegawai extends Component
             static fn ($item): string => strtolower((string) $item),
             $configuredPreviewMimes,
         )));
+    }
+
+    protected function normalizePreviewUrl(string $url): string
+    {
+        $temporaryUploadDisk = (string) config('livewire.temporary_file_upload.disk', config('filesystems.default'));
+        $temporaryUploadDiskDriver = (string) config("filesystems.disks.{$temporaryUploadDisk}.driver");
+
+        // Use relative URL for local disk previews to avoid host mismatch from APP_URL.
+        if ($temporaryUploadDiskDriver !== 'local') {
+            return $url;
+        }
+
+        $parsedUrl = parse_url($url);
+
+        if (! is_array($parsedUrl) || ! isset($parsedUrl['path'])) {
+            return $url;
+        }
+
+        $relativeUrl = $parsedUrl['path'];
+
+        if (! empty($parsedUrl['query'])) {
+            $relativeUrl .= '?'.$parsedUrl['query'];
+        }
+
+        return $relativeUrl;
     }
 
     protected function rules(): array
