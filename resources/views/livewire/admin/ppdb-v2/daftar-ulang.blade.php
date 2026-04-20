@@ -16,7 +16,7 @@
         </div>
         <div class="flex flex-shrink-0 items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-200 dark:bg-slate-900 dark:border-slate-800">
             <div class="text-sm">
-                <span class="text-slate-500">Progress:</span>
+                <span class="text-slate-500">Progres:</span>
                 <span class="font-bold text-emerald-600 ml-1">{{ $countSelesai }}</span> 
                 <span class="text-slate-400 mx-0.5">/</span>
                 <span class="font-bold text-slate-800 dark:text-white">{{ $countTotal }}</span>
@@ -97,7 +97,7 @@
                                 @if($isSelesai)
                                     <div class="mt-2" title="Waktu Daftar Ulang: {{ $item->daftar_ulang_at?->format('d M Y H:i') }}">
                                         <span class="text-[11px] font-bold text-emerald-600 bg-emerald-100/50 px-2 py-1 rounded inline-flex items-center gap-1">
-                                            <x-admin.icon name="printer" class="w-3 h-3" /> Cetak Bukti (TBA)
+                                            <x-admin.icon name="printer" class="w-3 h-3" /> Cetak Bukti (Segera Tersedia)
                                         </span>
                                     </div>
                                 @endif

@@ -176,9 +176,9 @@ class PpdbAnalytics extends Component
                 'description' => 'Total formulir yang sudah tercatat pada periode ini.',
             ],
             [
-                'label' => 'Lolos Verifikasi',
-                'value' => (clone $applications)->whereIn('status_pendaftaran', ['verified', 'accepted'])->count(),
-                'description' => 'Peserta yang sudah lolos cek berkas administrasi.',
+                'label' => 'Terverifikasi / Diterima',
+                'value' => (clone $applications)->whereVerificationStatus('approved')->count(),
+                'description' => 'Peserta dengan status verifikasi gabungan yang sudah dinyatakan siap lanjut proses.',
             ],
             [
                 'label' => 'Sudah Dinilai',

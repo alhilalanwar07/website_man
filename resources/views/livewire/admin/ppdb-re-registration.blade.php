@@ -30,7 +30,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model.live="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 @foreach($availablePeriods as $periodOption)
                     <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
@@ -67,13 +67,13 @@
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1.5fr_repeat(2,minmax(0,1fr))]">
             <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari nama, nomor pendaftaran, atau sekolah..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
-            <select wire:model.live="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua jalur</option>
                 @foreach($tracks as $track)
                     <option value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
                 @endforeach
             </select>
-            <select wire:model.live="reRegistrationStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="reRegistrationStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua status daftar ulang</option>
                 <option value="pending">Belum Konfirmasi</option>
                 <option value="submitted">Menunggu Verifikasi</option>
@@ -99,7 +99,7 @@
                 <input wire:model="bulkVerificationNote" type="text" placeholder="Catatan massal opsional..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
             </div>
             <button wire:click="applyBulkVerification" wire:loading.attr="disabled" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                Terapkan Bulk Action
+                Terapkan Aksi Massal
             </button>
         </div>
 
@@ -225,13 +225,13 @@
                         </div>
 
                         <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
-                            <select wire:model.live="auditOfficerFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+                            <select wire:model="auditOfficerFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                                 <option value="">Semua petugas</option>
                                 @foreach($auditOfficers as $officer)
                                     <option value="{{ $officer->id }}">{{ $officer->name }}</option>
                                 @endforeach
                             </select>
-                            <select wire:model.live="auditStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+                            <select wire:model="auditStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                                 <option value="">Semua status audit</option>
                                 <option value="verified">Terverifikasi</option>
                                 <option value="rejected">Ditolak</option>
@@ -249,8 +249,8 @@
                                 <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
                                     <p class="text-sm font-bold text-slate-900 dark:text-white">{{ $stat['name'] }}</p>
                                     <div class="mt-3 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em]">
-                                        <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Terverifikasi / Verified {{ $stat['verified'] }}</span>
-                                        <span class="rounded-full bg-red-100 px-2.5 py-1 text-red-700 dark:bg-red-900 dark:text-red-300">Ditolak / Rejected {{ $stat['rejected'] }}</span>
+                                        <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Terverifikasi {{ $stat['verified'] }}</span>
+                                        <span class="rounded-full bg-red-100 px-2.5 py-1 text-red-700 dark:bg-red-900 dark:text-red-300">Ditolak {{ $stat['rejected'] }}</span>
                                     </div>
                                     <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">Total diproses: {{ $stat['total'] }}</p>
                                 </div>
@@ -277,8 +277,8 @@
                                             <div class="flex-1 rounded-t-lg bg-red-500/85" style="height: {{ $trend['rejected'] > 0 ? max(($trend['rejected'] / $maxAuditTrend) * 100, 8) : 0 }}%"></div>
                                         </div>
                                         <div class="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                                            <p>Terverifikasi / Verified: {{ $trend['verified'] }}</p>
-                                            <p class="mt-1">Ditolak / Rejected: {{ $trend['rejected'] }}</p>
+                                            <p>Terverifikasi: {{ $trend['verified'] }}</p>
+                                            <p class="mt-1">Ditolak: {{ $trend['rejected'] }}</p>
                                         </div>
                                     </div>
                                 @endforeach

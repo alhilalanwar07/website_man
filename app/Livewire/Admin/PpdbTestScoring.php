@@ -139,6 +139,7 @@ class PpdbTestScoring extends Component
         $candidatesQuery = PpdbApplication::with(['track', 'pilihanProgram1', 'documents'])
             ->when($activePeriod, fn ($query) => $query->where('period_id', $activePeriod->id))
             ->whereNotIn('status_pendaftaran', ['accepted', 'rejected'])
+            ->whereNotIn('status_berkas', ['rejected'])
             ->when($this->search, function ($query) {
                 $query->where(function ($subQuery) {
                     $subQuery->where('nama_lengkap', 'like', "%{$this->search}%")
@@ -162,14 +163,19 @@ class PpdbTestScoring extends Component
             ? PpdbApplication::with(['track', 'period', 'pilihanProgram1', 'pilihanProgram2', 'documents'])->find($this->selectedId)
             : null;
 
+        $summaryBaseQuery = PpdbApplication::query()
+            ->when($activePeriod, fn ($query) => $query->where('period_id', $activePeriod->id))
+            ->whereNotIn('status_pendaftaran', ['accepted', 'rejected'])
+            ->whereNotIn('status_berkas', ['rejected']);
+
         $summary = $activePeriod
             ? [
-                'total' => PpdbApplication::where('period_id', $activePeriod->id)->whereNotIn('status_pendaftaran', ['accepted', 'rejected'])->count(),
-                'scored' => PpdbApplication::where('period_id', $activePeriod->id)->whereNotNull('scored_at')->count(),
-                'ready' => PpdbApplication::where('period_id', $activePeriod->id)->where('status_pendaftaran', 'verified')->whereNotNull('scored_at')->count(),
-                'needs_revision' => PpdbApplication::where('period_id', $activePeriod->id)->where('status_pendaftaran', 'needs_revision')->count(),
+                'total' => (clone $summaryBaseQuery)->count(),
+                'scored' => (clone $summaryBaseQuery)->whereNotNull('scored_at')->count(),
+                'approved' => (clone $summaryBaseQuery)->whereVerificationStatus('approved')->count(),
+                'process' => (clone $summaryBaseQuery)->whereVerificationStatus('process')->count(),
             ]
-            : ['total' => 0, 'scored' => 0, 'ready' => 0, 'needs_revision' => 0];
+            : ['total' => 0, 'scored' => 0, 'approved' => 0, 'process' => 0];
 
         return view('livewire.admin.ppdb-test-scoring', compact('activePeriod', 'tracks', 'candidates', 'selectedApplication', 'summary', 'availablePeriods', 'selectedPeriodId'));
     }

@@ -12,9 +12,9 @@ class Broadcast extends Component
 
     private const AUDIENCE_GUIDE = [
         'all' => 'Untuk informasi umum: pembukaan pendaftaran, perubahan jadwal besar, dan ketentuan dokumen.',
-        'verified' => 'Untuk kandidat siap tes/seleksi lanjutan setelah verifikasi berkas selesai.',
+        'verified' => 'Untuk kandidat dengan status verifikasi gabungan Terverifikasi / Diterima yang siap tes/seleksi lanjutan.',
         'lulus' => 'Untuk komunikasi pasca-kelulusan: pengumuman resmi, instruksi daftar ulang, dan orientasi.',
-        'belum_daftar_ulang' => 'Untuk reminder deadline daftar ulang serta berkas wajib yang belum lengkap.',
+        'belum_daftar_ulang' => 'Untuk pengingat tenggat daftar ulang serta berkas wajib yang belum lengkap.',
         'selesai_daftar_ulang' => 'Untuk penguatan informasi akhir: daftar ulang valid, jadwal masuk, dan agenda awal.',
     ];
 
@@ -42,7 +42,7 @@ class Broadcast extends Component
         ],
         [
             'key' => 'template-reminder-daful',
-            'title' => 'Reminder Daftar Ulang',
+            'title' => 'Pengingat Daftar Ulang',
             'audience' => 'belum_daftar_ulang',
             'channel' => 'whatsapp',
             'body' => 'Pengingat untuk [nama_siswa] ([no_daftar]): daftar ulang PPDB belum tuntas. Silakan lengkapi proses sebelum [tanggal] agar status tetap aktif.',
@@ -93,7 +93,7 @@ class Broadcast extends Component
         $this->messageText = trim((string) $validated['messageText']);
 
         // Logic pengiriman nyata bisa dihubungkan ke API gateway / mail queue.
-        session()->flash('message', 'Broadcast telah dimasukkan ke dalam antrean (Queue) untuk segera dikirimkan via ' . strtoupper($this->channel) . ' ke partisipan terpilih.');
+        session()->flash('message', 'Siaran telah dimasukkan ke dalam antrean untuk segera dikirimkan via ' . strtoupper($this->channel) . ' ke peserta terpilih.');
 
         $this->reset('messageText');
     }
@@ -109,7 +109,7 @@ class Broadcast extends Component
             'integrationMap' => $this->integrationMap($periodQuery),
             'checklistItems' => self::CHECKLIST_ITEMS,
             'previewText' => $this->previewText(),
-        ])->layout('components.layouts.admin', ['title' => 'Broadcast & Pengumuman']);
+        ])->layout('components.layouts.admin', ['title' => 'Siaran & Pengumuman']);
     }
 
     protected function rules(): array
@@ -134,9 +134,9 @@ class Broadcast extends Component
     {
         return [
             ['menu' => 'Dashboard', 'goal' => 'Pantau KPI komunikasi', 'route' => route('admin.ppdb.dashboard', $periodQuery)],
-            ['menu' => 'Pendaftar', 'goal' => 'Validasi data target sebelum blast', 'route' => route('admin.ppdb.pendaftar', $periodQuery)],
-            ['menu' => 'Penentuan Jurusan', 'goal' => 'Follow-up pasca penempatan jurusan', 'route' => route('admin.ppdb.penentuan-jurusan', $periodQuery)],
-            ['menu' => 'Daftar Ulang', 'goal' => 'Reminder progres daftar ulang', 'route' => route('admin.ppdb.daftar-ulang', $periodQuery)],
+            ['menu' => 'Pendaftar', 'goal' => 'Validasi data target sebelum siaran massal', 'route' => route('admin.ppdb.pendaftar', $periodQuery)],
+            ['menu' => 'Penentuan Jurusan', 'goal' => 'Tindak lanjut pasca penempatan jurusan', 'route' => route('admin.ppdb.penentuan-jurusan', $periodQuery)],
+            ['menu' => 'Daftar Ulang', 'goal' => 'Pengingat progres daftar ulang', 'route' => route('admin.ppdb.daftar-ulang', $periodQuery)],
             ['menu' => 'Pengaturan', 'goal' => 'Sinkronkan isi pesan dengan timeline periode', 'route' => route('admin.ppdb.pengaturan', $periodQuery)],
         ];
     }

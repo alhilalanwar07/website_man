@@ -1,19 +1,19 @@
 <div class="space-y-6">
     <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
-        <span wire:loading wire:target="sendBroadcast">Mengirim broadcast PPDB.</span>
-        <span wire:loading wire:target="applyTemplate">Menerapkan template broadcast.</span>
+        <span wire:loading wire:target="sendBroadcast">Mengirim siaran PPDB.</span>
+        <span wire:loading wire:target="applyTemplate">Menerapkan templat siaran.</span>
     </div>
 
     <div wire:loading.flex wire:target="sendBroadcast,applyTemplate" class="items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
         <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
-        Menyinkronkan konten broadcast...
+        Menyinkronkan konten siaran...
     </div>
 
     <div class="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-cyan-50 to-white p-6 shadow-sm dark:border-blue-900 dark:from-blue-950/30 dark:via-slate-900 dark:to-slate-900">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-                <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">PPDB Communication Center</p>
-                <h1 class="mt-2 text-2xl font-black text-slate-900 dark:text-white">Broadcast Strategis dan Pengumuman Terpadu</h1>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-600">Pusat Komunikasi PPDB</p>
+                <h1 class="mt-2 text-2xl font-black text-slate-900 dark:text-white">Siaran Strategis dan Pengumuman Terpadu</h1>
                 <p class="mt-2 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
                     Kelola komunikasi dari tahap verifikasi, penentuan jurusan, pengumuman kelulusan, hingga daftar ulang dari satu layar.
                     Halaman ini dirancang sebagai pusat pesan operasional PPDB agar arahan ke peserta tetap konsisten, cepat, dan terdokumentasi.
@@ -43,13 +43,13 @@
         <div class="space-y-6">
             <div class="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div wire:loading.flex wire:target="sendBroadcast" class="absolute inset-0 z-10 items-center justify-center rounded-2xl bg-white/80 text-sm font-bold text-blue-600 backdrop-blur-sm dark:bg-slate-900/80 dark:text-blue-300">
-                    Menyiapkan antrean broadcast...
+                    Menyiapkan antrean siaran...
                 </div>
 
                 <div class="mb-4 flex items-center justify-between gap-3">
-                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Composer Pesan Massal</h3>
+                    <h3 class="text-lg font-black text-slate-900 dark:text-white">Penyusun Pesan Massal</h3>
                     <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                        Queue-Ready
+                        Siap Antrean
                     </span>
                 </div>
 
@@ -58,7 +58,7 @@
                         <label class="mb-1 block text-sm font-bold text-slate-700 dark:text-slate-300">Target Penerima</label>
                         <select wire:model="targetAudience" wire:loading.attr="disabled" wire:target="sendBroadcast" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="all">Semua Pendaftar Terdaftar</option>
-                            <option value="verified">Siswa Terverifikasi Berkas (Tunggu Ujian)</option>
+                            <option value="verified">Siswa Terverifikasi / Diterima (Siap Ujian)</option>
                             <option value="lulus">Siswa Lulus (Semua Jurusan)</option>
                             <option value="belum_daftar_ulang">Siswa Lulus (Belum Daftar Ulang)</option>
                             <option value="selesai_daftar_ulang">Siswa Lulus (Selesai Daftar Ulang)</option>
@@ -125,7 +125,7 @@
                         <button type="submit" wire:loading.attr="disabled" wire:target="sendBroadcast" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                             <span wire:loading.remove wire:target="sendBroadcast" class="inline-flex items-center gap-2">
                                 <x-admin.icon name="paper-airplane" class="h-5 w-5" />
-                                Arahkan ke Antrean Kirim (Queue)
+                                Masukkan ke Antrean Kirim
                             </span>
                             <span wire:loading wire:target="sendBroadcast">Mengirim...</span>
                         </button>
@@ -139,8 +139,8 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="mb-4 flex items-start justify-between gap-3">
                     <div>
-                        <h3 class="text-lg font-black text-slate-900 dark:text-white">Template Operasional PPDB</h3>
-                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gunakan template siap pakai untuk skenario utama sepanjang siklus PPDB.</p>
+                        <h3 class="text-lg font-black text-slate-900 dark:text-white">Templat Operasional PPDB</h3>
+                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Gunakan templat siap pakai untuk skenario utama sepanjang siklus PPDB.</p>
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@
                             wire:target="applyTemplate"
                         >
                             <p class="text-sm font-black text-slate-800 dark:text-slate-100">{{ $template['title'] }}</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Target: {{ str($template['audience'])->replace('_', ' ')->title() }} | Channel: {{ strtoupper($template['channel']) }}</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Target: {{ str($template['audience'])->replace('_', ' ')->title() }} | Kanal: {{ strtoupper($template['channel']) }}</p>
                             <p class="mt-2 line-clamp-2 text-xs text-slate-600 dark:text-slate-300">{{ $template['body'] }}</p>
                         </button>
                     @endforeach
@@ -189,14 +189,14 @@
                         <h4 class="font-bold text-blue-900 dark:text-blue-100">Sinkron Otomatis dengan Proses Seleksi</h4>
                         <p class="mt-1 text-sm leading-relaxed text-blue-800/90 dark:text-blue-200/90">
                             Selain blast manual, sistem PPDB telah mendukung notifikasi otomatis pada alur operasional tertentu.
-                            Gunakan panel ini untuk komunikasi lanjutan, penguatan instruksi, dan reminder berbasis status peserta.
+                            Gunakan panel ini untuk komunikasi lanjutan, penguatan instruksi, dan pengingat berbasis status peserta.
                         </p>
                     </div>
                 </div>
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <h3 class="text-base font-black text-slate-900 dark:text-white">Checklist Tata Kelola Broadcast</h3>
+                <h3 class="text-base font-black text-slate-900 dark:text-white">Daftar Periksa Tata Kelola Siaran</h3>
                 <ul class="mt-3 space-y-2">
                     @foreach ($checklistItems as $item)
                         <li wire:key="broadcast-check-{{ str($item)->slug() }}" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300">

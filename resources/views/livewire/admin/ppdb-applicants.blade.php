@@ -11,7 +11,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model.live="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 @foreach($availablePeriods as $periodOption)
                     <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
@@ -61,7 +61,7 @@
             <p class="mt-3 text-3xl font-black text-slate-900 dark:text-white">{{ $summary['pendaftar'] }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Butuh Review</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Dalam Proses</p>
             <p class="mt-3 text-3xl font-black text-amber-600">{{ $summary['review'] }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -77,22 +77,19 @@
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1.6fr_repeat(3,minmax(0,1fr))]">
             <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari nama, nomor pendaftaran, atau sekolah..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
-            <select wire:model.live="statusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
-                <option value="">Semua status pendaftaran</option>
-                <option value="submitted">Menunggu Verifikasi</option>
-                <option value="under_review">Sedang Ditinjau</option>
-                <option value="needs_revision">Perlu Revisi</option>
-                <option value="verified">Terverifikasi</option>
-                <option value="accepted">Diterima</option>
+            <select wire:model="statusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+                <option value="">Semua status verifikasi</option>
+                <option value="process">Dalam Proses</option>
+                <option value="approved">Terverifikasi / Diterima</option>
                 <option value="rejected">Ditolak</option>
             </select>
-            <select wire:model.live="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua jalur</option>
                 @foreach($tracks as $track)
                     <option value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
                 @endforeach
             </select>
-            <select wire:model.live="selectionFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="selectionFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua hasil seleksi</option>
                 <option value="pending">Menunggu Hasil</option>
                 <option value="passed">Lulus</option>
@@ -146,10 +143,10 @@
                                         <p class="mt-2 text-xs text-slate-400">{{ $application->programDiterima?->nama_jurusan ?? 'Belum ada program final' }}</p>
                                     </td>
                                     <td class="px-4 py-3 align-top">
-                                        <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ in_array($application->status_pendaftaran, ['accepted', 'verified'], true) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($application->status_pendaftaran === 'needs_revision' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300' : ($application->status_pendaftaran === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300')) }}">
-                                            {{ $application->status_pendaftaran_label }}
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-bold {{ $application->verification_status_key === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($application->verification_status_key === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300') }}">
+                                            {{ $application->verification_status_label }}
                                         </span>
-                                        <p class="mt-2 text-xs text-slate-400">Berkas: {{ $application->status_berkas_label }}</p>
+                                        <p class="mt-2 text-xs text-slate-400">Pendaftaran: {{ $application->status_pendaftaran_label }} · Berkas: {{ $application->status_berkas_label }}</p>
                                     </td>
                                     <td class="px-4 py-3 text-right">
                                         <button wire:click="openReview({{ $application->id }})" wire:loading.attr="disabled" wire:target="openReview({{ $application->id }})" class="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60">

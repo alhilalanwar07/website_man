@@ -18,7 +18,7 @@ class Dashboard extends Component
         }
 
         $totalPendaftar = (clone $baseQuery)->count();
-        $sudahDiwawancara = (clone $baseQuery)->where('status_berkas', 'verified')->count();
+        $sudahDiwawancara = (clone $baseQuery)->whereVerificationStatus('approved')->count();
         $selesaiJurusan = (clone $baseQuery)->whereNotNull('program_diterima_id')->count();
         $tuntasDaftarUlang = (clone $baseQuery)->where('status_daftar_ulang', 'verified')->count();
         

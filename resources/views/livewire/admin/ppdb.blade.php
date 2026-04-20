@@ -99,7 +99,7 @@
             <p class="mt-3 text-3xl font-black text-slate-900 dark:text-white">{{ $summary['pendaftar'] }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Butuh Review</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Dalam Proses</p>
             <p class="mt-3 text-3xl font-black text-amber-600">{{ $summary['review'] }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">

@@ -42,7 +42,7 @@ class PenentuanJurusan extends Component
             $period = PpdbPeriod::where('is_active', true)->first();
             if ($period) {
                 // Kumpulkan ID sesuai filter & pencarian saat ini
-                $query = PpdbApplication::where('period_id', $period->id)->where('status_berkas', 'verified');
+                $query = PpdbApplication::where('period_id', $period->id)->whereVerificationStatus('approved');
                 
                 if ($this->search) {
                     $query->where(function($q) {
@@ -118,7 +118,7 @@ class PenentuanJurusan extends Component
         if ($period) {
             $query->where('period_id', $period->id);
             // Standar operasi: hanya yang sudah lulus verifikasi berkas yang bisa diberi jurusan akhir
-            $query->where('status_berkas', 'verified');
+            $query->whereVerificationStatus('approved');
         }
 
         if ($this->search) {

@@ -116,32 +116,32 @@ class Pendaftar extends Component
         session()->flash('message', 'Mengekspor data Pendaftar ke format PDF...');
     }
 
-    public function updatingSearch()
+    public function updatedSearch()
     {
         $this->resetPage();
         $this->resetBulkSelection();
     }
 
-    public function updatingStatusFilter()
+    public function updatedStatusFilter()
     {
         $this->resetPage();
         $this->resetBulkSelection();
     }
 
-    public function updatingPeriodFilter()
+    public function updatedPeriodFilter()
     {
         $this->trackFilter = '';
         $this->resetPage();
         $this->resetBulkSelection();
     }
 
-    public function updatingTrackFilter()
+    public function updatedTrackFilter()
     {
         $this->resetPage();
         $this->resetBulkSelection();
     }
 
-    public function updatingProgramFilter()
+    public function updatedProgramFilter()
     {
         $this->resetPage();
         $this->resetBulkSelection();
@@ -492,29 +492,8 @@ class Pendaftar extends Component
 
     protected function applyCombinedStatusFilter(Builder $query): void
     {
-        if ($this->statusFilter === 'process') {
-            $query->where(function (Builder $statusQuery): void {
-                $statusQuery->whereIn('status_berkas', ['pending', 'incomplete', 'revision'])
-                    ->orWhereIn('status_pendaftaran', ['draft', 'submitted', 'under_review', 'needs_revision']);
-            });
-
-            return;
-        }
-
-        if ($this->statusFilter === 'approved') {
-            $query->where(function (Builder $statusQuery): void {
-                $statusQuery->whereIn('status_berkas', ['verified', 'complete'])
-                    ->orWhereIn('status_pendaftaran', ['verified', 'accepted']);
-            });
-
-            return;
-        }
-
-        if ($this->statusFilter === 'rejected') {
-            $query->where(function (Builder $statusQuery): void {
-                $statusQuery->where('status_berkas', 'rejected')
-                    ->orWhere('status_pendaftaran', 'rejected');
-            });
+        if ($this->statusFilter !== '') {
+            $query->whereVerificationStatus($this->statusFilter);
         }
     }
 

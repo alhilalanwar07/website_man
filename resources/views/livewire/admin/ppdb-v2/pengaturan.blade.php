@@ -22,7 +22,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model.live.debounce.300ms="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[320px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
+            <select wire:model="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[320px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
                 @foreach($availablePeriods as $periodOption)
                     <option wire:key="settings-period-option-{{ $periodOption->id }}" value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
@@ -39,6 +39,13 @@
 
     <div wire:loading.remove wire:target="period">
         @if($activePeriod)
+            @php($periodStatusLabel = match ($activePeriod->status) {
+                'draft' => 'Draf',
+                'published' => 'Dipublikasikan',
+                'closed' => 'Ditutup',
+                'archived' => 'Diarsipkan',
+                default => str($activePeriod->status)->title(),
+            })
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Periode</p>
@@ -52,7 +59,7 @@
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Pengumuman</p>
-                    <p class="mt-2 text-lg font-black {{ $activePeriod->isAnnouncementPublished() ? 'text-blue-600' : 'text-slate-900 dark:text-white' }}">{{ $activePeriod->isAnnouncementPublished() ? 'Dipublikasikan' : 'Draft' }}</p>
+                    <p class="mt-2 text-lg font-black {{ $activePeriod->isAnnouncementPublished() ? 'text-blue-600' : 'text-slate-900 dark:text-white' }}">{{ $activePeriod->isAnnouncementPublished() ? 'Dipublikasikan' : 'Draf' }}</p>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Status hasil seleksi di halaman cek status</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -70,13 +77,13 @@
             <div class="grid grid-cols-1 gap-4 xl:grid-cols-[1.2fr_1fr]">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">Kontrol Periode</p>
-                    <h3 class="mt-2 text-lg font-black text-slate-900 dark:text-white">Aktivasi dan governance periode</h3>
+                    <h3 class="mt-2 text-lg font-black text-slate-900 dark:text-white">Aktivasi dan tata kelola periode</h3>
                     <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                        Periode aktif default dipakai sebagai fallback resolver admin/frontend ketika parameter periode tidak dikirim.
+                        Periode aktif default dipakai sebagai acuan bawaan admin/frontend ketika parameter periode tidak dikirim.
                     </p>
                     <div class="mt-4 flex flex-wrap gap-3">
                         <button wire:click="openActionModal('activate-period')" wire:loading.attr="disabled" wire:target="openActionModal" type="button" class="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60">
-                            Jadikan Aktif Default
+                            Jadikan Aktif Bawaan
                         </button>
                         <button
                             wire:click="openActionModal('archive-period')"
@@ -97,7 +104,7 @@
                             Hapus Periode
                         </button>
                         <span class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
-                            Status: {{ str($activePeriod->status)->title() }}{{ $activePeriod->is_active ? ' · Aktif' : '' }}
+                            Status: {{ $periodStatusLabel }}{{ $activePeriod->is_active ? ' · Aktif' : '' }}
                         </span>
                     </div>
                 </div>
@@ -158,10 +165,10 @@
                                     <div>
                                         <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
                                         <select wire:model="newPeriodForm.status" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                            <option value="draft">Draft</option>
-                                            <option value="published">Published</option>
-                                            <option value="closed">Closed</option>
-                                            <option value="archived">Archived</option>
+                                            <option value="draft">Draf</option>
+                                            <option value="published">Dipublikasikan</option>
+                                            <option value="closed">Ditutup</option>
+                                            <option value="archived">Diarsipkan</option>
                                         </select>
                                     </div>
                                     <div>
@@ -268,18 +275,18 @@
                                     <div>
                                         <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Pengumuman</label>
                                         <select wire:model="periodForm.status_pengumuman" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                            <option value="draft">Draft</option>
-                                            <option value="published">Published</option>
+                                            <option value="draft">Draf</option>
+                                            <option value="published">Dipublikasikan</option>
                                         </select>
                                         @error('periodForm.status_pengumuman') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status Periode</label>
                                         <select wire:model="periodForm.status" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
-                                            <option value="draft">Draft</option>
-                                            <option value="published">Published</option>
-                                            <option value="closed">Closed</option>
-                                            <option value="archived">Archived</option>
+                                            <option value="draft">Draf</option>
+                                            <option value="published">Dipublikasikan</option>
+                                            <option value="closed">Ditutup</option>
+                                            <option value="archived">Diarsipkan</option>
                                         </select>
                                     </div>
                                     <div>
@@ -321,7 +328,7 @@
                                     </div>
                                 </div>
                                 <label class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
-                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Gunakan sebagai periode aktif default</span>
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Gunakan sebagai periode aktif bawaan</span>
                                     <input wire:model="periodForm.is_active" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                 </label>
                                 <div class="flex justify-end">
@@ -436,7 +443,7 @@
                                             <td class="px-3 py-3 align-top">
                                                 <input wire:model.blur="contactPersonSettings.{{ $index }}.nama" type="text" placeholder="Nama kontak" class="mb-2 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
                                                 @error('contactPersonSettings.' . $index . '.nama') <p class="mb-2 text-xs text-red-500">{{ $message }}</p> @enderror
-                                                <input wire:model.blur="contactPersonSettings.{{ $index }}.jabatan" type="text" placeholder="Jabatan (contoh: Helpdesk)" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                                <input wire:model.blur="contactPersonSettings.{{ $index }}.jabatan" type="text" placeholder="Jabatan (contoh: Layanan PPDB)" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
                                                 @error('contactPersonSettings.' . $index . '.jabatan') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                                             </td>
                                             <td class="px-3 py-3 align-top">

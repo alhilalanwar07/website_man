@@ -102,7 +102,7 @@ class Ppdb extends Component
 
         return [
             'pendaftar' => PpdbApplication::where('period_id', $activePeriod->id)->count(),
-            'review' => PpdbApplication::where('period_id', $activePeriod->id)->whereIn('status_pendaftaran', ['submitted', 'under_review', 'needs_revision'])->count(),
+            'review' => PpdbApplication::where('period_id', $activePeriod->id)->whereVerificationStatus('process')->count(),
             'passed' => PpdbApplication::where('period_id', $activePeriod->id)->where('hasil_seleksi', 'passed')->count(),
             'reserve' => PpdbApplication::where('period_id', $activePeriod->id)->where('hasil_seleksi', 'reserve')->count(),
             're_registered' => PpdbApplication::where('period_id', $activePeriod->id)->whereIn('status_daftar_ulang', ['submitted', 'verified'])->count(),

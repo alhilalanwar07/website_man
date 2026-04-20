@@ -71,7 +71,7 @@
         <!-- Header & Quick Override -->
         <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div class="flex items-center gap-2">
-                <h3 class="font-bold text-slate-800 dark:text-white text-sm whitespace-nowrap">Daftar Siswa Terverifikasi Berkas</h3>
+                <h3 class="font-bold text-slate-800 dark:text-white text-sm whitespace-nowrap">Daftar Siswa Siap Penjurusan</h3>
                 @if(count($selectedRows) > 0)
                     <span class="bg-blue-100 text-blue-700 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md">{{ count($selectedRows) }} Dipilih</span>
                 @endif
@@ -171,7 +171,7 @@
                                     <x-admin.icon name="academic-cap" class="w-8 h-8" />
                                 </div>
                                 <h3 class="font-black text-slate-900 dark:text-white text-lg">Belum ada siswa di daftar seleksi</h3>
-                                <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">Siswa yang muncul di sini hanyalah mereka yang telah lulus Verifikasi Berkas. Jika kosong, pastikan Anda telah menyelesaikan tahap verifikasi di menu "Data Pendaftar".</p>
+                                <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">Siswa yang muncul di sini adalah peserta dengan status verifikasi gabungan "Terverifikasi / Diterima". Jika kosong, pastikan tahap verifikasi di menu "Data Pendaftar" sudah selesai.</p>
                                 <a href="{{ route('admin.ppdb.pendaftar') }}" class="mt-6 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 text-white font-bold transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                                     Ke Data Verifikasi <x-admin.icon name="arrow-right" class="w-4 h-4"/>
                                 </a>

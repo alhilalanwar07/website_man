@@ -233,8 +233,8 @@ class Pengaturan extends Component
         $payload['is_active'] = (bool) ($payload['is_active'] ?? false);
 
         if ($payload['is_active'] && $status === 'draft') {
-            $this->addError('periodForm.status', 'Periode draft tidak dapat dijadikan aktif default. Ubah status terlebih dahulu.');
-            $this->dispatch('toast', type: 'error', message: 'Periode draft tidak dapat dijadikan aktif default. Ubah status terlebih dahulu.');
+            $this->addError('periodForm.status', 'Periode draf tidak dapat dijadikan aktif bawaan. Ubah status terlebih dahulu.');
+            $this->dispatch('toast', type: 'error', message: 'Periode draf tidak dapat dijadikan aktif bawaan. Ubah status terlebih dahulu.');
             return;
         }
 
@@ -689,8 +689,8 @@ class Pengaturan extends Component
         ]);
 
         if (($validated['newPeriodForm']['is_active'] ?? false) && $validated['newPeriodForm']['status'] === 'draft') {
-            $this->addError('newPeriodForm.status', 'Periode draft tidak dapat dijadikan aktif default saat dibuat.');
-            $this->dispatch('toast', type: 'error', message: 'Periode draft tidak dapat dijadikan aktif default saat dibuat.');
+            $this->addError('newPeriodForm.status', 'Periode draf tidak dapat dijadikan aktif bawaan saat dibuat.');
+            $this->dispatch('toast', type: 'error', message: 'Periode draf tidak dapat dijadikan aktif bawaan saat dibuat.');
             return;
         }
 
@@ -778,7 +778,7 @@ class Pengaturan extends Component
         $period = PpdbPeriod::findOrFail($this->managementPeriodId);
 
         if ($period->status === 'draft') {
-            $this->dispatch('toast', type: 'error', message: 'Periode draft tidak dapat dijadikan aktif default.');
+            $this->dispatch('toast', type: 'error', message: 'Periode draf tidak dapat dijadikan aktif bawaan.');
             return;
         }
 
@@ -787,7 +787,7 @@ class Pengaturan extends Component
 
         $this->refreshSelectedPeriod();
 
-        $this->dispatch('toast', type: 'success', message: 'Periode terpilih sekarang menjadi periode aktif default.');
+        $this->dispatch('toast', type: 'success', message: 'Periode terpilih sekarang menjadi periode aktif bawaan.');
     }
 
     public function archiveSelectedPeriod(): void
@@ -1080,8 +1080,8 @@ class Pengaturan extends Component
     {
         return match ($action) {
             'activate-period' => [
-                'title' => 'Jadikan Periode Aktif Default?',
-                'message' => 'Periode terpilih akan menjadi konteks default admin dan frontend ketika parameter periode tidak dikirim.',
+                'title' => 'Jadikan Periode Aktif Bawaan?',
+                'message' => 'Periode terpilih akan menjadi konteks bawaan admin dan frontend ketika parameter periode tidak dikirim.',
                 'confirm_label' => 'Ya, Jadikan Aktif',
                 'tone' => 'primary',
             ],
@@ -1211,7 +1211,7 @@ class Pengaturan extends Component
         return [
             'id' => null,
             'nama' => 'Panitia PPDB',
-            'jabatan' => 'Helpdesk PPDB',
+            'jabatan' => 'Layanan PPDB',
             'nomor_telepon' => $schoolPhone,
             'nomor_whatsapp' => $adminWhatsapp ?? '',
             'email' => $adminEmail,

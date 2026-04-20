@@ -3,8 +3,8 @@
         <div class="absolute inset-0 bg-mesh-hero opacity-70"></div>
         <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6">Portal PPDB</span>
-            <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-tight">Cek Status <span class="text-gradient">Pendaftaran</span></h1>
-            <p class="text-slate-300 max-w-2xl mx-auto mt-4">Masukkan nomor pendaftaran atau NISN dan tanggal lahir untuk melihat progres verifikasi berkas dan hasil sementara PPDB.</p>
+            <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-tight">Cek Status <span class="text-gradient">Verifikasi</span></h1>
+            <p class="text-slate-300 max-w-2xl mx-auto mt-4">Masukkan nomor pendaftaran atau NISN dan tanggal lahir untuk melihat status verifikasi gabungan, detail status operasional, dan hasil sementara PPDB.</p>
         </div>
     </section>
 
@@ -25,7 +25,7 @@
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4">
                     <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Langkah 3</p>
-                    <p class="mt-2 text-sm font-semibold text-slate-800">Baca status dan catatan panitia</p>
+                    <p class="mt-2 text-sm font-semibold text-slate-800">Baca status verifikasi dan catatan panitia</p>
                 </div>
             </div>
             <div class="bg-white rounded-[28px] border border-slate-100 shadow-sm p-8 md:p-10">
@@ -71,15 +71,16 @@
                             <p class="text-sm text-slate-500 mt-1">{{ $result->nomor_pendaftaran }} · {{ $result->asal_sekolah }}</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ in_array($result->status_pendaftaran, ['accepted', 'verified']) ? 'bg-emerald-50 text-emerald-700' : ($result->status_pendaftaran === 'needs_revision' ? 'bg-amber-50 text-amber-700' : ($result->status_pendaftaran === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700')) }}">{{ $result->status_pendaftaran_label }}</span>
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $result->verification_status_key === 'approved' ? 'bg-emerald-50 text-emerald-700' : ($result->verification_status_key === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700') }}">Verifikasi: {{ $result->verification_status_label }}</span>
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $selectionBadge }}">Hasil: {{ $result->hasil_seleksi_label }}</span>
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700">Pendaftaran: {{ $result->status_pendaftaran_label }}</span>
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Berkas: {{ $result->status_berkas_label }}</span>
                         </div>
                     </div>
 
                     <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">Arti Status</p>
-                        <p class="text-sm text-slate-700 leading-relaxed">Menunggu Verifikasi berarti berkas masih ditinjau. Perlu Revisi berarti Anda perlu memperbaiki data atau dokumen sesuai catatan panitia.</p>
+                        <p class="text-sm text-slate-700 leading-relaxed">Dalam Proses berarti data pendaftaran atau berkas masih ditinjau. Terverifikasi / Diterima berarti tahapan verifikasi sudah siap lanjut. Ditolak berarti ada penolakan pada salah satu tahap verifikasi. Status Pendaftaran dan Berkas tetap ditampilkan sebagai detail operasional.</p>
                     </div>
 
                     <div class="rounded-2xl border border-blue-200 bg-blue-50 p-4">

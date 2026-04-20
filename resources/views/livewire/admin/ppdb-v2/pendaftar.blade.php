@@ -152,14 +152,14 @@
                             <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" type="text" class="block h-11 w-full min-w-0 rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama / NISN / no pendaftaran / no HP / email...">
                         </div>
 
-                        <select wire:model="statusFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model.live="statusFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">Semua Status</option>
                             <option value="process">Dalam Proses</option>
                             <option value="approved">Terverifikasi / Diterima</option>
                             <option value="rejected">Ditolak</option>
                         </select>
 
-                        <select wire:model="periodFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model.live="periodFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="all">Semua Periode</option>
                             @foreach($periodFilterOptions as $periodOption)
                                 @php
@@ -169,14 +169,14 @@
                             @endforeach
                         </select>
 
-                        <select wire:model="trackFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model.live="trackFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">Semua Jalur</option>
                             @foreach($trackFilterOptions as $trackOption)
                                 <option value="{{ $trackOption->id }}">{{ $trackOption->nama_jalur }}</option>
                             @endforeach
                         </select>
 
-                        <select wire:model="programFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
+                        <select wire:model.live="programFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,periodFilter,trackFilter,programFilter" class="h-11 w-full min-w-0 rounded-xl border-slate-300 pr-9 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-white disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">Semua Program</option>
                             @foreach($programFilterOptions as $programOption)
                                 <option value="{{ $programOption->id }}">{{ $programOption->nama_jurusan }}</option>
@@ -186,7 +186,7 @@
 
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <button wire:click="resetFilters" wire:loading.attr="disabled" wire:target="resetFilters" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 disabled:cursor-not-allowed disabled:opacity-60">
-                            <x-admin.icon name="x" class="h-3.5 w-3.5" /> Reset Filter
+                            <x-admin.icon name="x" class="h-3.5 w-3.5" /> Atur Ulang Penyaring
                         </button>
 
                         @if(!$selectedSiswaId && count($selectedRows) > 0)
@@ -235,12 +235,12 @@
                                         <td class="px-4 py-3 font-medium">{{ $item->asal_sekolah ?? '-' }}</td>
                                         <td class="px-4 py-3">{{ $item->nomor_hp ?? '-' }}</td>
                                         <td class="px-4 py-3">
-                                            @if($item->status_berkas === 'verified')
-                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-bold border border-emerald-100"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Sah</span>
-                                            @elseif($item->status_berkas === 'revision')
-                                                <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full text-xs font-bold border border-rose-100"><div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div> Perlu Revisi</span>
+                                            @if($item->verification_status_key === 'approved')
+                                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-bold border border-emerald-100"><div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> {{ $item->verification_status_label }}</span>
+                                            @elseif($item->verification_status_key === 'rejected')
+                                                <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-600 px-2.5 py-1 rounded-full text-xs font-bold border border-rose-100"><div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div> {{ $item->verification_status_label }}</span>
                                             @else
-                                                <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-xs font-bold border border-amber-100"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div> Menunggu Verifikasi</span>
+                                                <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full text-xs font-bold border border-amber-100"><div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div> {{ $item->verification_status_label }}</span>
                                             @endif
                                         </td>
                                         <td class="px-4 py-3 text-right">
@@ -269,9 +269,9 @@
                                     <h4 class="font-bold {{ $selectedSiswaId === $item->id ? 'text-blue-700 dark:text-blue-400' : 'text-slate-900 dark:text-white' }} truncate pr-2">{{ $item->nama_lengkap }}</h4>
                                     
                                     <div class="shrink-0 mt-0.5">
-                                        @if($item->status_berkas === 'verified')
+                                        @if($item->verification_status_key === 'approved')
                                             <x-admin.icon name="check-circle" class="w-5 h-5 text-emerald-500" />
-                                        @elseif($item->status_berkas === 'revision')
+                                        @elseif($item->verification_status_key === 'rejected')
                                             <x-admin.icon name="x" class="w-5 h-5 text-rose-500" />
                                         @else
                                             <div class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] mt-1 animate-pulse"></div>
@@ -295,14 +295,14 @@
             <!-- Pagination selalu di bawah -->
             @if($pendaftar->hasPages())
                 <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-                    {{ $pendaftar->links('components.admin.pagination') }}
+                    {{ $pendaftar->links() }}
                 </div>
             @endif
         </div>
 
-        <!-- ==========================================
-             BAGIAN KANAN: PREVIEW DOKUMEN (LAYAR LEBAR)
-        =========================================== -->
+           <!-- ==========================================
+               BAGIAN KANAN: PRATINJAU DOKUMEN (LAYAR LEBAR)
+           =========================================== -->
         @if($selectedSiswaId && $this->selectedSiswa)
         <div class="lg:col-span-8 flex flex-col fade-in h-auto max-h-[100%] rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900/50 shadow-inner overflow-hidden relative">
             
@@ -346,7 +346,7 @@
                         </div>
                         <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Jenis Kelamin</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->jenis_kelamin ? str($this->selectedSiswa->jenis_kelamin)->title() : '-' }}</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ match ($this->selectedSiswa->jenis_kelamin) { 'L' => 'Laki-laki', 'P' => 'Perempuan', default => '-' } }}</p>
                         </div>
                         <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tempat Lahir</p>
@@ -361,8 +361,9 @@
                             <p class="mt-1 font-bold text-slate-900 dark:text-white break-all">{{ $this->selectedSiswa->email ?? '-' }}</p>
                         </div>
                         <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status Pendaftaran</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->status_pendaftaran_label }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status Verifikasi Gabungan</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->verification_status_label }}</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Detail: Pendaftaran {{ $this->selectedSiswa->status_pendaftaran_label }} · Berkas {{ $this->selectedSiswa->status_berkas_label }}</p>
                         </div>
                         <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Jalur Pendaftaran</p>
@@ -468,7 +469,7 @@
                 
                 @if($this->selectedSiswa->status_berkas === 'verified')
                     <div class="w-full py-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-black rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm dark:bg-emerald-900/30 dark:border-emerald-800">
-                        <x-admin.icon name="check-circle" class="w-5 h-5"/> BERKAS TELAH DISAHKAN
+                        <x-admin.icon name="check-circle" class="w-5 h-5"/> STATUS GABUNGAN: TERVERIFIKASI / DITERIMA
                     </div>
                     <!-- Tombol Batal/Tukar untuk UX Aman -->
                     <button wire:click="rejectSingle({{ $this->selectedSiswa->id }})" wire:loading.attr="disabled" wire:target="rejectSingle" class="shrink-0 px-6 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-rose-50 hover:text-rose-600 transition text-sm disabled:opacity-50" title="Batalkan & Tolak">
@@ -478,10 +479,10 @@
                     
                 @elseif($this->selectedSiswa->status_berkas === 'revision')
                     <div class="w-full py-3.5 bg-rose-50 border border-rose-200 text-rose-700 font-black rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm dark:bg-rose-900/30 dark:border-rose-800">
-                        <x-admin.icon name="x" class="w-5 h-5"/> BERKAS DITOLAK (REVISI)
+                        <x-admin.icon name="x" class="w-5 h-5"/> STATUS GABUNGAN: DITOLAK (REVISI BERKAS)
                     </div>
                     <button wire:click="verifySingle({{ $this->selectedSiswa->id }})" wire:loading.attr="disabled" wire:target="verifySingle" class="shrink-0 px-6 py-3 bg-slate-100 text-slate-500 font-bold rounded-xl hover:bg-emerald-50 hover:text-emerald-600 transition text-sm disabled:opacity-50" title="Ralat Menjadi Sah">
-                        <span wire:loading.remove wire:target="verifySingle">Ubah SAH</span>
+                        <span wire:loading.remove wire:target="verifySingle">Ubah ke TERVERIFIKASI</span>
                         <span wire:loading wire:target="verifySingle">Memproses...</span>
                     </button>
                     

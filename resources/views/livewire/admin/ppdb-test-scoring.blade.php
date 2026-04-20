@@ -11,7 +11,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model.live="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="period" class="min-w-[280px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 @foreach($availablePeriods as $periodOption)
                     <option value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
@@ -31,25 +31,25 @@
             <p class="mt-3 text-3xl font-black text-blue-600">{{ $summary['scored'] }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Siap Seleksi</p>
-            <p class="mt-3 text-3xl font-black text-emerald-600">{{ $summary['ready'] }}</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Terverifikasi / Diterima</p>
+            <p class="mt-3 text-3xl font-black text-emerald-600">{{ $summary['approved'] }}</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Perlu Revisi</p>
-            <p class="mt-3 text-3xl font-black text-amber-600">{{ $summary['needs_revision'] }}</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Dalam Proses</p>
+            <p class="mt-3 text-3xl font-black text-amber-600">{{ $summary['process'] }}</p>
         </div>
     </div>
 
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div class="grid grid-cols-1 gap-3 xl:grid-cols-[1.4fr_repeat(2,minmax(0,1fr))]">
             <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari nama, nomor pendaftaran, atau sekolah..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
-            <select wire:model.live="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="trackFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua jalur</option>
                 @foreach($tracks as $track)
                     <option value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
                 @endforeach
             </select>
-            <select wire:model.live="scoreStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
+            <select wire:model="scoreStatusFilter" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950">
                 <option value="">Semua status nilai</option>
                 <option value="unscored">Belum dinilai</option>
                 <option value="scored">Sudah dinilai</option>
@@ -75,7 +75,9 @@
                             </div>
                             <div class="text-right">
                                 <span class="rounded-full px-2.5 py-1 text-[11px] font-bold {{ $candidate->scored_at ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' }}">{{ $candidate->scored_at ? 'Sudah dinilai' : 'Belum dinilai' }}</span>
-                                <p class="mt-2 text-xs text-slate-400">{{ $candidate->status_pendaftaran_label }}</p>
+                                <p class="mt-2 text-xs">
+                                    <span class="rounded-full px-2 py-1 font-bold {{ $candidate->verification_status_key === 'approved' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : ($candidate->verification_status_key === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300') }}">{{ $candidate->verification_status_label }}</span>
+                                </p>
                             </div>
                         </button>
                     @empty

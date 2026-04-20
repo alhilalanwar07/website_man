@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,11 @@ use Illuminate\Support\Str;
 
 class PpdbApplication extends Model
 {
+    protected const APPROVED_BERKAS_STATUSES = ['verified', 'complete'];
+    protected const APPROVED_REGISTRATION_STATUSES = ['verified', 'accepted'];
+    protected const REJECTED_BERKAS_STATUSES = ['rejected'];
+    protected const REJECTED_REGISTRATION_STATUSES = ['rejected'];
+
     protected $table = 'ppdb_applications';
 
     protected $fillable = [
@@ -133,6 +139,31 @@ class PpdbApplication extends Model
         ]);
     }
 
+    public function getVerificationStatusKeyAttribute(): string
+    {
+        if (in_array($this->status_berkas, self::REJECTED_BERKAS_STATUSES, true) || in_array($this->status_pendaftaran, self::REJECTED_REGISTRATION_STATUSES, true)) {
+            return 'rejected';
+        }
+
+        if (
+            in_array($this->status_berkas, self::APPROVED_BERKAS_STATUSES, true)
+            || in_array($this->status_pendaftaran, self::APPROVED_REGISTRATION_STATUSES, true)
+        ) {
+            return 'approved';
+        }
+
+        return 'process';
+    }
+
+    public function getVerificationStatusLabelAttribute(): string
+    {
+        return $this->mapStatusLabel($this->verification_status_key, [
+            'process' => 'Dalam Proses',
+            'approved' => 'Terverifikasi / Diterima',
+            'rejected' => 'Ditolak',
+        ]);
+    }
+
     public function getHasilSeleksiLabelAttribute(): string
     {
         return $this->mapStatusLabel($this->hasil_seleksi, [
@@ -161,6 +192,39 @@ class PpdbApplication extends Model
         }
 
         return $map[$value] ?? (string) Str::of($value)->replace('_', ' ')->title();
+    }
+
+    public function scopeWhereVerificationStatus(Builder $query, string $status): Builder
+    {
+        if ($status === 'rejected') {
+            return $query->where(function (Builder $statusQuery): void {
+                $statusQuery->whereIn('status_berkas', self::REJECTED_BERKAS_STATUSES)
+                    ->orWhereIn('status_pendaftaran', self::REJECTED_REGISTRATION_STATUSES);
+            });
+        }
+
+        if ($status === 'approved') {
+            return $query
+                ->whereNotIn('status_berkas', self::REJECTED_BERKAS_STATUSES)
+                ->whereNotIn('status_pendaftaran', self::REJECTED_REGISTRATION_STATUSES)
+                ->where(function (Builder $statusQuery): void {
+                    $statusQuery->whereIn('status_berkas', self::APPROVED_BERKAS_STATUSES)
+                        ->orWhereIn('status_pendaftaran', self::APPROVED_REGISTRATION_STATUSES);
+                });
+        }
+
+        if ($status === 'process') {
+            return $query
+                ->whereNotIn('status_berkas', self::REJECTED_BERKAS_STATUSES)
+                ->whereNotIn('status_pendaftaran', self::REJECTED_REGISTRATION_STATUSES)
+                ->where(function (Builder $statusQuery): void {
+                    $statusQuery
+                        ->whereNotIn('status_berkas', self::APPROVED_BERKAS_STATUSES)
+                        ->whereNotIn('status_pendaftaran', self::APPROVED_REGISTRATION_STATUSES);
+                });
+        }
+
+        return $query;
     }
 
     public function period(): BelongsTo
