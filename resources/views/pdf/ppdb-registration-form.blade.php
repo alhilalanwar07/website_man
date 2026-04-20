@@ -304,12 +304,12 @@
         }
 
         .page-one .logo-cell {
-            width: 72px;
+            width: 92px;
             text-align: center;
         }
 
         .page-one .logo-cell img {
-            width: 58px;
+            width: 78px;
             height: auto;
         }
 
