@@ -50,14 +50,7 @@ Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
 
-Route::get('/deploy/migrate-pilihan-program-3', function (Request $request) {
-    $expectedToken = (string) env('DEPLOY_ROUTE_TOKEN', '');
-    $providedToken = (string) $request->query('token', '');
-
-    if ($expectedToken === '' || ! hash_equals($expectedToken, $providedToken)) {
-        abort(404);
-    }
-
+Route::get('/deploy/migrate-pilihan-program-3', function () {
     $migrationPath = 'database/migrations/2026_04_19_100000_add_pilihan_program_3_to_ppdb_applications.php';
 
     Artisan::call('migrate', [
