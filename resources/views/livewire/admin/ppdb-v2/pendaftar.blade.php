@@ -330,52 +330,221 @@
             <!-- Scrollable Content Ruang Kerja PDF/Gambar -->
             <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
 
-                <!-- Ringkasan Informasi Siswa -->
+                @php $s = $this->selectedSiswa; @endphp
+
+                <!-- Identitas Utama -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                     <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Informasi Siswa</h3>
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Identitas Siswa</h3>
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Nomor Pendaftaran</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->nomor_pendaftaran ?? '-' }}</p>
+                        @foreach([
+                            'Nomor Pendaftaran' => $s->nomor_pendaftaran,
+                            'NISN' => $s->nisn,
+                            'NIK' => $s->nik,
+                            'No. KK' => $s->no_kk,
+                            'No. Reg. Akta' => $s->no_registrasi_akta_lahir,
+                            'Jenis Kelamin' => match($s->jenis_kelamin) { 'L' => 'Laki-laki', 'P' => 'Perempuan', default => '-' },
+                            'Tempat Lahir' => $s->tempat_lahir,
+                            'Tanggal Lahir' => $s->tanggal_lahir ? $s->tanggal_lahir->format('d M Y') : null,
+                            'Agama' => $s->agama,
+                            'Kewarganegaraan' => ($s->kewarganegaraan ?? 'WNI') . ($s->negara_asal ? ' - ' . $s->negara_asal : ''),
+                            'Kebutuhan Khusus' => $s->kebutuhan_khusus,
+                            'Gol. Darah' => $s->gol_darah,
+                            'Ukuran Seragam' => $s->ukuran_seragam,
+                            'Nomor HP' => $s->nomor_hp,
+                            'Telepon Rumah' => $s->nomor_telepon_rumah,
+                            'Email' => $s->email,
+                        ] as $lbl => $val)
+                        <div wire:key="id-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white break-all">{{ $val ?: '-' }}</p>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">NISN</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->nisn ?? '-' }}</p>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Status & Jurusan -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Sekolah, Jurusan & Status</h3>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
+                        @foreach([
+                            'Status Verifikasi' => $s->verification_status_label,
+                            'Status Pendaftaran' => $s->status_pendaftaran_label ?? $s->status_pendaftaran,
+                            'Status Berkas' => $s->status_berkas_label ?? $s->status_berkas,
+                            'Jalur' => $s->track?->nama_jalur,
+                            'Asal Sekolah' => $s->asal_sekolah,
+                            'Alamat Sekolah' => $s->alamat_sekolah,
+                            'Nilai Rata-rata' => $s->nilai_rata_rata,
+                            'Jurusan Pilihan 1' => $s->pilihanProgram1?->nama_jurusan,
+                            'Jurusan Pilihan 2' => $s->pilihanProgram2?->nama_jurusan,
+                            'Jurusan Pilihan 3' => $s->pilihanProgram3?->nama_jurusan,
+                        ] as $lbl => $val)
+                        <div wire:key="sj-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $val ?: '-' }}</p>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Jenis Kelamin</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ match ($this->selectedSiswa->jenis_kelamin) { 'L' => 'Laki-laki', 'P' => 'Perempuan', default => '-' } }}</p>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Alamat -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Alamat & Lokasi</h3>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-3">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Alamat Lengkap</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $s->alamat_lengkap ?: '-' }}</p>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tempat Lahir</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->tempat_lahir ?? '-' }}</p>
+                        @foreach([
+                            'RT/RW' => $s->rt_rw ?: (trim(($s->rt ?? '') . '/' . ($s->rw ?? ''), '/') ?: null),
+                            'Kelurahan' => $s->kelurahan,
+                            'Kecamatan' => $s->kecamatan,
+                            'Nama Dusun' => $s->nama_dusun,
+                            'Kode Pos' => $s->kode_pos,
+                            'Koordinat' => ($s->lintang && $s->bujur) ? $s->lintang . ', ' . $s->bujur : null,
+                            'Tempat Tinggal' => $s->tempat_tinggal,
+                            'Transportasi' => $s->moda_transportasi,
+                            'Jarak' => $s->jarak_tempat_tinggal_kategori ? ($s->jarak_tempat_tinggal_kategori . ($s->jarak_tempat_tinggal_km ? ' (' . $s->jarak_tempat_tinggal_km . ' km)' : '')) : null,
+                        ] as $lbl => $val)
+                        <div wire:key="al-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $val ?: '-' }}</p>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tanggal Lahir</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->tanggal_lahir ? $this->selectedSiswa->tanggal_lahir->format('d M Y') : '-' }}</p>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Data Fisik & Keluarga -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Data Fisik & Kesejahteraan</h3>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
+                        @foreach([
+                            'Anak Ke' => $s->anak_ke,
+                            'Jumlah Saudara' => $s->jumlah_saudara,
+                            'Tinggi Badan' => $s->tinggi_badan ? $s->tinggi_badan . ' cm' : null,
+                            'Berat Badan' => $s->berat_badan ? $s->berat_badan . ' kg' : null,
+                            'Lingkar Kepala' => $s->lingkar_kepala ? $s->lingkar_kepala . ' cm' : null,
+                            'Punya KIP' => $s->punya_kip === true ? 'Ya' : ($s->punya_kip === false ? 'Tidak' : null),
+                            'Menerima KIP' => $s->menerima_kip === true ? 'Ya' : ($s->menerima_kip === false ? 'Tidak' : null),
+                            'Alasan Menolak PIP' => $s->alasan_menolak_pip,
+                            'Jenis Kesejahteraan' => $s->jenis_kesejahteraan,
+                            'No. Kartu Kesejahteraan' => $s->nomor_kartu_kesejahteraan,
+                            'Nama di Kartu' => $s->nama_di_kartu_kesejahteraan,
+                            'Pekerjaan (Warga Belajar)' => $s->pekerjaan_warga_belajar,
+                        ] as $lbl => $val)
+                        <div wire:key="fk-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $val ?? '-' }}</p>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Email</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white break-all">{{ $this->selectedSiswa->email ?? '-' }}</p>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Data Orang Tua -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Data Orang Tua</h3>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        {{-- Ayah --}}
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">Ayah</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
+                                @foreach([
+                                    'Nama Ayah' => $s->nama_ayah,
+                                    'NIK Ayah' => $s->nik_ayah,
+                                    'TTL Ayah' => $s->tempat_tanggal_lahir_ayah,
+                                    'Pendidikan' => $s->pendidikan_terakhir_ayah,
+                                    'Pekerjaan' => $s->pekerjaan_ayah,
+                                    'Penghasilan' => $s->penghasilan_ayah,
+                                    'Kebutuhan Khusus' => $s->kebutuhan_khusus_ayah,
+                                    'Alamat' => $s->alamat_ayah,
+                                    'Kel/Kec' => trim(($s->kelurahan_ayah ?? '') . ', ' . ($s->kecamatan_ayah ?? ''), ', ') ?: null,
+                                    'HP Ayah' => $s->nomor_hp_ayah,
+                                ] as $lbl => $val)
+                                <div wire:key="ay-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                                    <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $val ?: '-' }}</p>
+                                </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Status Verifikasi Gabungan</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->verification_status_label }}</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Detail: Pendaftaran {{ $this->selectedSiswa->status_pendaftaran_label }} · Berkas {{ $this->selectedSiswa->status_berkas_label }}</p>
+                        {{-- Ibu --}}
+                        <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-pink-600 dark:text-pink-400 mb-2">Ibu</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
+                                @foreach([
+                                    'Nama Ibu' => $s->nama_ibu,
+                                    'NIK Ibu' => $s->nik_ibu,
+                                    'TTL Ibu' => $s->tempat_tanggal_lahir_ibu,
+                                    'Pendidikan' => $s->pendidikan_terakhir_ibu,
+                                    'Pekerjaan' => $s->pekerjaan_ibu,
+                                    'Penghasilan' => $s->penghasilan_ibu,
+                                    'Kebutuhan Khusus' => $s->kebutuhan_khusus_ibu,
+                                    'Alamat' => $s->alamat_ibu,
+                                    'Kel/Kec' => trim(($s->kelurahan_ibu ?? '') . ', ' . ($s->kecamatan_ibu ?? ''), ', ') ?: null,
+                                    'HP Ibu' => $s->nomor_hp_ibu,
+                                ] as $lbl => $val)
+                                <div wire:key="ib-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                                    <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $val ?: '-' }}</p>
+                                </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Jalur Pendaftaran</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->track?->nama_jalur ?? '-' }}</p>
+                    </div>
+                </div>
+
+                <!-- Prestasi -->
+                @if($s->achievements && $s->achievements->isNotEmpty())
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Prestasi ({{ $s->achievements->count() }})</h3>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        @foreach($s->achievements as $achievement)
+                        <div wire:key="ach-{{ $achievement->id }}" class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-700 dark:bg-slate-800/40">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 text-sm">
+                                @foreach([
+                                    'Jenis' => $achievement->achievement_type,
+                                    'Nama' => $achievement->achievement_name,
+                                    'Peringkat' => $achievement->achievement_rank,
+                                    'Tingkat' => $achievement->achievement_level,
+                                    'Tahun' => $achievement->achievement_year,
+                                    'Penyelenggara' => $achievement->achievement_organizer,
+                                ] as $lbl => $val)
+                                <div>
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>
+                                    <p class="font-semibold text-slate-900 dark:text-white">{{ $val ?: '-' }}</p>
+                                </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2 xl:col-span-1">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Pilihan Program 1</p>
-                            <p class="mt-1 font-bold text-slate-900 dark:text-white">{{ $this->selectedSiswa->pilihanProgram1?->nama_jurusan ?? '-' }}</p>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Catatan -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Catatan</h3>
+                    </div>
+                    <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Catatan Pendaftar</p>
+                            <p class="mt-1 font-semibold text-slate-700 dark:text-slate-300">{{ $s->catatan_pendaftar ?: 'Tidak ada catatan.' }}</p>
                         </div>
                         <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40 sm:col-span-2">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Catatan Verifikator</p>
-                            <p class="mt-1 font-semibold text-slate-700 dark:text-slate-300">{{ $this->selectedSiswa->catatan_verifikator ?? 'Belum ada catatan verifikator.' }}</p>
+                            <p class="mt-1 font-semibold text-slate-700 dark:text-slate-300">{{ $s->catatan_verifikator ?? 'Belum ada catatan verifikator.' }}</p>
                         </div>
                     </div>
                 </div>

@@ -77,7 +77,7 @@ class Pendaftar extends Component
             return null;
         }
 
-        return PpdbApplication::with(['documents', 'track', 'period', 'pilihanProgram1', 'pilihanProgram2', 'pilihanProgram3'])
+        return PpdbApplication::with(['documents', 'achievements', 'track', 'period', 'pilihanProgram1', 'pilihanProgram2', 'pilihanProgram3'])
             ->find($this->selectedSiswaId);
     }
 

@@ -8,6 +8,7 @@ use App\Models\PpdbApplication;
 use App\Models\PpdbDocument;
 use App\Models\ProgramKeahlian;
 use App\Support\PpdbPeriodResolver;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
@@ -598,6 +599,24 @@ class PpdbFormPage extends Component
         }
         $this->currentStep = 7;
 
+        // Verify all required files are still present (temp uploads may expire)
+        $requiredFiles = [
+            'file_kk' => 'Kartu Keluarga',
+            'file_akta' => 'Akta Kelahiran',
+            'file_rapor_cover' => 'Halaman Depan Rapor',
+            'file_rapor_nilai' => 'Nilai Rapor',
+            'file_pas_foto' => 'Pas Foto',
+            'file_skl' => 'Ijazah / SKL',
+        ];
+
+        foreach ($requiredFiles as $prop => $label) {
+            if (! $this->{$prop}) {
+                $this->currentStep = 6;
+                $this->addError($prop, "File {$label} belum diunggah atau sudah kadaluarsa. Silakan unggah ulang.");
+                return;
+            }
+        }
+
         $achievementRows = collect($this->prestasi)
             ->map(fn (array $i): array => [
                 'achievement_type' => trim($i['achievement_type'] ?? ''),
@@ -610,129 +629,154 @@ class PpdbFormPage extends Component
             ->filter(fn (array $i): bool => collect($i)->contains(fn (string $value): bool => $value !== ''))
             ->values();
 
-        $nomorPendaftaran = $this->generateRegistrationNumber($period);
-
         // Combine TTL for DB compatibility
         $ttlAyah = trim($this->tempat_lahir_ayah) . ', ' . $this->tanggal_lahir_ayah;
         $ttlIbu = trim($this->tempat_lahir_ibu) . ', ' . $this->tanggal_lahir_ibu;
         // Determine primary parent phone
         $hpOrtu = $this->emptyToNull($this->nomor_hp_ayah) ?? $this->emptyToNull($this->nomor_hp_ibu) ?? '';
 
-        $application = PpdbApplication::create([
-            'period_id' => $period->id,
-            'track_id' => $this->track_id,
-            'nomor_pendaftaran' => $nomorPendaftaran,
-            'nama_lengkap' => $this->nama_lengkap,
-            'nisn' => $this->nisn,
-            'nik' => $this->nik,
-            'jenis_kelamin' => $this->jenis_kelamin,
-            'tempat_lahir' => $this->tempat_lahir,
-            'tanggal_lahir' => $this->tanggal_lahir,
-            'no_kk' => $this->emptyToNull($this->no_kk),
-            'no_registrasi_akta_lahir' => $this->emptyToNull($this->no_registrasi_akta_lahir),
-            'agama' => $this->emptyToNull($this->agama),
-            'kewarganegaraan' => $this->emptyToNull($this->kewarganegaraan) ?? 'WNI',
-            'negara_asal' => $this->emptyToNull($this->negara_asal),
-            'kebutuhan_khusus' => $this->emptyToNull($this->kebutuhan_khusus),
-            'alamat_lengkap' => $this->alamat_lengkap,
-            'rt_rw' => $this->emptyToNull($this->buildRtRw()) ?? $this->emptyToNull($this->rt_rw),
-            'rt' => $this->emptyToNull($this->rt),
-            'rw' => $this->emptyToNull($this->rw),
-            'kelurahan' => $this->emptyToNull($this->kelurahan),
-            'kecamatan' => $this->emptyToNull($this->kecamatan),
-            'nama_dusun' => $this->emptyToNull($this->nama_dusun),
-            'kode_pos' => $this->emptyToNull($this->kode_pos),
-            'lintang' => $this->emptyToNull($this->lintang),
-            'bujur' => $this->emptyToNull($this->bujur),
-            'tempat_tinggal' => $this->emptyToNull($this->tempat_tinggal),
-            'moda_transportasi' => $this->emptyToNull($this->moda_transportasi),
-            'tinggi_badan' => $this->toNullableInt($this->tinggi_badan),
-            'berat_badan' => $this->toNullableInt($this->berat_badan),
-            'lingkar_kepala' => $this->toNullableInt($this->lingkar_kepala),
-            'gol_darah' => $this->emptyToNull($this->gol_darah),
-            'ukuran_seragam' => $this->emptyToNull($this->ukuran_seragam),
-            'jarak_tempat_tinggal_kategori' => $this->emptyToNull($this->jarak_tempat_tinggal_kategori),
-            'jarak_tempat_tinggal_km' => $this->toNullableDecimal($this->jarak_tempat_tinggal_km),
-            'waktu_tempuh_jam' => $this->toNullableInt($this->waktu_tempuh_jam),
-            'waktu_tempuh_menit' => $this->toNullableInt($this->waktu_tempuh_menit),
-            'jenis_kesejahteraan' => $this->emptyToNull($this->jenis_kesejahteraan),
-            'nomor_kartu_kesejahteraan' => $this->emptyToNull($this->nomor_kartu_kesejahteraan),
-            'nama_di_kartu_kesejahteraan' => $this->emptyToNull($this->nama_di_kartu_kesejahteraan),
-            'pekerjaan_warga_belajar' => $this->emptyToNull($this->pekerjaan_warga_belajar),
-            'punya_kip' => $this->toNullableBool($this->punya_kip),
-            'menerima_kip' => $this->toNullableBool($this->menerima_kip),
-            'alasan_menolak_pip' => $this->emptyToNull($this->alasan_menolak_pip),
-            'nomor_telepon_rumah' => $this->emptyToNull($this->nomor_telepon_rumah),
-            'nomor_hp' => $this->nomor_hp,
-            'email' => $this->email,
-            'asal_sekolah' => $this->asal_sekolah,
-            'alamat_sekolah' => $this->emptyToNull($this->alamat_sekolah),
-            'anak_ke' => $this->toNullableInt($this->anak_ke),
-            'jumlah_saudara' => $this->toNullableInt($this->jumlah_saudara),
-            'nama_ayah' => $this->nama_ayah,
-            'nik_ayah' => $this->emptyToNull($this->nik_ayah),
-            'tempat_tanggal_lahir_ayah' => $ttlAyah,
-            'pendidikan_terakhir_ayah' => $this->emptyToNull($this->pendidikan_terakhir_ayah),
-            'pekerjaan_ayah' => $this->emptyToNull($this->pekerjaan_ayah),
-            'penghasilan_ayah' => $this->emptyToNull($this->penghasilan_ayah),
-            'kebutuhan_khusus_ayah' => $this->emptyToNull($this->kebutuhan_khusus_ayah),
-            'alamat_ayah' => $this->emptyToNull($this->alamat_ayah),
-            'kelurahan_ayah' => $this->emptyToNull($this->kelurahan_ayah),
-            'kecamatan_ayah' => $this->emptyToNull($this->kecamatan_ayah),
-            'nomor_hp_ayah' => $this->emptyToNull($this->nomor_hp_ayah),
-            'nama_ibu' => $this->nama_ibu,
-            'nik_ibu' => $this->emptyToNull($this->nik_ibu),
-            'tempat_tanggal_lahir_ibu' => $ttlIbu,
-            'pendidikan_terakhir_ibu' => $this->emptyToNull($this->pendidikan_terakhir_ibu),
-            'pekerjaan_ibu' => $this->emptyToNull($this->pekerjaan_ibu),
-            'penghasilan_ibu' => $this->emptyToNull($this->penghasilan_ibu),
-            'kebutuhan_khusus_ibu' => $this->emptyToNull($this->kebutuhan_khusus_ibu),
-            'alamat_ibu' => $this->emptyToNull($this->alamat_ibu),
-            'kelurahan_ibu' => $this->emptyToNull($this->kelurahan_ibu),
-            'kecamatan_ibu' => $this->emptyToNull($this->kecamatan_ibu),
-            'nomor_hp_ibu' => $this->emptyToNull($this->nomor_hp_ibu),
-            'nomor_hp_orang_tua' => $this->emptyToNull($hpOrtu),
-            'pilihan_program_1_id' => $this->pilihan_program_1_id,
-            'pilihan_program_2_id' => $this->pilihan_program_2_id ?: null,
-            'pilihan_program_3_id' => $this->pilihan_program_3_id ?: null,
-            'nilai_rata_rata' => $this->nilai_rata_rata ?: null,
-            'catatan_pendaftar' => $this->emptyToNull($this->catatan_pendaftar),
-            'persetujuan_data_at' => now(),
-            'status_pendaftaran' => 'submitted',
-            'status_berkas' => 'pending',
-            'submitted_at' => now(),
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $documents = [
-            'Kartu Keluarga' => $this->file_kk,
-            'Akta Kelahiran' => $this->file_akta,
-            'Halaman Depan Rapor' => $this->file_rapor_cover,
-            'Nilai Rapor' => $this->file_rapor_nilai,
-            'Pas Foto' => $this->file_pas_foto,
-            'Ijazah / SKL' => $this->file_skl,
-        ];
+            $nomorPendaftaran = $this->generateRegistrationNumber($period);
 
-        foreach ($documents as $jenis => $file) {
-            if (! $file) continue;
-            PpdbDocument::create([
-                'application_id' => $application->id,
-                'jenis_dokumen' => $jenis,
-                'file_path' => $file->store('ppdb/documents', 'public'),
-                'status_verifikasi' => 'pending',
+            $application = PpdbApplication::create([
+                'period_id' => $period->id,
+                'track_id' => $this->track_id,
+                'nomor_pendaftaran' => $nomorPendaftaran,
+                'nama_lengkap' => $this->nama_lengkap,
+                'nisn' => $this->nisn,
+                'nik' => $this->nik,
+                'jenis_kelamin' => $this->jenis_kelamin,
+                'tempat_lahir' => $this->tempat_lahir,
+                'tanggal_lahir' => $this->tanggal_lahir,
+                'no_kk' => $this->emptyToNull($this->no_kk),
+                'no_registrasi_akta_lahir' => $this->emptyToNull($this->no_registrasi_akta_lahir),
+                'agama' => $this->emptyToNull($this->agama),
+                'kewarganegaraan' => $this->emptyToNull($this->kewarganegaraan) ?? 'WNI',
+                'negara_asal' => $this->emptyToNull($this->negara_asal),
+                'kebutuhan_khusus' => $this->emptyToNull($this->kebutuhan_khusus),
+                'alamat_lengkap' => $this->alamat_lengkap,
+                'rt_rw' => $this->emptyToNull($this->buildRtRw()) ?? $this->emptyToNull($this->rt_rw),
+                'rt' => $this->emptyToNull($this->rt),
+                'rw' => $this->emptyToNull($this->rw),
+                'kelurahan' => $this->emptyToNull($this->kelurahan),
+                'kecamatan' => $this->emptyToNull($this->kecamatan),
+                'nama_dusun' => $this->emptyToNull($this->nama_dusun),
+                'kode_pos' => $this->emptyToNull($this->kode_pos),
+                'lintang' => $this->emptyToNull($this->lintang),
+                'bujur' => $this->emptyToNull($this->bujur),
+                'tempat_tinggal' => $this->emptyToNull($this->tempat_tinggal),
+                'moda_transportasi' => $this->emptyToNull($this->moda_transportasi),
+                'tinggi_badan' => $this->toNullableInt($this->tinggi_badan),
+                'berat_badan' => $this->toNullableInt($this->berat_badan),
+                'lingkar_kepala' => $this->toNullableInt($this->lingkar_kepala),
+                'gol_darah' => $this->emptyToNull($this->gol_darah),
+                'ukuran_seragam' => $this->emptyToNull($this->ukuran_seragam),
+                'jarak_tempat_tinggal_kategori' => $this->emptyToNull($this->jarak_tempat_tinggal_kategori),
+                'jarak_tempat_tinggal_km' => $this->toNullableDecimal($this->jarak_tempat_tinggal_km),
+                'waktu_tempuh_jam' => $this->toNullableInt($this->waktu_tempuh_jam),
+                'waktu_tempuh_menit' => $this->toNullableInt($this->waktu_tempuh_menit),
+                'jenis_kesejahteraan' => $this->emptyToNull($this->jenis_kesejahteraan),
+                'nomor_kartu_kesejahteraan' => $this->emptyToNull($this->nomor_kartu_kesejahteraan),
+                'nama_di_kartu_kesejahteraan' => $this->emptyToNull($this->nama_di_kartu_kesejahteraan),
+                'pekerjaan_warga_belajar' => $this->emptyToNull($this->pekerjaan_warga_belajar),
+                'punya_kip' => $this->toNullableBool($this->punya_kip),
+                'menerima_kip' => $this->toNullableBool($this->menerima_kip),
+                'alasan_menolak_pip' => $this->emptyToNull($this->alasan_menolak_pip),
+                'nomor_telepon_rumah' => $this->emptyToNull($this->nomor_telepon_rumah),
+                'nomor_hp' => $this->nomor_hp,
+                'email' => $this->email,
+                'asal_sekolah' => $this->asal_sekolah,
+                'alamat_sekolah' => $this->emptyToNull($this->alamat_sekolah),
+                'anak_ke' => $this->toNullableInt($this->anak_ke),
+                'jumlah_saudara' => $this->toNullableInt($this->jumlah_saudara),
+                'nama_ayah' => $this->nama_ayah,
+                'nik_ayah' => $this->emptyToNull($this->nik_ayah),
+                'tempat_tanggal_lahir_ayah' => $ttlAyah,
+                'pendidikan_terakhir_ayah' => $this->emptyToNull($this->pendidikan_terakhir_ayah),
+                'pekerjaan_ayah' => $this->emptyToNull($this->pekerjaan_ayah),
+                'penghasilan_ayah' => $this->emptyToNull($this->penghasilan_ayah),
+                'kebutuhan_khusus_ayah' => $this->emptyToNull($this->kebutuhan_khusus_ayah),
+                'alamat_ayah' => $this->emptyToNull($this->alamat_ayah),
+                'kelurahan_ayah' => $this->emptyToNull($this->kelurahan_ayah),
+                'kecamatan_ayah' => $this->emptyToNull($this->kecamatan_ayah),
+                'nomor_hp_ayah' => $this->emptyToNull($this->nomor_hp_ayah),
+                'nama_ibu' => $this->nama_ibu,
+                'nik_ibu' => $this->emptyToNull($this->nik_ibu),
+                'tempat_tanggal_lahir_ibu' => $ttlIbu,
+                'pendidikan_terakhir_ibu' => $this->emptyToNull($this->pendidikan_terakhir_ibu),
+                'pekerjaan_ibu' => $this->emptyToNull($this->pekerjaan_ibu),
+                'penghasilan_ibu' => $this->emptyToNull($this->penghasilan_ibu),
+                'kebutuhan_khusus_ibu' => $this->emptyToNull($this->kebutuhan_khusus_ibu),
+                'alamat_ibu' => $this->emptyToNull($this->alamat_ibu),
+                'kelurahan_ibu' => $this->emptyToNull($this->kelurahan_ibu),
+                'kecamatan_ibu' => $this->emptyToNull($this->kecamatan_ibu),
+                'nomor_hp_ibu' => $this->emptyToNull($this->nomor_hp_ibu),
+                'nomor_hp_orang_tua' => $this->emptyToNull($hpOrtu),
+                'pilihan_program_1_id' => $this->pilihan_program_1_id,
+                'pilihan_program_2_id' => $this->pilihan_program_2_id ?: null,
+                'pilihan_program_3_id' => $this->pilihan_program_3_id ?: null,
+                'nilai_rata_rata' => $this->nilai_rata_rata ?: null,
+                'catatan_pendaftar' => $this->emptyToNull($this->catatan_pendaftar),
+                'persetujuan_data_at' => now(),
+                'status_pendaftaran' => 'submitted',
+                'status_berkas' => 'pending',
+                'submitted_at' => now(),
             ]);
-        }
 
-        foreach ($achievementRows as $index => $row) {
-            PpdbAchievement::create([
-                'application_id' => $application->id,
-                'achievement_type' => $row['achievement_type'] ?: null,
-                'achievement_name' => $row['achievement_name'],
-                'achievement_rank' => $row['achievement_rank'],
-                'achievement_level' => $row['achievement_level'],
-                'achievement_year' => $row['achievement_year'] !== '' ? (int) $row['achievement_year'] : null,
-                'achievement_organizer' => $row['achievement_organizer'] ?: null,
-                'sort_order' => $index + 1,
+            // Store documents with error tracking
+            $documents = [
+                'Kartu Keluarga' => $this->file_kk,
+                'Akta Kelahiran' => $this->file_akta,
+                'Halaman Depan Rapor' => $this->file_rapor_cover,
+                'Nilai Rapor' => $this->file_rapor_nilai,
+                'Pas Foto' => $this->file_pas_foto,
+                'Ijazah / SKL' => $this->file_skl,
+            ];
+
+            foreach ($documents as $jenis => $file) {
+                if (! $file) {
+                    continue;
+                }
+
+                $storedPath = $file->store('ppdb/documents', 'public');
+
+                if (! $storedPath) {
+                    throw new \RuntimeException("Gagal menyimpan file: {$jenis}");
+                }
+
+                PpdbDocument::create([
+                    'application_id' => $application->id,
+                    'jenis_dokumen' => $jenis,
+                    'file_path' => $storedPath,
+                    'status_verifikasi' => 'pending',
+                ]);
+            }
+
+            foreach ($achievementRows as $index => $row) {
+                PpdbAchievement::create([
+                    'application_id' => $application->id,
+                    'achievement_type' => $row['achievement_type'] ?: null,
+                    'achievement_name' => $row['achievement_name'],
+                    'achievement_rank' => $row['achievement_rank'],
+                    'achievement_level' => $row['achievement_level'],
+                    'achievement_year' => $row['achievement_year'] !== '' ? (int) $row['achievement_year'] : null,
+                    'achievement_organizer' => $row['achievement_organizer'] ?: null,
+                    'sort_order' => $index + 1,
+                ]);
+            }
+
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            Log::error('PPDB submission failed.', [
+                'nisn' => $this->nisn,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
+            $this->addError('period', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+            return;
         }
 
         $downloadUrl = $this->buildDownloadUrl($application);
@@ -963,11 +1007,23 @@ class PpdbFormPage extends Component
         ]);
     }
 
+    #[Computed]
+    public function resolvedPeriod()
+    {
+        return $this->resolveSelectedPeriod();
+    }
+
+    #[Computed]
+    public function availablePrograms()
+    {
+        return ProgramKeahlian::tampil()->orderBy('nama_jurusan')->get();
+    }
+
     public function render()
     {
-        $period = $this->resolveSelectedPeriod();
+        $period = $this->resolvedPeriod;
         $availablePeriods = app(PpdbPeriodResolver::class)->publicOptions();
-        $programs = ProgramKeahlian::tampil()->orderBy('nama_jurusan')->get();
+        $programs = $this->availablePrograms;
         return view('livewire.frontend.ppdb-form-page', compact('period', 'programs', 'availablePeriods'));
     }
 }
