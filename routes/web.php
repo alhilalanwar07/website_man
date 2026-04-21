@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\Admin\PpdbExportController;
 use App\Http\Controllers\Frontend\PpdbRegistrationDocumentController;
@@ -48,6 +49,29 @@ use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
+
+Route::get('/deploy/migrate-pilihan-program-3', function (Request $request) {
+    $expectedToken = (string) env('DEPLOY_ROUTE_TOKEN', '');
+    $providedToken = (string) $request->query('token', '');
+
+    if ($expectedToken === '' || ! hash_equals($expectedToken, $providedToken)) {
+        abort(404);
+    }
+
+    $migrationPath = 'database/migrations/2026_04_19_100000_add_pilihan_program_3_to_ppdb_applications.php';
+
+    Artisan::call('migrate', [
+        '--path' => $migrationPath,
+        '--force' => true,
+    ]);
+
+    return response()->json([
+        'ok' => true,
+        'message' => 'Migration pilihan_program_3_id selesai dijalankan.',
+        'path' => $migrationPath,
+        'output' => trim(Artisan::output()),
+    ]);
+})->middleware('throttle:3,1')->name('deploy.migrate-pilihan-program-3');
     
 // Frontend
 Route::get('/', Home::class)->name('home');
@@ -127,5 +151,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/galeri', Galeri::class)->name('galeri');
     Route::get('/hari-libur', HariLibur::class)->name('hari-libur');
     Route::get('/settings', Settings::class)->name('settings');
+
+    
 
 });

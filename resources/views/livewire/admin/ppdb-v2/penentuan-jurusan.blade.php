@@ -135,6 +135,12 @@
                                         <span class="leading-tight">{{ $item->pilihanProgram2?->nama_jurusan }}</span>
                                     </li>
                                     @endif
+                                    @if($item->pilihan_program_3_id)
+                                    <li class="flex items-start gap-1.5 opacity-70">
+                                        <span class="font-bold text-slate-400 mt-px">3.</span>
+                                        <span class="leading-tight">{{ $item->pilihanProgram3?->nama_jurusan }}</span>
+                                    </li>
+                                    @endif
                                 </ul>
                             </td>
                             <td class="px-5 py-4">
