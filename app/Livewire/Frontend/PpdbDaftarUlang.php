@@ -11,12 +11,35 @@ use Livewire\Component;
 #[Title('Daftar Ulang PPDB - SMK Negeri 1 Kolaka')]
 class PpdbDaftarUlang extends Component
 {
+    protected const PREFILL_SESSION_KEY = 'ppdb.re_registration_prefill';
+
     public string $nomor_pendaftaran = '';
     public string $tanggal_lahir = '';
     public string $catatan_daftar_ulang = '';
     public ?PpdbApplication $result = null;
     public bool $searched = false;
     public bool $submitted = false;
+
+    public function mount(): void
+    {
+        $prefill = session()->pull(self::PREFILL_SESSION_KEY);
+
+        if (! is_array($prefill)) {
+            return;
+        }
+
+        $nomorPendaftaran = trim((string) ($prefill['nomor_pendaftaran'] ?? ''));
+        $tanggalLahir = (string) ($prefill['tanggal_lahir'] ?? '');
+
+        if ($nomorPendaftaran === '' || $tanggalLahir === '') {
+            return;
+        }
+
+        $this->nomor_pendaftaran = $nomorPendaftaran;
+        $this->tanggal_lahir = $tanggalLahir;
+
+        $this->search();
+    }
 
     public function search(): void
     {

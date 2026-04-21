@@ -18,6 +18,8 @@ use Throwable;
 #[Title('Cek Status PPDB - SMK Negeri 1 Kolaka')]
 class PpdbStatus extends Component
 {
+    protected const RE_REGISTRATION_PREFILL_SESSION_KEY = 'ppdb.re_registration_prefill';
+
     public string $nomor_pendaftaran = '';
     public string $tanggal_lahir = '';
     public ?PpdbApplication $result = null;
@@ -110,6 +112,40 @@ class PpdbStatus extends Component
 
             $this->setActionFeedback('error', 'Gagal mengirim ulang email saat ini. Silakan coba beberapa saat lagi.');
         }
+    }
+
+    public function continueToReRegistration(): void
+    {
+        $this->clearActionFeedback();
+
+        if (! $this->resultId) {
+            $this->setActionFeedback('error', 'Data pendaftar belum tersedia. Silakan cari data terlebih dahulu.');
+
+            return;
+        }
+
+        $application = PpdbApplication::query()
+            ->with('period')
+            ->find($this->resultId);
+
+        if (! $application) {
+            $this->setActionFeedback('error', 'Data pendaftar tidak ditemukan lagi. Silakan cari ulang.');
+
+            return;
+        }
+
+        if (! $application->period?->isAnnouncementPublished() || $application->hasil_seleksi !== 'passed') {
+            $this->setActionFeedback('error', 'Daftar ulang hanya tersedia setelah pengumuman resmi untuk peserta yang dinyatakan lulus.');
+
+            return;
+        }
+
+        session()->put(self::RE_REGISTRATION_PREFILL_SESSION_KEY, [
+            'nomor_pendaftaran' => (string) $application->nomor_pendaftaran,
+            'tanggal_lahir' => (string) $application->tanggal_lahir?->format('Y-m-d'),
+        ]);
+
+        $this->redirectRoute('ppdb.daftar-ulang', navigate: true);
     }
 
     public function resetSearch(): void

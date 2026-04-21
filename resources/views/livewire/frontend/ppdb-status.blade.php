@@ -118,7 +118,10 @@
                         <h3 class="text-xl font-black text-slate-900 mt-3">{{ $result->hasil_seleksi === 'passed' ? 'Selamat, Anda dinyatakan lulus.' : ($result->hasil_seleksi === 'reserve' ? 'Anda masuk daftar cadangan.' : ($result->hasil_seleksi === 'failed' ? 'Anda belum dinyatakan lulus.' : 'Hasil masih diproses.')) }}</h3>
                         <p class="text-sm text-slate-600 mt-2 leading-relaxed">{{ $result->period->catatan_pengumuman ?: 'Panitia telah mempublikasikan hasil resmi PPDB.' }}</p>
                         @if($result->hasil_seleksi === 'passed')
-                        <a href="{{ route('ppdb.daftar-ulang') }}" class="inline-flex mt-4 px-5 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition">Lanjut ke Daftar Ulang</a>
+                        <button type="button" wire:click="continueToReRegistration" wire:loading.attr="disabled" wire:target="continueToReRegistration" class="inline-flex mt-4 px-5 py-3 rounded-2xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition disabled:cursor-not-allowed disabled:opacity-60">
+                            <span wire:loading.remove wire:target="continueToReRegistration">Lanjut ke Daftar Ulang</span>
+                            <span wire:loading wire:target="continueToReRegistration">Membuka Halaman...</span>
+                        </button>
                         @endif
                     </div>
                     @else
@@ -134,6 +137,7 @@
                             <div class="space-y-2 text-sm text-slate-700">
                                 <p><span class="font-semibold">Pilihan 1:</span> {{ $result->pilihanProgram1->nama_jurusan }}</p>
                                 <p><span class="font-semibold">Pilihan 2:</span> {{ $result->pilihanProgram2->nama_jurusan ?? '-' }}</p>
+                                <p><span class="font-semibold">Pilihan 3:</span> {{ $result->pilihanProgram3->nama_jurusan ?? '-' }}</p>
                                 <p><span class="font-semibold">Jalur:</span> {{ $result->track->nama_jalur }}</p>
                             </div>
                         </div>
