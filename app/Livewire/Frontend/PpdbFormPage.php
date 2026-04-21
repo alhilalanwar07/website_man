@@ -51,17 +51,43 @@ class PpdbFormPage extends Component
     public string $jenis_kelamin = 'L';
     public string $tempat_lahir = '';
     public string $tanggal_lahir = '';
+    public string $no_kk = '';
+    public string $no_registrasi_akta_lahir = '';
     public string $agama = 'Islam';
+    public string $kewarganegaraan = 'WNI';
+    public string $negara_asal = '';
+    public string $kebutuhan_khusus = '01 Tidak';
     public string $alamat_lengkap = '';
     public string $rt_rw = '';
+    public string $rt = '';
+    public string $rw = '';
     public string $kelurahan = '';
     public string $kecamatan = '';
+    public string $nama_dusun = '';
+    public string $kode_pos = '';
+    public string $lintang = '';
+    public string $bujur = '';
+    public string $tempat_tinggal = '';
+    public string $moda_transportasi = '';
     public string $anak_ke = '';
     public string $jumlah_saudara = '';
     public string $tinggi_badan = '';
     public string $berat_badan = '';
+    public string $lingkar_kepala = '';
+    public string $jarak_tempat_tinggal_kategori = '';
+    public string $jarak_tempat_tinggal_km = '';
+    public string $waktu_tempuh_jam = '';
+    public string $waktu_tempuh_menit = '';
+    public string $pekerjaan_warga_belajar = '';
+    public string $punya_kip = '';
+    public string $menerima_kip = '';
+    public string $alasan_menolak_pip = '';
+    public string $jenis_kesejahteraan = '';
+    public string $nomor_kartu_kesejahteraan = '';
+    public string $nama_di_kartu_kesejahteraan = '';
     public string $gol_darah = '';
     public string $ukuran_seragam = '';
+    public string $nomor_telepon_rumah = '';
     public string $nomor_hp = '';
     public string $email = '';
 
@@ -76,21 +102,25 @@ class PpdbFormPage extends Component
 
     // Step 4: Data Orang Tua (TTL split)
     public string $nama_ayah = '';
+    public string $nik_ayah = '';
     public string $tempat_lahir_ayah = '';
     public string $tanggal_lahir_ayah = '';
     public string $pendidikan_terakhir_ayah = '';
     public string $pekerjaan_ayah = '';
     public string $penghasilan_ayah = '';
+    public string $kebutuhan_khusus_ayah = '01 Tidak';
     public string $alamat_ayah = '';
     public string $kelurahan_ayah = '';
     public string $kecamatan_ayah = '';
     public string $nomor_hp_ayah = '';
     public string $nama_ibu = '';
+    public string $nik_ibu = '';
     public string $tempat_lahir_ibu = '';
     public string $tanggal_lahir_ibu = '';
     public string $pendidikan_terakhir_ibu = '';
     public string $pekerjaan_ibu = '';
     public string $penghasilan_ibu = '';
+    public string $kebutuhan_khusus_ibu = '01 Tidak';
     public string $alamat_ibu = '';
     public string $kelurahan_ibu = '';
     public string $kecamatan_ibu = '';
@@ -147,6 +177,28 @@ class PpdbFormPage extends Component
         }
     }
 
+    public function updatedKewarganegaraan(string $value): void
+    {
+        if ($value !== 'WNA') {
+            $this->negara_asal = '';
+        }
+    }
+
+    public function updatedPunyaKip(string $value): void
+    {
+        if ($value !== '1') {
+            $this->menerima_kip = '';
+            $this->alasan_menolak_pip = '';
+        }
+    }
+
+    public function updatedMenerimaKip(string $value): void
+    {
+        if ($value !== '0') {
+            $this->alasan_menolak_pip = '';
+        }
+    }
+
     public function applyDraft(array $draft): void
     {
         if ($draft === []) {
@@ -180,9 +232,12 @@ class PpdbFormPage extends Component
             $this->prestasi = collect($restored['prestasi'])
                 ->take(3)
                 ->map(fn ($row): array => [
+                    'achievement_type' => is_array($row) ? (string) ($row['achievement_type'] ?? '') : '',
                     'achievement_name' => is_array($row) ? (string) ($row['achievement_name'] ?? '') : '',
                     'achievement_rank' => is_array($row) ? (string) ($row['achievement_rank'] ?? '') : '',
                     'achievement_level' => is_array($row) ? (string) ($row['achievement_level'] ?? '') : '',
+                    'achievement_year' => is_array($row) ? (string) ($row['achievement_year'] ?? '') : '',
+                    'achievement_organizer' => is_array($row) ? (string) ($row['achievement_organizer'] ?? '') : '',
                 ])
                 ->values()
                 ->all();
@@ -253,6 +308,22 @@ class PpdbFormPage extends Component
     {
         $this->nomor_hp = $this->normalizePhoneNumber($this->nomor_hp);
         $this->email = strtolower(trim($this->email));
+        $this->rt = trim($this->rt);
+        $this->rw = trim($this->rw);
+
+        if ($this->rt_rw === '' && ($this->rt !== '' || $this->rw !== '')) {
+            $this->rt_rw = $this->buildRtRw();
+        }
+
+        if ($this->kewarganegaraan !== 'WNA') {
+            $this->negara_asal = '';
+        }
+
+        if ($this->punya_kip !== '1') {
+            $this->menerima_kip = '';
+            $this->alasan_menolak_pip = '';
+        }
+
         $this->refreshNisnWarning();
 
         $this->validate([
@@ -262,15 +333,41 @@ class PpdbFormPage extends Component
             'jenis_kelamin' => 'required|in:L,P',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => ['required', 'date', 'before_or_equal:' . now()->subYears(14)->format('Y-m-d')],
+            'no_kk' => 'nullable|digits:16',
+            'no_registrasi_akta_lahir' => 'nullable|string|max:100',
             'agama' => 'required|string|max:50',
+            'kewarganegaraan' => 'required|in:WNI,WNA',
+            'negara_asal' => 'nullable|string|max:120|required_if:kewarganegaraan,WNA',
+            'kebutuhan_khusus' => 'nullable|string|max:50',
             'alamat_lengkap' => 'required|string',
             'rt_rw' => 'nullable|string|max:30',
+            'rt' => 'nullable|string|max:5',
+            'rw' => 'nullable|string|max:5',
             'kelurahan' => 'required|string|max:120',
             'kecamatan' => 'required|string|max:120',
+            'nama_dusun' => 'nullable|string|max:120',
+            'kode_pos' => 'nullable|string|max:10',
+            'lintang' => 'nullable|string|max:50',
+            'bujur' => 'nullable|string|max:50',
+            'tempat_tinggal' => 'nullable|string|max:50',
+            'moda_transportasi' => 'nullable|string|max:50',
             'anak_ke' => 'required|integer|min:1|max:20',
             'jumlah_saudara' => 'required|integer|min:0|max:20',
             'tinggi_badan' => 'required|integer|min:30|max:250',
             'berat_badan' => 'required|integer|min:2|max:300',
+            'lingkar_kepala' => 'nullable|integer|min:20|max:100',
+            'jarak_tempat_tinggal_kategori' => 'nullable|string|max:30',
+            'jarak_tempat_tinggal_km' => 'nullable|numeric|min:0|max:200',
+            'waktu_tempuh_jam' => 'nullable|integer|min:0|max:24',
+            'waktu_tempuh_menit' => 'nullable|integer|min:0|max:59',
+            'pekerjaan_warga_belajar' => 'nullable|string|max:50',
+            'punya_kip' => 'nullable|in:0,1',
+            'menerima_kip' => 'nullable|in:0,1',
+            'alasan_menolak_pip' => 'nullable|string|max:50',
+            'jenis_kesejahteraan' => 'nullable|string|max:50',
+            'nomor_kartu_kesejahteraan' => 'nullable|string|max:100',
+            'nama_di_kartu_kesejahteraan' => 'nullable|string|max:255',
+            'nomor_telepon_rumah' => 'nullable|string|max:30',
             'gol_darah' => 'required|string|max:10',
             'ukuran_seragam' => 'required|string|max:120',
             'nomor_hp' => ['required', 'regex:/^62\d{8,13}$/', Rule::unique('ppdb_applications', 'nomor_hp')],
@@ -282,6 +379,8 @@ class PpdbFormPage extends Component
             'nik.required' => 'NIK wajib diisi.',
             'nik.unique' => 'NIK sudah terdaftar di sistem.',
             'tanggal_lahir.before_or_equal' => 'Usia minimal 14 tahun untuk mendaftar.',
+            'no_kk.digits' => 'Nomor KK harus 16 digit angka.',
+            'negara_asal.required_if' => 'Nama negara wajib diisi untuk pendaftar WNA.',
             'kelurahan.required' => 'Kelurahan wajib diisi.',
             'kecamatan.required' => 'Kecamatan wajib diisi.',
             'anak_ke.required' => 'Anak ke- wajib diisi.',
@@ -339,21 +438,25 @@ class PpdbFormPage extends Component
 
         $this->validate([
             'nama_ayah' => 'required|string|max:255',
+            'nik_ayah' => 'nullable|digits:16',
             'tempat_lahir_ayah' => 'required|string|max:100',
             'tanggal_lahir_ayah' => 'required|date',
             'pendidikan_terakhir_ayah' => 'required|string|max:255',
             'pekerjaan_ayah' => 'required|string|max:255',
             'penghasilan_ayah' => 'required|string|max:255',
+            'kebutuhan_khusus_ayah' => 'nullable|string|max:50',
             'alamat_ayah' => 'required|string',
             'kelurahan_ayah' => 'required|string|max:120',
             'kecamatan_ayah' => 'required|string|max:120',
             'nomor_hp_ayah' => 'nullable|regex:/^62\d{8,13}$/',
             'nama_ibu' => 'required|string|max:255',
+            'nik_ibu' => 'nullable|digits:16',
             'tempat_lahir_ibu' => 'required|string|max:100',
             'tanggal_lahir_ibu' => 'required|date',
             'pendidikan_terakhir_ibu' => 'required|string|max:255',
             'pekerjaan_ibu' => 'required|string|max:255',
             'penghasilan_ibu' => 'required|string|max:255',
+            'kebutuhan_khusus_ibu' => 'nullable|string|max:50',
             'alamat_ibu' => 'required|string',
             'kelurahan_ibu' => 'required|string|max:120',
             'kecamatan_ibu' => 'required|string|max:120',
@@ -361,6 +464,8 @@ class PpdbFormPage extends Component
         ], [
             'nama_ayah.required' => 'Nama ayah wajib diisi.',
             'nama_ibu.required' => 'Nama ibu wajib diisi.',
+            'nik_ayah.digits' => 'NIK ayah harus 16 digit angka.',
+            'nik_ibu.digits' => 'NIK ibu harus 16 digit angka.',
             'tempat_lahir_ayah.required' => 'Tempat lahir ayah wajib diisi.',
             'tanggal_lahir_ayah.required' => 'Tanggal lahir ayah wajib diisi.',
             'tempat_lahir_ibu.required' => 'Tempat lahir ibu wajib diisi.',
@@ -400,15 +505,33 @@ class PpdbFormPage extends Component
     {
         $this->validate([
             'prestasi' => 'array|max:3',
+            'prestasi.*.achievement_type' => 'nullable|string|max:100',
             'prestasi.*.achievement_name' => 'nullable|string|max:255',
             'prestasi.*.achievement_rank' => 'nullable|string|max:100',
             'prestasi.*.achievement_level' => 'nullable|string|max:100',
+            'prestasi.*.achievement_year' => 'nullable|digits:4',
+            'prestasi.*.achievement_organizer' => 'nullable|string|max:255',
         ]);
 
-        $filled = collect($this->prestasi)->filter(fn (array $r): bool => trim($r['achievement_name'] ?? '') !== '' || trim($r['achievement_rank'] ?? '') !== '' || trim($r['achievement_level'] ?? '') !== '');
+        $filled = collect($this->prestasi)->filter(fn (array $r): bool =>
+            trim($r['achievement_type'] ?? '') !== ''
+            || trim($r['achievement_name'] ?? '') !== ''
+            || trim($r['achievement_rank'] ?? '') !== ''
+            || trim($r['achievement_level'] ?? '') !== ''
+            || trim($r['achievement_year'] ?? '') !== ''
+            || trim($r['achievement_organizer'] ?? '') !== ''
+        );
+
         foreach ($filled as $i => $r) {
-            if (trim($r['achievement_name'] ?? '') === '' || trim($r['achievement_rank'] ?? '') === '' || trim($r['achievement_level'] ?? '') === '') {
-                $this->addError("prestasi.{$i}.achievement_name", 'Prestasi yang diisi harus lengkap: nama, juara, dan tingkat.');
+            if (
+                trim($r['achievement_type'] ?? '') === ''
+                || trim($r['achievement_name'] ?? '') === ''
+                || trim($r['achievement_rank'] ?? '') === ''
+                || trim($r['achievement_level'] ?? '') === ''
+                || trim($r['achievement_year'] ?? '') === ''
+                || trim($r['achievement_organizer'] ?? '') === ''
+            ) {
+                $this->addError("prestasi.{$i}.achievement_name", 'Prestasi yang diisi harus lengkap: jenis, nama, peringkat, tingkat, tahun, dan penyelenggara.');
                 return false;
             }
         }
@@ -476,8 +599,15 @@ class PpdbFormPage extends Component
         $this->currentStep = 7;
 
         $achievementRows = collect($this->prestasi)
-            ->map(fn (array $i): array => ['achievement_name' => trim($i['achievement_name'] ?? ''), 'achievement_rank' => trim($i['achievement_rank'] ?? ''), 'achievement_level' => trim($i['achievement_level'] ?? '')])
-            ->filter(fn (array $i): bool => $i['achievement_name'] !== '')
+            ->map(fn (array $i): array => [
+                'achievement_type' => trim($i['achievement_type'] ?? ''),
+                'achievement_name' => trim($i['achievement_name'] ?? ''),
+                'achievement_rank' => trim($i['achievement_rank'] ?? ''),
+                'achievement_level' => trim($i['achievement_level'] ?? ''),
+                'achievement_year' => trim($i['achievement_year'] ?? ''),
+                'achievement_organizer' => trim($i['achievement_organizer'] ?? ''),
+            ])
+            ->filter(fn (array $i): bool => collect($i)->contains(fn (string $value): bool => $value !== ''))
             ->values();
 
         $nomorPendaftaran = $this->generateRegistrationNumber($period);
@@ -498,15 +628,41 @@ class PpdbFormPage extends Component
             'jenis_kelamin' => $this->jenis_kelamin,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir,
+            'no_kk' => $this->emptyToNull($this->no_kk),
+            'no_registrasi_akta_lahir' => $this->emptyToNull($this->no_registrasi_akta_lahir),
             'agama' => $this->emptyToNull($this->agama),
+            'kewarganegaraan' => $this->emptyToNull($this->kewarganegaraan) ?? 'WNI',
+            'negara_asal' => $this->emptyToNull($this->negara_asal),
+            'kebutuhan_khusus' => $this->emptyToNull($this->kebutuhan_khusus),
             'alamat_lengkap' => $this->alamat_lengkap,
-            'rt_rw' => $this->emptyToNull($this->rt_rw),
+            'rt_rw' => $this->emptyToNull($this->buildRtRw()) ?? $this->emptyToNull($this->rt_rw),
+            'rt' => $this->emptyToNull($this->rt),
+            'rw' => $this->emptyToNull($this->rw),
             'kelurahan' => $this->emptyToNull($this->kelurahan),
             'kecamatan' => $this->emptyToNull($this->kecamatan),
+            'nama_dusun' => $this->emptyToNull($this->nama_dusun),
+            'kode_pos' => $this->emptyToNull($this->kode_pos),
+            'lintang' => $this->emptyToNull($this->lintang),
+            'bujur' => $this->emptyToNull($this->bujur),
+            'tempat_tinggal' => $this->emptyToNull($this->tempat_tinggal),
+            'moda_transportasi' => $this->emptyToNull($this->moda_transportasi),
             'tinggi_badan' => $this->toNullableInt($this->tinggi_badan),
             'berat_badan' => $this->toNullableInt($this->berat_badan),
+            'lingkar_kepala' => $this->toNullableInt($this->lingkar_kepala),
             'gol_darah' => $this->emptyToNull($this->gol_darah),
             'ukuran_seragam' => $this->emptyToNull($this->ukuran_seragam),
+            'jarak_tempat_tinggal_kategori' => $this->emptyToNull($this->jarak_tempat_tinggal_kategori),
+            'jarak_tempat_tinggal_km' => $this->toNullableDecimal($this->jarak_tempat_tinggal_km),
+            'waktu_tempuh_jam' => $this->toNullableInt($this->waktu_tempuh_jam),
+            'waktu_tempuh_menit' => $this->toNullableInt($this->waktu_tempuh_menit),
+            'jenis_kesejahteraan' => $this->emptyToNull($this->jenis_kesejahteraan),
+            'nomor_kartu_kesejahteraan' => $this->emptyToNull($this->nomor_kartu_kesejahteraan),
+            'nama_di_kartu_kesejahteraan' => $this->emptyToNull($this->nama_di_kartu_kesejahteraan),
+            'pekerjaan_warga_belajar' => $this->emptyToNull($this->pekerjaan_warga_belajar),
+            'punya_kip' => $this->toNullableBool($this->punya_kip),
+            'menerima_kip' => $this->toNullableBool($this->menerima_kip),
+            'alasan_menolak_pip' => $this->emptyToNull($this->alasan_menolak_pip),
+            'nomor_telepon_rumah' => $this->emptyToNull($this->nomor_telepon_rumah),
             'nomor_hp' => $this->nomor_hp,
             'email' => $this->email,
             'asal_sekolah' => $this->asal_sekolah,
@@ -514,19 +670,23 @@ class PpdbFormPage extends Component
             'anak_ke' => $this->toNullableInt($this->anak_ke),
             'jumlah_saudara' => $this->toNullableInt($this->jumlah_saudara),
             'nama_ayah' => $this->nama_ayah,
+            'nik_ayah' => $this->emptyToNull($this->nik_ayah),
             'tempat_tanggal_lahir_ayah' => $ttlAyah,
             'pendidikan_terakhir_ayah' => $this->emptyToNull($this->pendidikan_terakhir_ayah),
             'pekerjaan_ayah' => $this->emptyToNull($this->pekerjaan_ayah),
             'penghasilan_ayah' => $this->emptyToNull($this->penghasilan_ayah),
+            'kebutuhan_khusus_ayah' => $this->emptyToNull($this->kebutuhan_khusus_ayah),
             'alamat_ayah' => $this->emptyToNull($this->alamat_ayah),
             'kelurahan_ayah' => $this->emptyToNull($this->kelurahan_ayah),
             'kecamatan_ayah' => $this->emptyToNull($this->kecamatan_ayah),
             'nomor_hp_ayah' => $this->emptyToNull($this->nomor_hp_ayah),
             'nama_ibu' => $this->nama_ibu,
+            'nik_ibu' => $this->emptyToNull($this->nik_ibu),
             'tempat_tanggal_lahir_ibu' => $ttlIbu,
             'pendidikan_terakhir_ibu' => $this->emptyToNull($this->pendidikan_terakhir_ibu),
             'pekerjaan_ibu' => $this->emptyToNull($this->pekerjaan_ibu),
             'penghasilan_ibu' => $this->emptyToNull($this->penghasilan_ibu),
+            'kebutuhan_khusus_ibu' => $this->emptyToNull($this->kebutuhan_khusus_ibu),
             'alamat_ibu' => $this->emptyToNull($this->alamat_ibu),
             'kelurahan_ibu' => $this->emptyToNull($this->kelurahan_ibu),
             'kecamatan_ibu' => $this->emptyToNull($this->kecamatan_ibu),
@@ -565,9 +725,12 @@ class PpdbFormPage extends Component
         foreach ($achievementRows as $index => $row) {
             PpdbAchievement::create([
                 'application_id' => $application->id,
+                'achievement_type' => $row['achievement_type'] ?: null,
                 'achievement_name' => $row['achievement_name'],
                 'achievement_rank' => $row['achievement_rank'],
                 'achievement_level' => $row['achievement_level'],
+                'achievement_year' => $row['achievement_year'] !== '' ? (int) $row['achievement_year'] : null,
+                'achievement_organizer' => $row['achievement_organizer'] ?: null,
                 'sort_order' => $index + 1,
             ]);
         }
@@ -604,7 +767,14 @@ class PpdbFormPage extends Component
 
     protected function emptyPrestasiRow(): array
     {
-        return ['achievement_name' => '', 'achievement_rank' => '', 'achievement_level' => ''];
+        return [
+            'achievement_type' => '',
+            'achievement_name' => '',
+            'achievement_rank' => '',
+            'achievement_level' => '',
+            'achievement_year' => '',
+            'achievement_organizer' => '',
+        ];
     }
 
     protected function normalizePhoneNumber(string $rawPhone): string
@@ -644,17 +814,43 @@ class PpdbFormPage extends Component
             'jenis_kelamin',
             'tempat_lahir',
             'tanggal_lahir',
+            'no_kk',
+            'no_registrasi_akta_lahir',
             'agama',
+            'kewarganegaraan',
+            'negara_asal',
+            'kebutuhan_khusus',
             'alamat_lengkap',
             'rt_rw',
+            'rt',
+            'rw',
             'kelurahan',
             'kecamatan',
+            'nama_dusun',
+            'kode_pos',
+            'lintang',
+            'bujur',
+            'tempat_tinggal',
+            'moda_transportasi',
             'anak_ke',
             'jumlah_saudara',
             'tinggi_badan',
             'berat_badan',
+            'lingkar_kepala',
+            'jarak_tempat_tinggal_kategori',
+            'jarak_tempat_tinggal_km',
+            'waktu_tempuh_jam',
+            'waktu_tempuh_menit',
+            'pekerjaan_warga_belajar',
+            'punya_kip',
+            'menerima_kip',
+            'alasan_menolak_pip',
+            'jenis_kesejahteraan',
+            'nomor_kartu_kesejahteraan',
+            'nama_di_kartu_kesejahteraan',
             'gol_darah',
             'ukuran_seragam',
+            'nomor_telepon_rumah',
             'nomor_hp',
             'email',
             'asal_sekolah',
@@ -665,21 +861,25 @@ class PpdbFormPage extends Component
             'pilihan_program_2_id',
             'pilihan_program_3_id',
             'nama_ayah',
+            'nik_ayah',
             'tempat_lahir_ayah',
             'tanggal_lahir_ayah',
             'pendidikan_terakhir_ayah',
             'pekerjaan_ayah',
             'penghasilan_ayah',
+            'kebutuhan_khusus_ayah',
             'alamat_ayah',
             'kelurahan_ayah',
             'kecamatan_ayah',
             'nomor_hp_ayah',
             'nama_ibu',
+            'nik_ibu',
             'tempat_lahir_ibu',
             'tanggal_lahir_ibu',
             'pendidikan_terakhir_ibu',
             'pekerjaan_ibu',
             'penghasilan_ibu',
+            'kebutuhan_khusus_ibu',
             'alamat_ibu',
             'kelurahan_ibu',
             'kecamatan_ibu',
@@ -704,9 +904,39 @@ class PpdbFormPage extends Component
         return $t !== '' ? $t : null;
     }
 
+    protected function buildRtRw(): string
+    {
+        $rt = trim($this->rt);
+        $rw = trim($this->rw);
+
+        if ($rt === '' && $rw === '') {
+            return trim($this->rt_rw);
+        }
+
+        return trim($rt . '/' . $rw, '/');
+    }
+
     protected function toNullableInt(mixed $value): ?int
     {
         return ($value === null || $value === '') ? null : (int) $value;
+    }
+
+    protected function toNullableDecimal(mixed $value): ?float
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (float) $value;
+    }
+
+    protected function toNullableBool(mixed $value): ?bool
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
     }
 
     protected function buildDownloadUrl(PpdbApplication $application): string

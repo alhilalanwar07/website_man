@@ -21,11 +21,39 @@
             <div class="col-span-2"><span class="text-slate-400">Nama:</span> <strong>{{ $nama_lengkap }}</strong></div>
             <div><span class="text-slate-400">NISN:</span> {{ $nisn ?: '-' }}</div>
             <div><span class="text-slate-400">NIK:</span> {{ $nik ?: '-' }}</div>
+            <div><span class="text-slate-400">No. KK:</span> {{ $no_kk ?: '-' }}</div>
+            <div><span class="text-slate-400">No. Reg. Akta:</span> {{ $no_registrasi_akta_lahir ?: '-' }}</div>
             <div><span class="text-slate-400">TTL:</span> {{ $tempat_lahir }}, {{ $tanggal_lahir }}</div>
             <div><span class="text-slate-400">JK:</span> {{ $jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
             <div><span class="text-slate-400">Agama:</span> {{ $agama }}</div>
+            <div><span class="text-slate-400">Kewarganegaraan:</span> {{ $kewarganegaraan }}{{ $kewarganegaraan === 'WNA' && $negara_asal ? ' - ' . $negara_asal : '' }}</div>
+            <div><span class="text-slate-400">Kebutuhan Khusus:</span> {{ $kebutuhan_khusus ?: '-' }}</div>
+            <div><span class="text-slate-400">Telepon Rumah:</span> {{ $nomor_telepon_rumah ?: '-' }}</div>
             <div><span class="text-slate-400">HP:</span> {{ $nomor_hp }}</div>
             <div class="col-span-2"><span class="text-slate-400">Email:</span> {{ $email }}</div>
+            <div class="col-span-2 border-t border-slate-100 pt-2 mt-1"></div>
+            <div class="col-span-2"><span class="text-slate-400">Alamat:</span> {{ $alamat_lengkap }}</div>
+            <div><span class="text-slate-400">RT/RW:</span> {{ $rt_rw ?: ($rt || $rw ? trim($rt . '/' . $rw, '/') : '-') }}</div>
+            <div><span class="text-slate-400">Dusun:</span> {{ $nama_dusun ?: '-' }}</div>
+            <div><span class="text-slate-400">Kelurahan:</span> {{ $kelurahan ?: '-' }}</div>
+            <div><span class="text-slate-400">Kecamatan:</span> {{ $kecamatan ?: '-' }}</div>
+            <div><span class="text-slate-400">Kode Pos:</span> {{ $kode_pos ?: '-' }}</div>
+            <div><span class="text-slate-400">Koordinat:</span> {{ ($lintang && $bujur) ? $lintang . ', ' . $bujur : '-' }}</div>
+            <div><span class="text-slate-400">Tempat Tinggal:</span> {{ $tempat_tinggal ?: '-' }}</div>
+            <div><span class="text-slate-400">Transportasi:</span> {{ $moda_transportasi ?: '-' }}</div>
+            <div><span class="text-slate-400">Anak ke:</span> {{ $anak_ke ?: '-' }}</div>
+            <div><span class="text-slate-400">Jumlah Saudara:</span> {{ $jumlah_saudara ?: '-' }}</div>
+            <div><span class="text-slate-400">TB/BB:</span> {{ $tinggi_badan ?: '-' }} cm / {{ $berat_badan ?: '-' }} kg</div>
+            <div><span class="text-slate-400">Lingkar Kepala:</span> {{ $lingkar_kepala ? $lingkar_kepala . ' cm' : '-' }}</div>
+            <div><span class="text-slate-400">Jarak Rumah:</span> {{ $jarak_tempat_tinggal_kategori ?: '-' }}{{ $jarak_tempat_tinggal_km ? ' (' . $jarak_tempat_tinggal_km . ' km)' : '' }}</div>
+            <div><span class="text-slate-400">Waktu Tempuh:</span> {{ ($waktu_tempuh_jam !== '' || $waktu_tempuh_menit !== '') ? (($waktu_tempuh_jam ?: 0) . ' jam ' . ($waktu_tempuh_menit ?: 0) . ' menit') : '-' }}</div>
+            <div><span class="text-slate-400">Pekerjaan Warga Belajar:</span> {{ $pekerjaan_warga_belajar ?: '-' }}</div>
+            <div><span class="text-slate-400">Punya KIP:</span> {{ $punya_kip === '1' ? 'Ya' : ($punya_kip === '0' ? 'Tidak' : '-') }}</div>
+            <div><span class="text-slate-400">Masih Menerima KIP:</span> {{ $menerima_kip === '1' ? 'Ya' : ($menerima_kip === '0' ? 'Tidak' : '-') }}</div>
+            <div><span class="text-slate-400">Alasan Menolak PIP:</span> {{ $alasan_menolak_pip ?: '-' }}</div>
+            <div><span class="text-slate-400">Jenis Kesejahteraan:</span> {{ $jenis_kesejahteraan ?: '-' }}</div>
+            <div><span class="text-slate-400">No. Kartu:</span> {{ $nomor_kartu_kesejahteraan ?: '-' }}</div>
+            <div><span class="text-slate-400">Nama di Kartu:</span> {{ $nama_di_kartu_kesejahteraan ?: '-' }}</div>
         </div>
     </div>
 
@@ -52,14 +80,57 @@
         </div>
         <div class="px-5 py-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
             <div><span class="text-slate-400">Ayah:</span> {{ $nama_ayah }}</div>
+            <div><span class="text-slate-400">NIK Ayah:</span> {{ $nik_ayah ?: '-' }}</div>
             <div><span class="text-slate-400">TTL:</span> {{ $tempat_lahir_ayah }}, {{ $tanggal_lahir_ayah }}</div>
+            <div><span class="text-slate-400">Pendidikan:</span> {{ $pendidikan_terakhir_ayah ?: '-' }}</div>
             <div><span class="text-slate-400">Pekerjaan:</span> {{ $pekerjaan_ayah }}</div>
+            <div><span class="text-slate-400">Penghasilan:</span> {{ $penghasilan_ayah ?: '-' }}</div>
+            <div><span class="text-slate-400">Kebutuhan Khusus:</span> {{ $kebutuhan_khusus_ayah ?: '-' }}</div>
             <div><span class="text-slate-400">HP Ayah:</span> {{ $nomor_hp_ayah ?: '-' }}</div>
             <div class="col-span-2 border-t border-slate-100 pt-2 mt-1"></div>
             <div><span class="text-slate-400">Ibu:</span> {{ $nama_ibu }}</div>
+            <div><span class="text-slate-400">NIK Ibu:</span> {{ $nik_ibu ?: '-' }}</div>
             <div><span class="text-slate-400">TTL:</span> {{ $tempat_lahir_ibu }}, {{ $tanggal_lahir_ibu }}</div>
+            <div><span class="text-slate-400">Pendidikan:</span> {{ $pendidikan_terakhir_ibu ?: '-' }}</div>
             <div><span class="text-slate-400">Pekerjaan:</span> {{ $pekerjaan_ibu }}</div>
+            <div><span class="text-slate-400">Penghasilan:</span> {{ $penghasilan_ibu ?: '-' }}</div>
+            <div><span class="text-slate-400">Kebutuhan Khusus:</span> {{ $kebutuhan_khusus_ibu ?: '-' }}</div>
             <div><span class="text-slate-400">HP Ibu:</span> {{ $nomor_hp_ibu ?: '-' }}</div>
+        </div>
+    </div>
+
+    {{-- Prestasi --}}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-3 bg-slate-50 border-b border-slate-100">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Prestasi</span>
+            <button type="button" wire:click="goToStep(5)" class="text-xs font-semibold text-blue-600 hover:text-blue-700">Ubah</button>
+        </div>
+        <div class="px-5 py-4 space-y-3 text-sm">
+            @php
+                $prestasiFilled = collect($prestasi)->filter(fn ($item) =>
+                    trim((string) ($item['achievement_type'] ?? '')) !== ''
+                    || trim((string) ($item['achievement_name'] ?? '')) !== ''
+                    || trim((string) ($item['achievement_rank'] ?? '')) !== ''
+                    || trim((string) ($item['achievement_level'] ?? '')) !== ''
+                    || trim((string) ($item['achievement_year'] ?? '')) !== ''
+                    || trim((string) ($item['achievement_organizer'] ?? '')) !== ''
+                );
+            @endphp
+
+            @if($prestasiFilled->isEmpty())
+                <p class="text-slate-500">Belum ada data prestasi.</p>
+            @else
+                @foreach($prestasiFilled as $item)
+                    <div class="rounded-xl border border-slate-200 p-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+                        <div><span class="text-slate-400">Jenis:</span> {{ $item['achievement_type'] ?: '-' }}</div>
+                        <div><span class="text-slate-400">Nama:</span> {{ $item['achievement_name'] ?: '-' }}</div>
+                        <div><span class="text-slate-400">Peringkat:</span> {{ $item['achievement_rank'] ?: '-' }}</div>
+                        <div><span class="text-slate-400">Tingkat:</span> {{ $item['achievement_level'] ?: '-' }}</div>
+                        <div><span class="text-slate-400">Tahun:</span> {{ $item['achievement_year'] ?: '-' }}</div>
+                        <div><span class="text-slate-400">Penyelenggara:</span> {{ $item['achievement_organizer'] ?: '-' }}</div>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 

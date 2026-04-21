@@ -11,9 +11,12 @@ class PpdbAchievement extends Model
 
     protected $fillable = [
         'application_id',
+        'achievement_type',
         'achievement_name',
         'achievement_rank',
         'achievement_level',
+        'achievement_year',
+        'achievement_organizer',
         'sort_order',
     ];
 

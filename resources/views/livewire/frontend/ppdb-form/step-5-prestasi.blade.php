@@ -2,7 +2,7 @@
 <div class="space-y-6">
     <div>
         <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Prestasi</h2>
-        <p class="mt-1 text-sm text-slate-500">Cantumkan prestasi yang pernah diraih (opsional, maksimal 3). Jika tidak ada, langsung lanjutkan.</p>
+        <p class="mt-1 text-sm text-slate-500">Cantumkan prestasi yang pernah diraih (opsional, maksimal 3). Jika mengisi satu baris, semua kolom pada baris tersebut wajib lengkap.</p>
     </div>
 
     <div class="space-y-4">
@@ -23,14 +23,25 @@
                     @endif
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jenis Prestasi</label>
+                        <select wire:model="prestasi.{{ $index }}.achievement_type" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
+                            <option value="">Pilih</option>
+                            <option value="1 Sains">1 Sains</option>
+                            <option value="2 Seni">2 Seni</option>
+                            <option value="3 Olahraga">3 Olahraga</option>
+                            <option value="4 Lain-lain">4 Lain-lain</option>
+                        </select>
+                        @error('prestasi.' . $index . '.achievement_type') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Prestasi</label>
                         <input wire:model.blur="prestasi.{{ $index }}.achievement_name" type="text" placeholder="Contoh: Lomba Cerdas Cermat" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                         @error('prestasi.' . $index . '.achievement_name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Juara</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Peringkat</label>
                         <input wire:model.blur="prestasi.{{ $index }}.achievement_rank" type="text" placeholder="Contoh: Juara 1" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                         @error('prestasi.' . $index . '.achievement_rank') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -38,14 +49,24 @@
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tingkat</label>
                         <select wire:model="prestasi.{{ $index }}.achievement_level" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                             <option value="">Pilih</option>
-                            <option value="Sekolah">Sekolah</option>
-                            <option value="Kecamatan">Kecamatan</option>
-                            <option value="Kabupaten/Kota">Kabupaten/Kota</option>
-                            <option value="Provinsi">Provinsi</option>
-                            <option value="Nasional">Nasional</option>
-                            <option value="Internasional">Internasional</option>
+                            <option value="1 Sekolah">1 Sekolah</option>
+                            <option value="2 Kecamatan">2 Kecamatan</option>
+                            <option value="3 Kabupaten">3 Kabupaten</option>
+                            <option value="4 Provinsi">4 Provinsi</option>
+                            <option value="5 Nasional">5 Nasional</option>
+                            <option value="6 Internasional">6 Internasional</option>
                         </select>
                         @error('prestasi.' . $index . '.achievement_level') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tahun</label>
+                        <input wire:model.blur="prestasi.{{ $index }}.achievement_year" type="text" maxlength="4" placeholder="2025" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
+                        @error('prestasi.' . $index . '.achievement_year') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="sm:col-span-2 lg:col-span-1">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Penyelenggara</label>
+                        <input wire:model.blur="prestasi.{{ $index }}.achievement_organizer" type="text" placeholder="Contoh: Panitia O2SN" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
+                        @error('prestasi.' . $index . '.achievement_organizer') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
             </div>

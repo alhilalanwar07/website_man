@@ -49,22 +49,6 @@ use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
-
-Route::get('/deploy/migrate-pilihan-program-3', function () {
-    $migrationPath = 'database/migrations/2026_04_19_100000_add_pilihan_program_3_to_ppdb_applications.php';
-
-    Artisan::call('migrate', [
-        '--path' => $migrationPath,
-        '--force' => true,
-    ]);
-
-    return response()->json([
-        'ok' => true,
-        'message' => 'Migration pilihan_program_3_id selesai dijalankan.',
-        'path' => $migrationPath,
-        'output' => trim(Artisan::output()),
-    ]);
-})->middleware('throttle:3,1')->name('deploy.migrate-pilihan-program-3');
     
 // Frontend
 Route::get('/', Home::class)->name('home');
