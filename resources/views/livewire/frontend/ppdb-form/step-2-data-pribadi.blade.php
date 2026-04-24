@@ -54,17 +54,10 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor KK</label>
-                <input wire:model.blur="no_kk" type="text" maxlength="16" placeholder="16 digit" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                @error('no_kk') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">No Registrasi Akta Lahir</label>
-                <input wire:model.blur="no_registrasi_akta_lahir" type="text" placeholder="Nomor registrasi akta" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                @error('no_registrasi_akta_lahir') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
+        <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor KK</label>
+            <input wire:model.blur="no_kk" type="text" maxlength="16" placeholder="16 digit" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
+            @error('no_kk') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -249,37 +242,10 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Gol. Darah <span class="text-red-500">*</span></label>
-                <select wire:model="gol_darah" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="AB">AB</option>
-                    <option value="O">O</option>
-                </select>
-                @error('gol_darah') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Ukuran Seragam <span class="text-red-500">*</span></label>
-                <select wire:model="ukuran_seragam" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih</option>
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                    <option value="XXL">XXL</option>
-                    <option value="3XL">3XL</option>
-                </select>
-                @error('ukuran_seragam') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Lingkar Kepala (cm)</label>
-                <input wire:model.blur="lingkar_kepala" type="number" min="20" max="100" placeholder="54" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                @error('lingkar_kepala') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
+        <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Lingkar Kepala (cm)</label>
+            <input wire:model.blur="lingkar_kepala" type="number" min="20" max="100" placeholder="54" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
+            @error('lingkar_kepala') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">

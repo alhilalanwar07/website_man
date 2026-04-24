@@ -53,7 +53,6 @@ class PpdbFormPage extends Component
     public string $tempat_lahir = '';
     public string $tanggal_lahir = '';
     public string $no_kk = '';
-    public string $no_registrasi_akta_lahir = '';
     public string $agama = 'Islam';
     public string $kewarganegaraan = 'WNI';
     public string $negara_asal = '';
@@ -85,8 +84,6 @@ class PpdbFormPage extends Component
     public string $jenis_kesejahteraan = '';
     public string $nomor_kartu_kesejahteraan = '';
     public string $nama_di_kartu_kesejahteraan = '';
-    public string $gol_darah = '';
-    public string $ukuran_seragam = '';
     public string $nomor_telepon_rumah = '';
     public string $nomor_hp = '';
     public string $email = '';
@@ -132,9 +129,6 @@ class PpdbFormPage extends Component
 
     // Step 6: Berkas (updated)
     public $file_kk;
-    public $file_akta;
-    public $file_rapor_cover;
-    public $file_rapor_nilai;
     public $file_pas_foto;
     public $file_skl;
     public $file_kip;
@@ -154,7 +148,8 @@ class PpdbFormPage extends Component
         $this->initializePrestasiRows();
         $period = $this->resolveSelectedPeriod();
         if ($period && $period->tracks->isNotEmpty()) {
-            $this->track_id = (string) $period->tracks->first()->id;
+            $regulerTrack = $period->tracks->firstWhere(fn($t) => stripos($t->nama_jalur, 'reguler') !== false);
+            $this->track_id = $regulerTrack ? (string) $regulerTrack->id : (string) $period->tracks->first()->id;
         }
         if ($period && $this->selectedPeriod === '') {
             $this->selectedPeriod = (string) $period->id;
@@ -166,7 +161,12 @@ class PpdbFormPage extends Component
     public function updatedSelectedPeriod(): void
     {
         $period = $this->resolveSelectedPeriod();
-        $this->track_id = $period && $period->tracks->isNotEmpty() ? (string) $period->tracks->first()->id : '';
+        if ($period && $period->tracks->isNotEmpty()) {
+            $regulerTrack = $period->tracks->firstWhere(fn($t) => stripos($t->nama_jalur, 'reguler') !== false);
+            $this->track_id = $regulerTrack ? (string) $regulerTrack->id : (string) $period->tracks->first()->id;
+        } else {
+            $this->track_id = '';
+        }
     }
 
     public function updatedNisn(string $value): void
@@ -334,7 +334,6 @@ class PpdbFormPage extends Component
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => ['required', 'date', 'before_or_equal:' . now()->subYears(14)->format('Y-m-d')],
             'no_kk' => 'nullable|digits:16',
-            'no_registrasi_akta_lahir' => 'nullable|string|max:100',
             'agama' => 'required|string|max:50',
             'kewarganegaraan' => 'required|in:WNI,WNA',
             'negara_asal' => 'nullable|string|max:120|required_if:kewarganegaraan,WNA',
@@ -367,8 +366,6 @@ class PpdbFormPage extends Component
             'nomor_kartu_kesejahteraan' => 'nullable|string|max:100',
             'nama_di_kartu_kesejahteraan' => 'nullable|string|max:255',
             'nomor_telepon_rumah' => 'nullable|string|max:30',
-            'gol_darah' => 'required|string|max:10',
-            'ukuran_seragam' => 'required|string|max:120',
             'nomor_hp' => ['required', 'regex:/^62\d{8,13}$/', Rule::unique('ppdb_applications', 'nomor_hp')],
             'email' => ['required', 'email', 'max:255', Rule::unique('ppdb_applications', 'email')],
         ], [
@@ -386,8 +383,6 @@ class PpdbFormPage extends Component
             'jumlah_saudara.required' => 'Jumlah saudara wajib diisi.',
             'tinggi_badan.required' => 'Tinggi badan wajib diisi.',
             'berat_badan.required' => 'Berat badan wajib diisi.',
-            'gol_darah.required' => 'Golongan darah wajib diisi.',
-            'ukuran_seragam.required' => 'Ukuran seragam wajib diisi.',
             'nomor_hp.regex' => 'Nomor HP wajib format Indonesia (08... atau 62...).',
             'nomor_hp.unique' => 'Nomor HP sudah terdaftar di sistem.',
             'email.unique' => 'Email sudah terdaftar. Gunakan email lain.',
@@ -541,17 +536,11 @@ class PpdbFormPage extends Component
     {
         $this->validate([
             'file_kk' => 'required|file|mimes:pdf|max:4096',
-            'file_akta' => 'required|file|mimes:pdf|max:4096',
-            'file_rapor_cover' => 'required|file|mimes:pdf|max:4096',
-            'file_rapor_nilai' => 'required|file|mimes:pdf|max:4096',
             'file_pas_foto' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'file_skl' => 'required|file|mimes:pdf|max:4096',
             'catatan_pendaftar' => 'nullable|string',
         ], [
             'file_kk.mimes' => 'KK harus berformat PDF.',
-            'file_akta.mimes' => 'Akta harus berformat PDF.',
-            'file_rapor_cover.mimes' => 'Halaman depan rapor harus PDF.',
-            'file_rapor_nilai.mimes' => 'Nilai rapor harus PDF.',
             'file_pas_foto.image' => 'Pas foto harus berupa gambar (JPG/PNG).',
             'file_pas_foto.max' => 'Ukuran pas foto maksimal 2 MB.',
             'file_skl.mimes' => 'Ijazah/SKL harus berformat PDF.',
@@ -600,9 +589,6 @@ class PpdbFormPage extends Component
         // Verify all required files are still present (temp uploads may expire)
         $requiredFiles = [
             'file_kk' => 'Kartu Keluarga',
-            'file_akta' => 'Akta Kelahiran',
-            'file_rapor_cover' => 'Halaman Depan Rapor',
-            'file_rapor_nilai' => 'Nilai Rapor',
             'file_pas_foto' => 'Pas Foto',
             'file_skl' => 'Ijazah / SKL',
         ];
@@ -649,7 +635,7 @@ class PpdbFormPage extends Component
                 'tempat_lahir' => $this->tempat_lahir,
                 'tanggal_lahir' => $this->tanggal_lahir,
                 'no_kk' => $this->emptyToNull($this->no_kk),
-                'no_registrasi_akta_lahir' => $this->emptyToNull($this->no_registrasi_akta_lahir),
+                'no_registrasi_akta_lahir' => null,
                 'agama' => $this->emptyToNull($this->agama),
                 'kewarganegaraan' => $this->emptyToNull($this->kewarganegaraan) ?? 'WNI',
                 'negara_asal' => $this->emptyToNull($this->negara_asal),
@@ -669,8 +655,8 @@ class PpdbFormPage extends Component
                 'tinggi_badan' => $this->toNullableInt($this->tinggi_badan),
                 'berat_badan' => $this->toNullableInt($this->berat_badan),
                 'lingkar_kepala' => $this->toNullableInt($this->lingkar_kepala),
-                'gol_darah' => $this->emptyToNull($this->gol_darah),
-                'ukuran_seragam' => $this->emptyToNull($this->ukuran_seragam),
+                'gol_darah' => null,
+                'ukuran_seragam' => null,
                 'jarak_tempat_tinggal_kategori' => $this->emptyToNull($this->jarak_tempat_tinggal_kategori),
                 'jarak_tempat_tinggal_km' => $this->toNullableDecimal($this->jarak_tempat_tinggal_km),
                 'waktu_tempuh_jam' => $this->toNullableInt($this->waktu_tempuh_jam),
@@ -726,9 +712,6 @@ class PpdbFormPage extends Component
             // Store documents with error tracking
             $documents = [
                 'Kartu Keluarga' => $this->file_kk,
-                'Akta Kelahiran' => $this->file_akta,
-                'Halaman Depan Rapor' => $this->file_rapor_cover,
-                'Nilai Rapor' => $this->file_rapor_nilai,
                 'Pas Foto' => $this->file_pas_foto,
                 'Ijazah / SKL' => $this->file_skl,
             ];
@@ -865,7 +848,6 @@ class PpdbFormPage extends Component
             'tempat_lahir',
             'tanggal_lahir',
             'no_kk',
-            'no_registrasi_akta_lahir',
             'agama',
             'kewarganegaraan',
             'negara_asal',
@@ -897,8 +879,6 @@ class PpdbFormPage extends Component
             'jenis_kesejahteraan',
             'nomor_kartu_kesejahteraan',
             'nama_di_kartu_kesejahteraan',
-            'gol_darah',
-            'ukuran_seragam',
             'nomor_telepon_rumah',
             'nomor_hp',
             'email',

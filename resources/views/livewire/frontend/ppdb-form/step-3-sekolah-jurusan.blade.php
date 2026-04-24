@@ -46,8 +46,7 @@
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jalur Pendaftaran <span class="text-red-500">*</span></label>
             <select wire:model="track_id" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                <option value="">Pilih Jalur</option>
-                @foreach($period->tracks as $track)
+                @foreach($period->tracks->filter(fn($t) => stripos($t->nama_jalur, 'reguler') !== false) as $track)
                     <option wire:key="track-opt-{{ $track->id }}" value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
                 @endforeach
             </select>

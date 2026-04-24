@@ -257,10 +257,18 @@
 
     $tahunAjaranLabel = str_replace('/', '-', $tahunAjaran);
     $jenisKelaminLabel = $application->jenis_kelamin === 'L' ? 'LAKI - LAKI' : 'PEREMPUAN';
-    $pilihanJurusan1 = (string) ($application->pilihanProgram1?->nama_jurusan ?? '-');
+        $pilihanJurusan1 = (string) ($application->pilihanProgram1?->nama_jurusan ?? '-');
     $pilihanJurusan2 = (string) ($application->pilihanProgram2?->nama_jurusan ?? '-');
     $pilihanJurusan3 = (string) ($application->pilihanProgram3?->nama_jurusan ?? '-');
     $tanggalCetak = now()->translatedFormat('F Y');
+
+    $pilihanJurusan1MapColor = null;
+    if ($pilihanJurusan1 !== '-') {
+        $rule = collect($mapColorRows)->firstWhere('nama_jurusan', $pilihanJurusan1);
+        if ($rule) {
+            $pilihanJurusan1MapColor = $rule['warna_map'];
+        }
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -271,7 +279,7 @@
     <style>
         @page {
             size: 210mm 330mm;
-            margin: 12mm 11mm 12mm 11mm;
+            margin: 12mm 11mm 15mm 11mm;
         }
 
         * {
@@ -543,7 +551,7 @@
         }
 
         .page-one .parent-label {
-            width: 154px;
+            width: 175px;
         }
 
         .page-one .declaration-title {
@@ -593,12 +601,16 @@
             padding-bottom: 1px;
         }
 
-        .security-box {
-            margin-top: 10px;
-            border: 1px dashed #222;
-            padding: 6px 8px;
+                .fixed-footer {
+            position: fixed;
+            bottom: -12mm;
+            left: 0;
+            right: 0;
+            border-top: 1px dashed #999;
+            padding-top: 4px;
             font-size: 8pt;
-            line-height: 1.45;
+            text-align: center;
+            color: #555;
         }
 
         .lampiran-title {
@@ -669,6 +681,13 @@
 </head>
 
 <body>
+    @if(isset($documentSecurity) && is_array($documentSecurity))
+        <div class="fixed-footer">
+            <strong>Referensi Dokumen SPMB</strong> | 
+            Nomor pendaftaran: {{ $application->nomor_pendaftaran ?: '-' }} | 
+            Kode dokumen: {{ $documentSecurity['document_code'] ?? '-' }}
+        </div>
+    @endif
     <div class="sheet page-one">
         <table class="kop-table">
             <tr>
@@ -713,9 +732,15 @@
                     </div>
                 </div>
             </div>
-            <div class="title-cell">
+                        <div class="title-cell">
                 <div class="form-title">FORMULIR PENDAFTARAN SPMB (SISTEM PENERIMAAN MURID BARU)</div>
                 <div class="form-subtitle">SMK NEGERI 1 KOLAKA TP. {{ $tahunAjaranLabel }}</div>
+                @if($pilihanJurusan1MapColor)
+                    <div style="margin-top: 10px; font-weight: bold; font-size: 10pt; color: #222; border: 1px solid #444; padding: 6px; display: inline-block; background-color: #f9f9f9;">
+                        PENTING: Gunakan Map Berwarna <span style="text-transform: uppercase; text-decoration: underline;">{{ $pilihanJurusan1MapColor }}</span> 
+                        <br><span style="font-size: 8.5pt; font-weight: normal;">(Sesuai jurusan pilihan ke-1: {{ $pilihanJurusan1 }})</span>
+                    </div>
+                @endif
             </div>
         </div>
 

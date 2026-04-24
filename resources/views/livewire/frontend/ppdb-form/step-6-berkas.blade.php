@@ -39,38 +39,6 @@
                 'isPdf' => true,
             ])
 
-            {{-- 2. Akta Kelahiran (PDF) --}}
-            @include('livewire.frontend.ppdb-form.partials.upload-field', [
-                'wireModel' => 'file_akta',
-                'label' => 'Akta Kelahiran',
-                'required' => true,
-                'accept' => '.pdf',
-                'hint' => 'PDF, maks 4 MB',
-                'fileVar' => $file_akta,
-                'isPdf' => true,
-            ])
-
-            {{-- 3. Halaman Depan Rapor (PDF) --}}
-            @include('livewire.frontend.ppdb-form.partials.upload-field', [
-                'wireModel' => 'file_rapor_cover',
-                'label' => 'Halaman Depan Rapor',
-                'required' => true,
-                'accept' => '.pdf',
-                'hint' => 'PDF, maks 4 MB',
-                'fileVar' => $file_rapor_cover,
-                'isPdf' => true,
-            ])
-
-            {{-- 4. Nilai Rapor (PDF) --}}
-            @include('livewire.frontend.ppdb-form.partials.upload-field', [
-                'wireModel' => 'file_rapor_nilai',
-                'label' => 'PDF Nilai Rapor',
-                'required' => true,
-                'accept' => '.pdf',
-                'hint' => 'PDF, maks 4 MB',
-                'fileVar' => $file_rapor_nilai,
-                'isPdf' => true,
-            ])
 
             {{-- 5. Pas Foto (Image) --}}
             @include('livewire.frontend.ppdb-form.partials.upload-field', [
@@ -96,7 +64,7 @@
         </div>
 
         {{-- Upload indicator --}}
-        <div wire:loading wire:target="file_kk,file_akta,file_rapor_cover,file_rapor_nilai,file_pas_foto,file_skl" class="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 flex items-center gap-2">
+        <div wire:loading wire:target="file_kk,file_pas_foto,file_skl" class="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 flex items-center gap-2">
             <svg class="animate-spin w-4 h-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
             <span class="text-xs font-semibold text-blue-700">Mengunggah berkas, mohon tunggu...</span>
         </div>

@@ -22,7 +22,6 @@
             <div><span class="text-slate-400">NISN:</span> {{ $nisn ?: '-' }}</div>
             <div><span class="text-slate-400">NIK:</span> {{ $nik ?: '-' }}</div>
             <div><span class="text-slate-400">No. KK:</span> {{ $no_kk ?: '-' }}</div>
-            <div><span class="text-slate-400">No. Reg. Akta:</span> {{ $no_registrasi_akta_lahir ?: '-' }}</div>
             <div><span class="text-slate-400">TTL:</span> {{ $tempat_lahir }}, {{ $tanggal_lahir }}</div>
             <div><span class="text-slate-400">JK:</span> {{ $jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
             <div><span class="text-slate-400">Agama:</span> {{ $agama }}</div>
@@ -149,9 +148,6 @@
             @php
                 $berkas = [
                     'KK' => $file_kk,
-                    'Akta' => $file_akta,
-                    'Rapor Cover' => $file_rapor_cover,
-                    'Nilai Rapor' => $file_rapor_nilai,
                     'Foto' => $file_pas_foto,
                     'Ijazah/SKL' => $file_skl,
                 ];
