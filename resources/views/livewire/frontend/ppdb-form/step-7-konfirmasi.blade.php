@@ -44,6 +44,8 @@
             <div><span class="text-slate-400">Jumlah Saudara:</span> {{ $jumlah_saudara ?: '-' }}</div>
             <div><span class="text-slate-400">TB/BB:</span> {{ $tinggi_badan ?: '-' }} cm / {{ $berat_badan ?: '-' }} kg</div>
             <div><span class="text-slate-400">Lingkar Kepala:</span> {{ $lingkar_kepala ? $lingkar_kepala . ' cm' : '-' }}</div>
+            <div><span class="text-slate-400">Gol. Darah:</span> {{ $gol_darah ?: '-' }}</div>
+            <div><span class="text-slate-400">Ukuran Seragam:</span> {{ $ukuran_seragam ?: '-' }}</div>
             <div><span class="text-slate-400">Jarak Rumah:</span> {{ $jarak_tempat_tinggal_kategori ?: '-' }}{{ $jarak_tempat_tinggal_km ? ' (' . $jarak_tempat_tinggal_km . ' km)' : '' }}</div>
             <div><span class="text-slate-400">Waktu Tempuh:</span> {{ ($waktu_tempuh_jam !== '' || $waktu_tempuh_menit !== '') ? (($waktu_tempuh_jam ?: 0) . ' jam ' . ($waktu_tempuh_menit ?: 0) . ' menit') : '-' }}</div>
             <div><span class="text-slate-400">Punya KIP:</span> {{ $punya_kip === '1' ? 'Ya' : ($punya_kip === '0' ? 'Tidak' : '-') }}</div>

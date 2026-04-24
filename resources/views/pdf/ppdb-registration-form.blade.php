@@ -889,10 +889,6 @@
                 <td>{{ $pilihanJurusan3 }}</td>
             </tr>
         </table>
-        
-        <div style="margin-top: 8px; border: 1px solid #111; padding: 6px; font-size: 10pt; line-height: 1.3;">
-            <strong style="text-decoration: underline;">Ketentuan Map Berkas:</strong> Silakan gunakan map kertas berwarna <strong>{{ strtoupper($warnaMapUtama) }}</strong> saat menyerahkan dokumen fisik ke panitia pendaftaran sesuai dengan pilihan jurusan pertama Anda.
-        </div>
 
         <div class="section-title">C. DATA ORANG TUA</div>
         <table class="parent-grid">
@@ -1033,7 +1029,7 @@
                     <p style="margin-top: 4px;">Tanda Tangan Dan Nama Jelas</p>
                 </td>
                 <td>
-                    <p>Kolaka, {{ $tanggalCetak }}</p>
+                    <p>Kolaka, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ $tanggalCetak }}</p>
                     <p>Calon Murid Baru</p>
                     <div class="sign-space"></div>
                     <div class="sign-line"></div>
@@ -1114,26 +1110,11 @@
         </div>
 
         <div class="list-box">
-            <h4>4. Ketentuan warna map per jurusan</h4>
-            <table class="boxed-table" style="margin-top: 2px;">
-                <thead>
-                    <tr>
-                        <th style="width: 48px;">No</th>
-                        <th>Program keahlian</th>
-                        <th style="width: 150px;">Warna map</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($mapColorRows as $index => $row)
-                        <tr>
-                            <td style="text-align: center;">{{ $index + 1 }}</td>
-                            <td>{!! in_array($row['nama_jurusan'], $selectedPrograms, true) ? '<strong>' . e($row['nama_jurusan']) . ' (Pilihan Anda)</strong>' : e($row['nama_jurusan']) !!}</td>
-                            <td style="text-align: center;">{{ $row['warna_map'] }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <p class="muted-note">Jika terdapat perubahan warna map dari panitia, gunakan ketentuan terbaru pada pengumuman resmi sekolah.</p>
+            <h4>4. Ketentuan map berkas fisik</h4>
+            <div style="margin-top: 5px; border: 1px dashed #444; padding: 8px; font-size: 10pt; line-height: 1.4; background-color: #fcfcfc;">
+                Berdasarkan pilihan jurusan pertama Anda (<strong>{{ $pilihanJurusan1 }}</strong>), silakan gunakan map kertas berwarna <strong>{{ strtoupper($warnaMapUtama) }}</strong> saat menyerahkan dokumen fisik ke panitia pendaftaran.
+            </div>
+            <p class="muted-note" style="margin-top: 5px;">Jika terdapat perubahan warna map dari panitia, gunakan ketentuan terbaru pada pengumuman resmi sekolah.</p>
         </div>
 
         <div class="footer-note">

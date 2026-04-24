@@ -428,6 +428,8 @@
                             'Tinggi Badan' => $s->tinggi_badan ? $s->tinggi_badan . ' cm' : null,
                             'Berat Badan' => $s->berat_badan ? $s->berat_badan . ' kg' : null,
                             'Lingkar Kepala' => $s->lingkar_kepala ? $s->lingkar_kepala . ' cm' : null,
+                            'Golongan Darah' => $s->gol_darah,
+                            'Ukuran Seragam' => $s->ukuran_seragam,
                             'Punya KIP' => $s->punya_kip === true ? 'Ya' : ($s->punya_kip === false ? 'Tidak' : null),
                             'Menerima KIP' => $s->menerima_kip === true ? 'Ya' : ($s->menerima_kip === false ? 'Tidak' : null),
                             'Alasan Menolak PIP' => $s->alasan_menolak_pip,

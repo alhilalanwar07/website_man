@@ -56,7 +56,7 @@ class PpdbFormPage extends Component
     public string $agama = 'Islam';
     public string $kewarganegaraan = 'WNI';
     public string $negara_asal = '';
-    public string $kebutuhan_khusus = '01 Tidak';
+    public string $kebutuhan_khusus = 'Tidak';
     public string $alamat_lengkap = '';
     public string $rt_rw = '';
     public string $rt = '';
@@ -74,6 +74,8 @@ class PpdbFormPage extends Component
     public string $tinggi_badan = '';
     public string $berat_badan = '';
     public string $lingkar_kepala = '';
+    public string $gol_darah = '';
+    public string $ukuran_seragam = '';
     public string $jarak_tempat_tinggal_kategori = '';
     public string $jarak_tempat_tinggal_km = '';
     public string $waktu_tempuh_jam = '';
@@ -105,7 +107,7 @@ class PpdbFormPage extends Component
     public string $pendidikan_terakhir_ayah = '';
     public string $pekerjaan_ayah = '';
     public string $penghasilan_ayah = '';
-    public string $kebutuhan_khusus_ayah = '01 Tidak';
+    public string $kebutuhan_khusus_ayah = 'Tidak';
     public string $alamat_ayah = '';
     public string $kelurahan_ayah = '';
     public string $kecamatan_ayah = '';
@@ -117,7 +119,7 @@ class PpdbFormPage extends Component
     public string $pendidikan_terakhir_ibu = '';
     public string $pekerjaan_ibu = '';
     public string $penghasilan_ibu = '';
-    public string $kebutuhan_khusus_ibu = '01 Tidak';
+    public string $kebutuhan_khusus_ibu = 'Tidak';
     public string $alamat_ibu = '';
     public string $kelurahan_ibu = '';
     public string $kecamatan_ibu = '';
@@ -355,6 +357,8 @@ class PpdbFormPage extends Component
             'tinggi_badan' => 'required|integer|min:30|max:250',
             'berat_badan' => 'required|integer|min:2|max:300',
             'lingkar_kepala' => 'nullable|integer|min:20|max:100',
+            'gol_darah' => 'nullable|string|max:10',
+            'ukuran_seragam' => 'nullable|string|max:10',
             'jarak_tempat_tinggal_kategori' => 'nullable|string|max:30',
             'jarak_tempat_tinggal_km' => 'nullable|numeric|min:0|max:200',
             'waktu_tempuh_jam' => 'nullable|integer|min:0|max:24',
@@ -639,7 +643,7 @@ class PpdbFormPage extends Component
                 'agama' => $this->emptyToNull($this->agama),
                 'kewarganegaraan' => $this->emptyToNull($this->kewarganegaraan) ?? 'WNI',
                 'negara_asal' => $this->emptyToNull($this->negara_asal),
-                'kebutuhan_khusus' => $this->emptyToNull($this->kebutuhan_khusus),
+                'kebutuhan_khusus' => $this->cleanPrefix($this->emptyToNull($this->kebutuhan_khusus)),
                 'alamat_lengkap' => $this->alamat_lengkap,
                 'rt_rw' => $this->emptyToNull($this->buildRtRw()) ?? $this->emptyToNull($this->rt_rw),
                 'rt' => $this->emptyToNull($this->rt),
@@ -650,13 +654,13 @@ class PpdbFormPage extends Component
                 'kode_pos' => $this->emptyToNull($this->kode_pos),
                 'lintang' => $this->emptyToNull($this->lintang),
                 'bujur' => $this->emptyToNull($this->bujur),
-                'tempat_tinggal' => $this->emptyToNull($this->tempat_tinggal),
-                'moda_transportasi' => $this->emptyToNull($this->moda_transportasi),
+                'tempat_tinggal' => $this->cleanPrefix($this->emptyToNull($this->tempat_tinggal)),
+                'moda_transportasi' => $this->cleanPrefix($this->emptyToNull($this->moda_transportasi)),
                 'tinggi_badan' => $this->toNullableInt($this->tinggi_badan),
                 'berat_badan' => $this->toNullableInt($this->berat_badan),
                 'lingkar_kepala' => $this->toNullableInt($this->lingkar_kepala),
-                'gol_darah' => null,
-                'ukuran_seragam' => null,
+                'gol_darah' => $this->emptyToNull($this->gol_darah),
+                'ukuran_seragam' => $this->emptyToNull($this->ukuran_seragam),
                 'jarak_tempat_tinggal_kategori' => $this->emptyToNull($this->jarak_tempat_tinggal_kategori),
                 'jarak_tempat_tinggal_km' => $this->toNullableDecimal($this->jarak_tempat_tinggal_km),
                 'waktu_tempuh_jam' => $this->toNullableInt($this->waktu_tempuh_jam),
@@ -679,9 +683,9 @@ class PpdbFormPage extends Component
                 'nik_ayah' => $this->emptyToNull($this->nik_ayah),
                 'tempat_tanggal_lahir_ayah' => $ttlAyah,
                 'pendidikan_terakhir_ayah' => $this->emptyToNull($this->pendidikan_terakhir_ayah),
-                'pekerjaan_ayah' => $this->emptyToNull($this->pekerjaan_ayah),
-                'penghasilan_ayah' => $this->emptyToNull($this->penghasilan_ayah),
-                'kebutuhan_khusus_ayah' => $this->emptyToNull($this->kebutuhan_khusus_ayah),
+                'pekerjaan_ayah' => $this->cleanPrefix($this->emptyToNull($this->pekerjaan_ayah)),
+                'penghasilan_ayah' => $this->cleanPrefix($this->emptyToNull($this->penghasilan_ayah)),
+                'kebutuhan_khusus_ayah' => $this->cleanPrefix($this->emptyToNull($this->kebutuhan_khusus_ayah)),
                 'alamat_ayah' => $this->emptyToNull($this->alamat_ayah),
                 'kelurahan_ayah' => $this->emptyToNull($this->kelurahan_ayah),
                 'kecamatan_ayah' => $this->emptyToNull($this->kecamatan_ayah),
@@ -690,9 +694,9 @@ class PpdbFormPage extends Component
                 'nik_ibu' => $this->emptyToNull($this->nik_ibu),
                 'tempat_tanggal_lahir_ibu' => $ttlIbu,
                 'pendidikan_terakhir_ibu' => $this->emptyToNull($this->pendidikan_terakhir_ibu),
-                'pekerjaan_ibu' => $this->emptyToNull($this->pekerjaan_ibu),
-                'penghasilan_ibu' => $this->emptyToNull($this->penghasilan_ibu),
-                'kebutuhan_khusus_ibu' => $this->emptyToNull($this->kebutuhan_khusus_ibu),
+                'pekerjaan_ibu' => $this->cleanPrefix($this->emptyToNull($this->pekerjaan_ibu)),
+                'penghasilan_ibu' => $this->cleanPrefix($this->emptyToNull($this->penghasilan_ibu)),
+                'kebutuhan_khusus_ibu' => $this->cleanPrefix($this->emptyToNull($this->kebutuhan_khusus_ibu)),
                 'alamat_ibu' => $this->emptyToNull($this->alamat_ibu),
                 'kelurahan_ibu' => $this->emptyToNull($this->kelurahan_ibu),
                 'kecamatan_ibu' => $this->emptyToNull($this->kecamatan_ibu),
@@ -945,9 +949,16 @@ class PpdbFormPage extends Component
         return trim($rt . '/' . $rw, '/');
     }
 
-    protected function toNullableInt(mixed $value): ?int
+    protected function toNullableInt(?string $value): ?int
     {
-        return ($value === null || $value === '') ? null : (int) $value;
+        $val = trim($value ?? '');
+        return $val !== '' ? (int) $val : null;
+    }
+
+    protected function cleanPrefix(?string $value): ?string
+    {
+        if ($value === null) return null;
+        return preg_replace('/^\d{2}\s+/', '', $value);
     }
 
     protected function toNullableDecimal(mixed $value): ?float
