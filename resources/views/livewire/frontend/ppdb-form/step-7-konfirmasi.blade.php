@@ -47,13 +47,18 @@
             <div><span class="text-slate-400">Lingkar Kepala:</span> {{ $lingkar_kepala ? $lingkar_kepala . ' cm' : '-' }}</div>
             <div><span class="text-slate-400">Jarak Rumah:</span> {{ $jarak_tempat_tinggal_kategori ?: '-' }}{{ $jarak_tempat_tinggal_km ? ' (' . $jarak_tempat_tinggal_km . ' km)' : '' }}</div>
             <div><span class="text-slate-400">Waktu Tempuh:</span> {{ ($waktu_tempuh_jam !== '' || $waktu_tempuh_menit !== '') ? (($waktu_tempuh_jam ?: 0) . ' jam ' . ($waktu_tempuh_menit ?: 0) . ' menit') : '-' }}</div>
-            <div><span class="text-slate-400">Pekerjaan Warga Belajar:</span> {{ $pekerjaan_warga_belajar ?: '-' }}</div>
             <div><span class="text-slate-400">Punya KIP:</span> {{ $punya_kip === '1' ? 'Ya' : ($punya_kip === '0' ? 'Tidak' : '-') }}</div>
-            <div><span class="text-slate-400">Masih Menerima KIP:</span> {{ $menerima_kip === '1' ? 'Ya' : ($menerima_kip === '0' ? 'Tidak' : '-') }}</div>
-            <div><span class="text-slate-400">Alasan Menolak PIP:</span> {{ $alasan_menolak_pip ?: '-' }}</div>
-            <div><span class="text-slate-400">Jenis Kesejahteraan:</span> {{ $jenis_kesejahteraan ?: '-' }}</div>
-            <div><span class="text-slate-400">No. Kartu:</span> {{ $nomor_kartu_kesejahteraan ?: '-' }}</div>
-            <div><span class="text-slate-400">Nama di Kartu:</span> {{ $nama_di_kartu_kesejahteraan ?: '-' }}</div>
+            @if($punya_kip === '1')
+                <div><span class="text-slate-400">No. KIP:</span> {{ $nomor_kip ?: '-' }}</div>
+                <div><span class="text-slate-400">Nama di KIP:</span> {{ $nama_di_kip ?: '-' }}</div>
+                <div><span class="text-slate-400">File KIP:</span> {{ $file_kip ? '✅ Diunggah' : '-' }}</div>
+            @endif
+            <div><span class="text-slate-400">Kartu Kesejahteraan:</span> {{ $jenis_kesejahteraan ?: '-' }}</div>
+            @if($jenis_kesejahteraan !== '')
+                <div><span class="text-slate-400">No. Kartu:</span> {{ $nomor_kartu_kesejahteraan ?: '-' }}</div>
+                <div><span class="text-slate-400">Nama di Kartu:</span> {{ $nama_di_kartu_kesejahteraan ?: '-' }}</div>
+                <div><span class="text-slate-400">File Kartu:</span> {{ $file_kesejahteraan ? '✅ Diunggah' : '-' }}</div>
+            @endif
         </div>
     </div>
 

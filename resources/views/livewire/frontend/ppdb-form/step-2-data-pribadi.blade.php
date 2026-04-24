@@ -102,24 +102,24 @@
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Kebutuhan Khusus</label>
                 <select wire:model="kebutuhan_khusus" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="01 Tidak">01 Tidak</option>
-                    <option value="02 Netra (A)">02 Netra (A)</option>
-                    <option value="03 Rungu (B)">03 Rungu (B)</option>
-                    <option value="04 Grahita ringan (C)">04 Grahita ringan (C)</option>
-                    <option value="05 Grahita sedang (C1)">05 Grahita sedang (C1)</option>
-                    <option value="06 Daksa ringan (D)">06 Daksa ringan (D)</option>
-                    <option value="07 Daksa sedang (D1)">07 Daksa sedang (D1)</option>
-                    <option value="08 Laras (E)">08 Laras (E)</option>
-                    <option value="09 Wicara (F)">09 Wicara (F)</option>
-                    <option value="10 Tuna ganda (G)">10 Tuna ganda (G)</option>
-                    <option value="11 Hiper aktif (H)">11 Hiper aktif (H)</option>
-                    <option value="12 Cerdas Istimewa (I)">12 Cerdas Istimewa (I)</option>
-                    <option value="13 Bakat Istimewa (J)">13 Bakat Istimewa (J)</option>
-                    <option value="14 Kesulitan Belajar (K)">14 Kesulitan Belajar (K)</option>
-                    <option value="15 Narkoba (N)">15 Narkoba (N)</option>
-                    <option value="16 Indigo (O)">16 Indigo (O)</option>
-                    <option value="17 Down Sindrome (P)">17 Down Sindrome (P)</option>
-                    <option value="18 Autis (Q)">18 Autis (Q)</option>
+                    <option value="Tidak">Tidak</option>
+                    <option value="Netra (A)">Netra (A)</option>
+                    <option value="Rungu (B)">Rungu (B)</option>
+                    <option value="Grahita ringan (C)">Grahita ringan (C)</option>
+                    <option value="Grahita sedang (C1)">Grahita sedang (C1)</option>
+                    <option value="Daksa ringan (D)">Daksa ringan (D)</option>
+                    <option value="Daksa sedang (D1)">Daksa sedang (D1)</option>
+                    <option value="Laras (E)">Laras (E)</option>
+                    <option value="Wicara (F)">Wicara (F)</option>
+                    <option value="Tuna ganda (G)">Tuna ganda (G)</option>
+                    <option value="Hiper aktif (H)">Hiper aktif (H)</option>
+                    <option value="Cerdas Istimewa (I)">Cerdas Istimewa (I)</option>
+                    <option value="Bakat Istimewa (J)">Bakat Istimewa (J)</option>
+                    <option value="Kesulitan Belajar (K)">Kesulitan Belajar (K)</option>
+                    <option value="Narkoba (N)">Narkoba (N)</option>
+                    <option value="Indigo (O)">Indigo (O)</option>
+                    <option value="Down Sindrome (P)">Down Sindrome (P)</option>
+                    <option value="Autis (Q)">Autis (Q)</option>
                 </select>
                 @error('kebutuhan_khusus') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -287,11 +287,11 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tempat Tinggal</label>
                 <select wire:model="tempat_tinggal" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 Bersama orang tua">01 Bersama orang tua</option>
-                    <option value="02 Wali">02 Wali</option>
-                    <option value="03 Kos">03 Kos</option>
-                    <option value="04 Asrama">04 Asrama</option>
-                    <option value="05 Panti Asuhan">05 Panti Asuhan</option>
+                    <option value="Bersama orang tua">Bersama orang tua</option>
+                    <option value="Wali">Wali</option>
+                    <option value="Kos">Kos</option>
+                    <option value="Asrama">Asrama</option>
+                    <option value="Panti Asuhan">Panti Asuhan</option>
                 </select>
                 @error('tempat_tinggal') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -299,15 +299,15 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Moda Transportasi</label>
                 <select wire:model="moda_transportasi" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 Jalan kaki">01 Jalan kaki</option>
-                    <option value="02 Kendaraan pribadi">02 Kendaraan pribadi</option>
-                    <option value="03 Kendaraan umum">03 Kendaraan umum</option>
-                    <option value="04 Jemputan sekolah">04 Jemputan sekolah</option>
-                    <option value="05 Kereta api">05 Kereta api</option>
-                    <option value="06 Ojek">06 Ojek</option>
-                    <option value="07 Andong/Bendi/Sado/Dokar/Delman/Beca">07 Andong/Bendi/Sado/Dokar/Delman/Beca</option>
-                    <option value="08 Perahu penyebrangan/Rakit/Getek">08 Perahu penyebrangan/Rakit/Getek</option>
-                    <option value="99 Lainnya">99 Lainnya</option>
+                    <option value="Jalan kaki">Jalan kaki</option>
+                    <option value="Kendaraan pribadi">Kendaraan pribadi</option>
+                    <option value="Kendaraan umum">Kendaraan umum</option>
+                    <option value="Jemputan sekolah">Jemputan sekolah</option>
+                    <option value="Kereta api">Kereta api</option>
+                    <option value="Ojek">Ojek</option>
+                    <option value="Andong/Bendi/Sado/Dokar/Delman/Beca">Andong/Bendi/Sado/Dokar/Delman/Beca</option>
+                    <option value="Perahu penyebrangan/Rakit/Getek">Perahu penyebrangan/Rakit/Getek</option>
+                    <option value="Lainnya">Lainnya</option>
                 </select>
                 @error('moda_transportasi') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -340,45 +340,26 @@
         </div>
     </div>
 
-    {{-- Card: Kesejahteraan --}}
+    {{-- Card: Bantuan & Kartu Sosial --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
         <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
             <div class="w-7 h-7 bg-amber-50 rounded-lg flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
             </div>
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kesejahteraan</span>
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bantuan & Kartu Sosial</span>
         </div>
 
-        <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan (untuk warga belajar)</label>
-            <select wire:model="pekerjaan_warga_belajar" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                <option value="">Pilih</option>
-                <option value="01 Tidak bekerja">01 Tidak bekerja</option>
-                <option value="02 Nelayan">02 Nelayan</option>
-                <option value="03 Petani">03 Petani</option>
-                <option value="04 Peternak">04 Peternak</option>
-                <option value="05 PNS/TNI/POLRI">05 PNS/TNI/POLRI</option>
-                <option value="06 Karyawan Swasta">06 Karyawan Swasta</option>
-                <option value="07 Pedagang Kecil">07 Pedagang Kecil</option>
-                <option value="08 Pedagang Besar">08 Pedagang Besar</option>
-                <option value="09 Wiraswasta">09 Wiraswasta</option>
-                <option value="10 Wirausaha">10 Wirausaha</option>
-                <option value="11 Buruh">11 Buruh</option>
-                <option value="12 Pensiunan">12 Pensiunan</option>
-            </select>
-            @error('pekerjaan_warga_belajar') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {{-- KIP Section --}}
+        <div class="space-y-3">
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Apakah punya KIP?</label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Apakah punya KIP (Kartu Indonesia Pintar)?</label>
                 <div class="flex items-center gap-5 pt-2">
                     <label class="inline-flex items-center gap-2 text-sm text-slate-700">
-                        <input wire:model="punya_kip" type="radio" value="1" class="text-blue-600 focus:ring-blue-500">
+                        <input wire:model.live="punya_kip" type="radio" value="1" class="text-blue-600 focus:ring-blue-500">
                         Ya
                     </label>
                     <label class="inline-flex items-center gap-2 text-sm text-slate-700">
-                        <input wire:model="punya_kip" type="radio" value="0" class="text-blue-600 focus:ring-blue-500">
+                        <input wire:model.live="punya_kip" type="radio" value="0" class="text-blue-600 focus:ring-blue-500">
                         Tidak
                     </label>
                 </div>
@@ -386,59 +367,78 @@
             </div>
 
             @if($punya_kip === '1')
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Masih menerima KIP?</label>
-                    <div class="flex items-center gap-5 pt-2">
-                        <label class="inline-flex items-center gap-2 text-sm text-slate-700">
-                            <input wire:model="menerima_kip" type="radio" value="1" class="text-blue-600 focus:ring-blue-500">
-                            Ya
-                        </label>
-                        <label class="inline-flex items-center gap-2 text-sm text-slate-700">
-                            <input wire:model="menerima_kip" type="radio" value="0" class="text-blue-600 focus:ring-blue-500">
-                            Tidak
-                        </label>
+                <div class="rounded-xl border border-blue-100 bg-blue-50/40 p-4 space-y-3">
+                    <p class="text-xs font-semibold text-blue-700">📋 Lengkapi data KIP</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">No. KIP</label>
+                            <input wire:model.blur="nomor_kip" type="text" placeholder="Nomor Kartu KIP" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition">
+                            @error('nomor_kip') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama di KIP</label>
+                            <input wire:model.blur="nama_di_kip" type="text" placeholder="Nama sesuai di kartu" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition">
+                            @error('nama_di_kip') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
                     </div>
-                    @error('menerima_kip') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    <div>
+                        @include('livewire.frontend.ppdb-form.partials.upload-field', [
+                            'wireModel' => 'file_kip',
+                            'label' => 'Upload Foto/Scan KIP',
+                            'required' => false,
+                            'accept' => '.jpg,.jpeg,.png,.pdf',
+                            'hint' => 'JPG/PNG/PDF, maks 2 MB',
+                            'fileVar' => $file_kip ?? null,
+                            'isPdf' => false,
+                        ])
+                    </div>
                 </div>
             @endif
         </div>
 
-        @if($punya_kip === '1' && $menerima_kip === '0')
+        {{-- Kartu Kesejahteraan Section --}}
+        <div class="space-y-3">
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alasan Menolak PIP</label>
-                <select wire:model="alasan_menolak_pip" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih</option>
-                    <option value="01 Dilarang pemda karena menerima bantuan serupa">01 Dilarang pemda karena menerima bantuan serupa</option>
-                    <option value="02 Menolak">02 Menolak</option>
-                    <option value="03 Sudah mampu">03 Sudah mampu</option>
-                </select>
-                @error('alasan_menolak_pip') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-        @endif
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jenis Kesejahteraan</label>
-                <select wire:model="jenis_kesejahteraan" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih</option>
-                    <option value="01 PKH">01 PKH</option>
-                    <option value="02 PIP">02 PIP</option>
-                    <option value="03 Kartu Perlindungan Sosial">03 Kartu Perlindungan Sosial</option>
-                    <option value="04 Kartu Keluarga Sejahtera">04 Kartu Keluarga Sejahtera</option>
-                    <option value="05 Kartu Kesehatan">05 Kartu Kesehatan</option>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Punya Kartu Kesejahteraan Lainnya?</label>
+                <select wire:model.live="jenis_kesejahteraan" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
+                    <option value="">Tidak punya / Pilih jenis kartu</option>
+                    <option value="PKH">PKH (Program Keluarga Harapan)</option>
+                    <option value="PIP">PIP (Program Indonesia Pintar)</option>
+                    <option value="Kartu Perlindungan Sosial">Kartu Perlindungan Sosial</option>
+                    <option value="Kartu Keluarga Sejahtera">Kartu Keluarga Sejahtera</option>
+                    <option value="Kartu Kesehatan">Kartu Kesehatan</option>
                 </select>
                 @error('jenis_kesejahteraan') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">No. Kartu</label>
-                <input wire:model.blur="nomor_kartu_kesejahteraan" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                @error('nomor_kartu_kesejahteraan') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama di Kartu</label>
-                <input wire:model.blur="nama_di_kartu_kesejahteraan" type="text" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                @error('nama_di_kartu_kesejahteraan') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
+
+            @if($jenis_kesejahteraan !== '')
+                <div class="rounded-xl border border-amber-100 bg-amber-50/40 p-4 space-y-3">
+                    <p class="text-xs font-semibold text-amber-700">📋 Lengkapi data kartu {{ $jenis_kesejahteraan }}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">No. Kartu</label>
+                            <input wire:model.blur="nomor_kartu_kesejahteraan" type="text" placeholder="Nomor kartu" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition">
+                            @error('nomor_kartu_kesejahteraan') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama di Kartu</label>
+                            <input wire:model.blur="nama_di_kartu_kesejahteraan" type="text" placeholder="Nama sesuai di kartu" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition">
+                            @error('nama_di_kartu_kesejahteraan') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                    <div>
+                        @include('livewire.frontend.ppdb-form.partials.upload-field', [
+                            'wireModel' => 'file_kesejahteraan',
+                            'label' => 'Upload Foto/Scan Kartu',
+                            'required' => false,
+                            'accept' => '.jpg,.jpeg,.png,.pdf',
+                            'hint' => 'JPG/PNG/PDF, maks 2 MB',
+                            'fileVar' => $file_kesejahteraan ?? null,
+                            'isPdf' => false,
+                        ])
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

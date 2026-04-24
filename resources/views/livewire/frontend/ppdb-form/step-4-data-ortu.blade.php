@@ -45,17 +45,17 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pendidikan Terakhir <span class="text-red-500">*</span></label>
                 <select wire:model="pendidikan_terakhir_ayah" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 Tidak sekolah">01 Tidak sekolah</option>
-                    <option value="02 Putus SD">02 Putus SD</option>
-                    <option value="03 SD Sederajat">03 SD Sederajat</option>
-                    <option value="04 SMP Sederajat">04 SMP Sederajat</option>
-                    <option value="05 SMA Sederajat">05 SMA Sederajat</option>
-                    <option value="06 D1">06 D1</option>
-                    <option value="07 D2">07 D2</option>
-                    <option value="08 D3">08 D3</option>
-                    <option value="09 D4/S1">09 D4/S1</option>
-                    <option value="10 S2">10 S2</option>
-                    <option value="11 S3">11 S3</option>
+                    <option value="Tidak sekolah">Tidak sekolah</option>
+                    <option value="Putus SD">Putus SD</option>
+                    <option value="SD Sederajat">SD Sederajat</option>
+                    <option value="SMP Sederajat">SMP Sederajat</option>
+                    <option value="SMA Sederajat">SMA Sederajat</option>
+                    <option value="D1">D1</option>
+                    <option value="D2">D2</option>
+                    <option value="D3">D3</option>
+                    <option value="D4/S1">D4/S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
                 </select>
                 @error('pendidikan_terakhir_ayah') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -63,19 +63,19 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan <span class="text-red-500">*</span></label>
                 <select wire:model="pekerjaan_ayah" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 Tidak bekerja">01 Tidak bekerja</option>
-                    <option value="02 Nelayan">02 Nelayan</option>
-                    <option value="03 Petani">03 Petani</option>
-                    <option value="04 Peternak">04 Peternak</option>
-                    <option value="05 PNS/TNI/POLRI">05 PNS/TNI/POLRI</option>
-                    <option value="06 Karyawan Swasta">06 Karyawan Swasta</option>
-                    <option value="07 Pedagang Kecil">07 Pedagang Kecil</option>
-                    <option value="08 Pedagang Besar">08 Pedagang Besar</option>
-                    <option value="09 Wiraswasta">09 Wiraswasta</option>
-                    <option value="10 Wirausaha">10 Wirausaha</option>
-                    <option value="11 Buruh">11 Buruh</option>
-                    <option value="12 Pensiunan">12 Pensiunan</option>
-                    <option value="13 Meninggal Dunia">13 Meninggal Dunia</option>
+                    <option value="Tidak bekerja">Tidak bekerja</option>
+                    <option value="Nelayan">Nelayan</option>
+                    <option value="Petani">Petani</option>
+                    <option value="Peternak">Peternak</option>
+                    <option value="PNS/TNI/POLRI">PNS/TNI/POLRI</option>
+                    <option value="Karyawan Swasta">Karyawan Swasta</option>
+                    <option value="Pedagang Kecil">Pedagang Kecil</option>
+                    <option value="Pedagang Besar">Pedagang Besar</option>
+                    <option value="Wiraswasta">Wiraswasta</option>
+                    <option value="Wirausaha">Wirausaha</option>
+                    <option value="Buruh">Buruh</option>
+                    <option value="Pensiunan">Pensiunan</option>
+                    <option value="Meninggal Dunia">Meninggal Dunia</option>
                 </select>
                 @error('pekerjaan_ayah') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -83,13 +83,13 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Penghasilan <span class="text-red-500">*</span></label>
                 <select wire:model="penghasilan_ayah" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 < Rp.500.000">01 &lt; Rp.500.000</option>
-                    <option value="02 Rp.500.000-Rp.999.999">02 Rp.500.000-Rp.999.999</option>
-                    <option value="03 Rp.1.000.000-Rp.1.999.999">03 Rp.1.000.000-Rp.1.999.999</option>
-                    <option value="04 Rp.2.000.000-Rp.4.999.999">04 Rp.2.000.000-Rp.4.999.999</option>
-                    <option value="05 Rp.5.000.000-Rp.20.000.000">05 Rp.5.000.000-Rp.20.000.000</option>
-                    <option value="06 > Rp.20.000.000">06 &gt; Rp.20.000.000</option>
-                    <option value="07 Tidak Berpenghasilan">07 Tidak Berpenghasilan</option>
+                    <option value="< Rp.500.000">&lt; Rp.500.000</option>
+                    <option value="Rp.500.000-Rp.999.999">Rp.500.000-Rp.999.999</option>
+                    <option value="Rp.1.000.000-Rp.1.999.999">Rp.1.000.000-Rp.1.999.999</option>
+                    <option value="Rp.2.000.000-Rp.4.999.999">Rp.2.000.000-Rp.4.999.999</option>
+                    <option value="Rp.5.000.000-Rp.20.000.000">Rp.5.000.000-Rp.20.000.000</option>
+                    <option value="> Rp.20.000.000">&gt; Rp.20.000.000</option>
+                    <option value="Tidak Berpenghasilan">Tidak Berpenghasilan</option>
                 </select>
                 @error('penghasilan_ayah') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -98,24 +98,24 @@
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Berkebutuhan Khusus</label>
             <select wire:model="kebutuhan_khusus_ayah" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                <option value="01 Tidak">01 Tidak</option>
-                <option value="02 Netra (A)">02 Netra (A)</option>
-                <option value="03 Rungu (B)">03 Rungu (B)</option>
-                <option value="04 Grahita ringan (C)">04 Grahita ringan (C)</option>
-                <option value="05 Grahita sedang (C1)">05 Grahita sedang (C1)</option>
-                <option value="06 Daksa ringan (D)">06 Daksa ringan (D)</option>
-                <option value="07 Daksa sedang (D1)">07 Daksa sedang (D1)</option>
-                <option value="08 Laras (E)">08 Laras (E)</option>
-                <option value="09 Wicara (F)">09 Wicara (F)</option>
-                <option value="10 Tuna ganda (G)">10 Tuna ganda (G)</option>
-                <option value="11 Hiper aktif (H)">11 Hiper aktif (H)</option>
-                <option value="12 Cerdas Istimewa (I)">12 Cerdas Istimewa (I)</option>
-                <option value="13 Bakat Istimewa (J)">13 Bakat Istimewa (J)</option>
-                <option value="14 Kesulitan Belajar (K)">14 Kesulitan Belajar (K)</option>
-                <option value="15 Narkoba (N)">15 Narkoba (N)</option>
-                <option value="16 Indigo (O)">16 Indigo (O)</option>
-                <option value="17 Down Sindrome (P)">17 Down Sindrome (P)</option>
-                <option value="18 Autis (Q)">18 Autis (Q)</option>
+                <option value="Tidak">Tidak</option>
+                <option value="Netra (A)">Netra (A)</option>
+                <option value="Rungu (B)">Rungu (B)</option>
+                <option value="Grahita ringan (C)">Grahita ringan (C)</option>
+                <option value="Grahita sedang (C1)">Grahita sedang (C1)</option>
+                <option value="Daksa ringan (D)">Daksa ringan (D)</option>
+                <option value="Daksa sedang (D1)">Daksa sedang (D1)</option>
+                <option value="Laras (E)">Laras (E)</option>
+                <option value="Wicara (F)">Wicara (F)</option>
+                <option value="Tuna ganda (G)">Tuna ganda (G)</option>
+                <option value="Hiper aktif (H)">Hiper aktif (H)</option>
+                <option value="Cerdas Istimewa (I)">Cerdas Istimewa (I)</option>
+                <option value="Bakat Istimewa (J)">Bakat Istimewa (J)</option>
+                <option value="Kesulitan Belajar (K)">Kesulitan Belajar (K)</option>
+                <option value="Narkoba (N)">Narkoba (N)</option>
+                <option value="Indigo (O)">Indigo (O)</option>
+                <option value="Down Sindrome (P)">Down Sindrome (P)</option>
+                <option value="Autis (Q)">Autis (Q)</option>
             </select>
             @error('kebutuhan_khusus_ayah') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
         </div>
@@ -185,17 +185,17 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pendidikan Terakhir <span class="text-red-500">*</span></label>
                 <select wire:model="pendidikan_terakhir_ibu" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 Tidak sekolah">01 Tidak sekolah</option>
-                    <option value="02 Putus SD">02 Putus SD</option>
-                    <option value="03 SD Sederajat">03 SD Sederajat</option>
-                    <option value="04 SMP Sederajat">04 SMP Sederajat</option>
-                    <option value="05 SMA Sederajat">05 SMA Sederajat</option>
-                    <option value="06 D1">06 D1</option>
-                    <option value="07 D2">07 D2</option>
-                    <option value="08 D3">08 D3</option>
-                    <option value="09 D4/S1">09 D4/S1</option>
-                    <option value="10 S2">10 S2</option>
-                    <option value="11 S3">11 S3</option>
+                    <option value="Tidak sekolah">Tidak sekolah</option>
+                    <option value="Putus SD">Putus SD</option>
+                    <option value="SD Sederajat">SD Sederajat</option>
+                    <option value="SMP Sederajat">SMP Sederajat</option>
+                    <option value="SMA Sederajat">SMA Sederajat</option>
+                    <option value="D1">D1</option>
+                    <option value="D2">D2</option>
+                    <option value="D3">D3</option>
+                    <option value="D4/S1">D4/S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
                 </select>
                 @error('pendidikan_terakhir_ibu') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -203,19 +203,19 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan <span class="text-red-500">*</span></label>
                 <select wire:model="pekerjaan_ibu" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 Tidak bekerja">01 Tidak bekerja</option>
-                    <option value="02 Nelayan">02 Nelayan</option>
-                    <option value="03 Petani">03 Petani</option>
-                    <option value="04 Peternak">04 Peternak</option>
-                    <option value="05 PNS/TNI/POLRI">05 PNS/TNI/POLRI</option>
-                    <option value="06 Karyawan Swasta">06 Karyawan Swasta</option>
-                    <option value="07 Pedagang Kecil">07 Pedagang Kecil</option>
-                    <option value="08 Pedagang Besar">08 Pedagang Besar</option>
-                    <option value="09 Wiraswasta">09 Wiraswasta</option>
-                    <option value="10 Wirausaha">10 Wirausaha</option>
-                    <option value="11 Buruh">11 Buruh</option>
-                    <option value="12 Pensiunan">12 Pensiunan</option>
-                    <option value="13 Meninggal Dunia">13 Meninggal Dunia</option>
+                    <option value="Tidak bekerja">Tidak bekerja</option>
+                    <option value="Nelayan">Nelayan</option>
+                    <option value="Petani">Petani</option>
+                    <option value="Peternak">Peternak</option>
+                    <option value="PNS/TNI/POLRI">PNS/TNI/POLRI</option>
+                    <option value="Karyawan Swasta">Karyawan Swasta</option>
+                    <option value="Pedagang Kecil">Pedagang Kecil</option>
+                    <option value="Pedagang Besar">Pedagang Besar</option>
+                    <option value="Wiraswasta">Wiraswasta</option>
+                    <option value="Wirausaha">Wirausaha</option>
+                    <option value="Buruh">Buruh</option>
+                    <option value="Pensiunan">Pensiunan</option>
+                    <option value="Meninggal Dunia">Meninggal Dunia</option>
                 </select>
                 @error('pekerjaan_ibu') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -223,13 +223,13 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Penghasilan <span class="text-red-500">*</span></label>
                 <select wire:model="penghasilan_ibu" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
                     <option value="">Pilih</option>
-                    <option value="01 < Rp.500.000">01 &lt; Rp.500.000</option>
-                    <option value="02 Rp.500.000-Rp.999.999">02 Rp.500.000-Rp.999.999</option>
-                    <option value="03 Rp.1.000.000-Rp.1.999.999">03 Rp.1.000.000-Rp.1.999.999</option>
-                    <option value="04 Rp.2.000.000-Rp.4.999.999">04 Rp.2.000.000-Rp.4.999.999</option>
-                    <option value="05 Rp.5.000.000-Rp.20.000.000">05 Rp.5.000.000-Rp.20.000.000</option>
-                    <option value="06 > Rp.20.000.000">06 &gt; Rp.20.000.000</option>
-                    <option value="07 Tidak Berpenghasilan">07 Tidak Berpenghasilan</option>
+                    <option value="< Rp.500.000">&lt; Rp.500.000</option>
+                    <option value="Rp.500.000-Rp.999.999">Rp.500.000-Rp.999.999</option>
+                    <option value="Rp.1.000.000-Rp.1.999.999">Rp.1.000.000-Rp.1.999.999</option>
+                    <option value="Rp.2.000.000-Rp.4.999.999">Rp.2.000.000-Rp.4.999.999</option>
+                    <option value="Rp.5.000.000-Rp.20.000.000">Rp.5.000.000-Rp.20.000.000</option>
+                    <option value="> Rp.20.000.000">&gt; Rp.20.000.000</option>
+                    <option value="Tidak Berpenghasilan">Tidak Berpenghasilan</option>
                 </select>
                 @error('penghasilan_ibu') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
@@ -238,24 +238,24 @@
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Berkebutuhan Khusus</label>
             <select wire:model="kebutuhan_khusus_ibu" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                <option value="01 Tidak">01 Tidak</option>
-                <option value="02 Netra (A)">02 Netra (A)</option>
-                <option value="03 Rungu (B)">03 Rungu (B)</option>
-                <option value="04 Grahita ringan (C)">04 Grahita ringan (C)</option>
-                <option value="05 Grahita sedang (C1)">05 Grahita sedang (C1)</option>
-                <option value="06 Daksa ringan (D)">06 Daksa ringan (D)</option>
-                <option value="07 Daksa sedang (D1)">07 Daksa sedang (D1)</option>
-                <option value="08 Laras (E)">08 Laras (E)</option>
-                <option value="09 Wicara (F)">09 Wicara (F)</option>
-                <option value="10 Tuna ganda (G)">10 Tuna ganda (G)</option>
-                <option value="11 Hiper aktif (H)">11 Hiper aktif (H)</option>
-                <option value="12 Cerdas Istimewa (I)">12 Cerdas Istimewa (I)</option>
-                <option value="13 Bakat Istimewa (J)">13 Bakat Istimewa (J)</option>
-                <option value="14 Kesulitan Belajar (K)">14 Kesulitan Belajar (K)</option>
-                <option value="15 Narkoba (N)">15 Narkoba (N)</option>
-                <option value="16 Indigo (O)">16 Indigo (O)</option>
-                <option value="17 Down Sindrome (P)">17 Down Sindrome (P)</option>
-                <option value="18 Autis (Q)">18 Autis (Q)</option>
+                <option value="Tidak">Tidak</option>
+                <option value="Netra (A)">Netra (A)</option>
+                <option value="Rungu (B)">Rungu (B)</option>
+                <option value="Grahita ringan (C)">Grahita ringan (C)</option>
+                <option value="Grahita sedang (C1)">Grahita sedang (C1)</option>
+                <option value="Daksa ringan (D)">Daksa ringan (D)</option>
+                <option value="Daksa sedang (D1)">Daksa sedang (D1)</option>
+                <option value="Laras (E)">Laras (E)</option>
+                <option value="Wicara (F)">Wicara (F)</option>
+                <option value="Tuna ganda (G)">Tuna ganda (G)</option>
+                <option value="Hiper aktif (H)">Hiper aktif (H)</option>
+                <option value="Cerdas Istimewa (I)">Cerdas Istimewa (I)</option>
+                <option value="Bakat Istimewa (J)">Bakat Istimewa (J)</option>
+                <option value="Kesulitan Belajar (K)">Kesulitan Belajar (K)</option>
+                <option value="Narkoba (N)">Narkoba (N)</option>
+                <option value="Indigo (O)">Indigo (O)</option>
+                <option value="Down Sindrome (P)">Down Sindrome (P)</option>
+                <option value="Autis (Q)">Autis (Q)</option>
             </select>
             @error('kebutuhan_khusus_ibu') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
         </div>

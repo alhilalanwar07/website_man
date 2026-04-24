@@ -79,10 +79,9 @@ class PpdbFormPage extends Component
     public string $jarak_tempat_tinggal_km = '';
     public string $waktu_tempuh_jam = '';
     public string $waktu_tempuh_menit = '';
-    public string $pekerjaan_warga_belajar = '';
     public string $punya_kip = '';
-    public string $menerima_kip = '';
-    public string $alasan_menolak_pip = '';
+    public string $nomor_kip = '';
+    public string $nama_di_kip = '';
     public string $jenis_kesejahteraan = '';
     public string $nomor_kartu_kesejahteraan = '';
     public string $nama_di_kartu_kesejahteraan = '';
@@ -138,6 +137,8 @@ class PpdbFormPage extends Component
     public $file_rapor_nilai;
     public $file_pas_foto;
     public $file_skl;
+    public $file_kip;
+    public $file_kesejahteraan;
     public string $catatan_pendaftar = '';
 
     // Submission
@@ -188,15 +189,8 @@ class PpdbFormPage extends Component
     public function updatedPunyaKip(string $value): void
     {
         if ($value !== '1') {
-            $this->menerima_kip = '';
-            $this->alasan_menolak_pip = '';
-        }
-    }
-
-    public function updatedMenerimaKip(string $value): void
-    {
-        if ($value !== '0') {
-            $this->alasan_menolak_pip = '';
+            $this->nomor_kip = '';
+            $this->nama_di_kip = '';
         }
     }
 
@@ -321,8 +315,13 @@ class PpdbFormPage extends Component
         }
 
         if ($this->punya_kip !== '1') {
-            $this->menerima_kip = '';
-            $this->alasan_menolak_pip = '';
+            $this->nomor_kip = '';
+            $this->nama_di_kip = '';
+        }
+
+        if ($this->jenis_kesejahteraan === '') {
+            $this->nomor_kartu_kesejahteraan = '';
+            $this->nama_di_kartu_kesejahteraan = '';
         }
 
         $this->refreshNisnWarning();
@@ -361,10 +360,9 @@ class PpdbFormPage extends Component
             'jarak_tempat_tinggal_km' => 'nullable|numeric|min:0|max:200',
             'waktu_tempuh_jam' => 'nullable|integer|min:0|max:24',
             'waktu_tempuh_menit' => 'nullable|integer|min:0|max:59',
-            'pekerjaan_warga_belajar' => 'nullable|string|max:50',
             'punya_kip' => 'nullable|in:0,1',
-            'menerima_kip' => 'nullable|in:0,1',
-            'alasan_menolak_pip' => 'nullable|string|max:50',
+            'nomor_kip' => 'nullable|string|max:100',
+            'nama_di_kip' => 'nullable|string|max:255',
             'jenis_kesejahteraan' => 'nullable|string|max:50',
             'nomor_kartu_kesejahteraan' => 'nullable|string|max:100',
             'nama_di_kartu_kesejahteraan' => 'nullable|string|max:255',
@@ -680,10 +678,10 @@ class PpdbFormPage extends Component
                 'jenis_kesejahteraan' => $this->emptyToNull($this->jenis_kesejahteraan),
                 'nomor_kartu_kesejahteraan' => $this->emptyToNull($this->nomor_kartu_kesejahteraan),
                 'nama_di_kartu_kesejahteraan' => $this->emptyToNull($this->nama_di_kartu_kesejahteraan),
-                'pekerjaan_warga_belajar' => $this->emptyToNull($this->pekerjaan_warga_belajar),
+                'pekerjaan_warga_belajar' => null,
                 'punya_kip' => $this->toNullableBool($this->punya_kip),
-                'menerima_kip' => $this->toNullableBool($this->menerima_kip),
-                'alasan_menolak_pip' => $this->emptyToNull($this->alasan_menolak_pip),
+                'menerima_kip' => null,
+                'alasan_menolak_pip' => null,
                 'nomor_telepon_rumah' => $this->emptyToNull($this->nomor_telepon_rumah),
                 'nomor_hp' => $this->nomor_hp,
                 'email' => $this->email,
@@ -734,6 +732,14 @@ class PpdbFormPage extends Component
                 'Pas Foto' => $this->file_pas_foto,
                 'Ijazah / SKL' => $this->file_skl,
             ];
+
+            // Optional card uploads
+            if ($this->punya_kip === '1' && $this->file_kip) {
+                $documents['KIP'] = $this->file_kip;
+            }
+            if ($this->jenis_kesejahteraan !== '' && $this->file_kesejahteraan) {
+                $documents['Kartu Kesejahteraan'] = $this->file_kesejahteraan;
+            }
 
             foreach ($documents as $jenis => $file) {
                 if (! $file) {
@@ -885,10 +891,9 @@ class PpdbFormPage extends Component
             'jarak_tempat_tinggal_km',
             'waktu_tempuh_jam',
             'waktu_tempuh_menit',
-            'pekerjaan_warga_belajar',
             'punya_kip',
-            'menerima_kip',
-            'alasan_menolak_pip',
+            'nomor_kip',
+            'nama_di_kip',
             'jenis_kesejahteraan',
             'nomor_kartu_kesejahteraan',
             'nama_di_kartu_kesejahteraan',

@@ -24,20 +24,25 @@
     $rightLogoBase64 = $toBase64Image(storage_path('app/public/smk1kolaka.jpg')) ?? $defaultLogoBase64;
 
     $pasFotoDoc = $application->documents->firstWhere('jenis_dokumen', 'Pas Foto');
-    $pasFotoPath = $pasFotoDoc ? storage_path('app/public/' . $pasFotoDoc->file_path) : null;
     $pasFotoBase64 = null;
 
-    if ($pasFotoPath && file_exists($pasFotoPath)) {
-        $ext = strtolower((string) pathinfo($pasFotoPath, PATHINFO_EXTENSION));
-        $mime = match ($ext) {
-            'png' => 'image/png',
-            'jpg', 'jpeg' => 'image/jpeg',
-            'gif' => 'image/gif',
-            'webp' => 'image/webp',
-            default => 'image/jpeg',
-        };
+    if ($pasFotoDoc && $pasFotoDoc->file_path) {
+        $ext = strtolower((string) pathinfo($pasFotoDoc->file_path, PATHINFO_EXTENSION));
+        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-        $pasFotoBase64 = 'data:' . $mime . ';base64,' . base64_encode((string) file_get_contents($pasFotoPath));
+        if (in_array($ext, $imageExtensions, true)) {
+            // Coba ambil dari storage/app/public terlebih dahulu
+            $storagePath = storage_path('app/public/' . $pasFotoDoc->file_path);
+            
+            // Fallback: coba ambil dari public/storage (symlink) jika di shared hosting
+            $publicPath = public_path('storage/' . $pasFotoDoc->file_path);
+
+            if (file_exists($storagePath)) {
+                $pasFotoBase64 = $toBase64Image($storagePath);
+            } elseif (file_exists($publicPath)) {
+                $pasFotoBase64 = $toBase64Image($publicPath);
+            }
+        }
     }
 
     $noPendaftaran = (string) ($application->nomor_pendaftaran ?? '-');
