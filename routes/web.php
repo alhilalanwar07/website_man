@@ -128,49 +128,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/galeri', Galeri::class)->name('galeri');
     Route::get('/hari-libur', HariLibur::class)->name('hari-libur');
     Route::get('/settings', Settings::class)->name('settings');
-
-    
-
-});
-
-// ═══════════════════════════════════════════════════════════════
-// HOSTING UTILITY ROUTE (untuk shared hosting tanpa SSH)
-// Akses: /run/{command}?token=smk1kolaka2026
-// Contoh: /run/migrate, /run/cache-clear, /run/optimize
-// ═══════════════════════════════════════════════════════════════
-Route::get('/run/{command}', function (Request $request, string $command) {
-    if ($request->query('token') !== 'smk1kolaka2026') {
-        abort(403, 'Token tidak valid.');
-    }
-
-    $commands = [
-        'migrate'        => fn () => Artisan::call('migrate', ['--force' => true]),
-        'migrate-path'   => fn () => Artisan::call('migrate', [
-            '--path' => 'database/migrations/' . request()->query('path') . '.php',
-            '--force' => true,
-        ]),
-        'migrate-status' => fn () => Artisan::call('migrate:status'),
-        'storage-link'   => fn () => Artisan::call('storage:link'),
-        'optimize'       => fn () => Artisan::call('optimize'),
-        'optimize-clear' => fn () => Artisan::call('optimize:clear'),
-        'cache-clear'    => function () {
-            Artisan::call('cache:clear');
-            Artisan::call('config:clear');
-            Artisan::call('view:clear');
-            Artisan::call('route:clear');
-        },
-        'seed' => fn () => Artisan::call('db:seed', [
-            '--class' => request()->query('class', 'DatabaseSeeder'),
-            '--force' => true,
-        ]),
-    ];
-
-    if (! isset($commands[$command])) {
-        return '<pre style="font-family:monospace;padding:20px;">❌ Command tidak dikenali: ' . e($command) . PHP_EOL
-             . 'Tersedia: ' . implode(', ', array_keys($commands)) . '</pre>';
-    }
-
-    $commands[$command]();
-
-    return '<pre style="font-family:monospace;padding:20px;">✅ ' . strtoupper($command) . PHP_EOL . Artisan::output() . '</pre>';
 });
