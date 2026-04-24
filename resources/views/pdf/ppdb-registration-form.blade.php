@@ -257,16 +257,16 @@
 
     $tahunAjaranLabel = str_replace('/', '-', $tahunAjaran);
     $jenisKelaminLabel = $application->jenis_kelamin === 'L' ? 'LAKI - LAKI' : 'PEREMPUAN';
-        $pilihanJurusan1 = (string) ($application->pilihanProgram1?->nama_jurusan ?? '-');
+    $pilihanJurusan1 = (string) ($application->pilihanProgram1?->nama_jurusan ?? '-');
     $pilihanJurusan2 = (string) ($application->pilihanProgram2?->nama_jurusan ?? '-');
     $pilihanJurusan3 = (string) ($application->pilihanProgram3?->nama_jurusan ?? '-');
     $tanggalCetak = now()->translatedFormat('F Y');
 
-    $pilihanJurusan1MapColor = null;
+    $warnaMapUtama = '-';
     if ($pilihanJurusan1 !== '-') {
-        $rule = collect($mapColorRows)->firstWhere('nama_jurusan', $pilihanJurusan1);
-        if ($rule) {
-            $pilihanJurusan1MapColor = $rule['warna_map'];
+        $matchedMap = $mapColorRows->firstWhere('nama_jurusan', $pilihanJurusan1);
+        if ($matchedMap) {
+            $warnaMapUtama = $matchedMap['warna_map'];
         }
     }
 @endphp
@@ -279,7 +279,7 @@
     <style>
         @page {
             size: 210mm 330mm;
-            margin: 12mm 11mm 15mm 11mm;
+            margin: 12mm 11mm 12mm 11mm;
         }
 
         * {
@@ -521,21 +521,18 @@
         .page-one .parent-grid {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1px;
+            margin-top: 5px;
         }
 
-        .page-one .parent-grid td {
+        .page-one .parent-grid > tbody > tr > td {
             width: 50%;
-            border: 0;
             vertical-align: top;
+            border: 1px solid #111;
+            padding: 0;
         }
 
-        .page-one .parent-grid td:first-child {
-            padding-right: 9px;
-        }
-
-        .page-one .parent-grid td:last-child {
-            padding-left: 9px;
+        .page-one .parent-grid > tbody > tr > td:first-child {
+            border-right: none;
         }
 
         .page-one .parent-table {
@@ -543,15 +540,39 @@
             border-collapse: collapse;
         }
 
+        .page-one .parent-table th {
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #111;
+            border-right: 1px solid #111;
+            font-weight: 700;
+            padding: 4px;
+            font-size: 10pt;
+            text-transform: uppercase;
+        }
+
+        .page-one .parent-grid > tbody > tr > td:last-child .parent-table th {
+            border-right: none;
+        }
+
         .page-one .parent-table td {
-            border: 0;
-            padding: 0.55px 0;
-            font-size: 9.8pt;
+            border-bottom: 1px dotted #ccc;
+            border-right: 1px dotted #ccc;
+            padding: 3px 6px;
+            font-size: 9pt;
             vertical-align: top;
         }
 
+        .page-one .parent-grid > tbody > tr > td:last-child .parent-table td {
+            border-right: none;
+        }
+
+        .page-one .parent-table tr:last-child td {
+            border-bottom: none;
+        }
+
         .page-one .parent-label {
-            width: 175px;
+            width: 130px;
+            font-weight: 600;
         }
 
         .page-one .declaration-title {
@@ -601,16 +622,12 @@
             padding-bottom: 1px;
         }
 
-                .fixed-footer {
-            position: fixed;
-            bottom: -12mm;
-            left: 0;
-            right: 0;
-            border-top: 1px dashed #999;
-            padding-top: 4px;
+        .security-box {
+            margin-top: 10px;
+            border: 1px dashed #222;
+            padding: 6px 8px;
             font-size: 8pt;
-            text-align: center;
-            color: #555;
+            line-height: 1.45;
         }
 
         .lampiran-title {
@@ -681,13 +698,6 @@
 </head>
 
 <body>
-    @if(isset($documentSecurity) && is_array($documentSecurity))
-        <div class="fixed-footer">
-            <strong>Referensi Dokumen SPMB</strong> | 
-            Nomor pendaftaran: {{ $application->nomor_pendaftaran ?: '-' }} | 
-            Kode dokumen: {{ $documentSecurity['document_code'] ?? '-' }}
-        </div>
-    @endif
     <div class="sheet page-one">
         <table class="kop-table">
             <tr>
@@ -732,15 +742,9 @@
                     </div>
                 </div>
             </div>
-                        <div class="title-cell">
+            <div class="title-cell">
                 <div class="form-title">FORMULIR PENDAFTARAN SPMB (SISTEM PENERIMAAN MURID BARU)</div>
                 <div class="form-subtitle">SMK NEGERI 1 KOLAKA TP. {{ $tahunAjaranLabel }}</div>
-                @if($pilihanJurusan1MapColor)
-                    <div style="margin-top: 10px; font-weight: bold; font-size: 10pt; color: #222; border: 1px solid #444; padding: 6px; display: inline-block; background-color: #f9f9f9;">
-                        PENTING: Gunakan Map Berwarna <span style="text-transform: uppercase; text-decoration: underline;">{{ $pilihanJurusan1MapColor }}</span> 
-                        <br><span style="font-size: 8.5pt; font-weight: normal;">(Sesuai jurusan pilihan ke-1: {{ $pilihanJurusan1 }})</span>
-                    </div>
-                @endif
             </div>
         </div>
 
@@ -847,14 +851,23 @@
                 @php
                     $achievements = $application->achievements ?? collect();
                 @endphp
-                @for($i = 0; $i < 3; $i++)
+                @if($achievements->isEmpty())
                     <tr>
-                        <td style="text-align: center;">{{ $i + 1 }}</td>
-                        <td>{{ $achievements[$i]->achievement_name ?? '' }}</td>
-                        <td>{{ $achievements[$i]->achievement_rank ?? '' }}</td>
-                        <td>{{ $achievements[$i]->achievement_level ?? '' }}</td>
+                        <td style="text-align: center;">1</td>
+                        <td style="text-align: center;">-</td>
+                        <td style="text-align: center;">-</td>
+                        <td style="text-align: center;">-</td>
                     </tr>
-                @endfor
+                @else
+                    @foreach($achievements->take(3) as $index => $ach)
+                        <tr>
+                            <td style="text-align: center;">{{ $index + 1 }}</td>
+                            <td>{{ $ach->achievement_name ?? '-' }}</td>
+                            <td>{{ $ach->achievement_rank ?? '-' }}</td>
+                            <td>{{ $ach->achievement_level ?? '-' }}</td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 
@@ -863,7 +876,7 @@
             <tr>
                 <td class="jurusan-label">JURUSAN KE - 1</td>
                 <td class="sep-col">:</td>
-                <td>{{ $pilihanJurusan1 }}</td>
+                <td><strong>{{ $pilihanJurusan1 }}</strong></td>
             </tr>
             <tr>
                 <td class="jurusan-label">JURUSAN KE - 2</td>
@@ -876,109 +889,129 @@
                 <td>{{ $pilihanJurusan3 }}</td>
             </tr>
         </table>
+        
+        <div style="margin-top: 8px; border: 1px solid #111; padding: 6px; font-size: 10pt; line-height: 1.3;">
+            <strong style="text-decoration: underline;">Ketentuan Map Berkas:</strong> Silakan gunakan map kertas berwarna <strong>{{ strtoupper($warnaMapUtama) }}</strong> saat menyerahkan dokumen fisik ke panitia pendaftaran sesuai dengan pilihan jurusan pertama Anda.
+        </div>
 
         <div class="section-title">C. DATA ORANG TUA</div>
         <table class="parent-grid">
-            <tr>
-                <td>
-                    <table class="parent-table">
-                        <tr>
-                            <td class="parent-label">Nama Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ strtoupper((string) ($application->nama_ayah ?: '-')) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Tempat/Tanggal Lahir Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->tempat_tanggal_lahir_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Pendidikan Terakhir Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->pendidikan_terakhir_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Pekerjaan Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->pekerjaan_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Penghasilan Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->penghasilan_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Alamat Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->alamat_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Kelurahan Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->kelurahan_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Kecamatan Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->kecamatan_ayah ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">No. Tlp/HP/Wa Ayah</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->nomor_hp_ayah ?: '-' }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <table class="parent-table">
-                        <tr>
-                            <td class="parent-label">Nama Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ strtoupper((string) ($application->nama_ibu ?: '-')) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Tempat/Tanggal Lahir Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->tempat_tanggal_lahir_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Pendidikan Terakhir Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->pendidikan_terakhir_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Pekerjaan Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->pekerjaan_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Penghasilan Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->penghasilan_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Alamat Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->alamat_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Kelurahan Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->kelurahan_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">Kecamatan Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->kecamatan_ibu ?: '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="parent-label">No. Tlp/HP/Wa Ibu</td>
-                            <td class="sep-col">:</td>
-                            <td>{{ $application->nomor_hp_ibu ?: '-' }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="parent-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="3" style="text-align: left;">DATA AYAH</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="parent-label">Nama Lengkap</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ strtoupper((string) ($application->nama_ayah ?: '-')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Tempat/Tgl Lahir</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->tempat_tanggal_lahir_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Pendidikan Terakhir</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->pendidikan_terakhir_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Pekerjaan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->pekerjaan_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Penghasilan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->penghasilan_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Alamat</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->alamat_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Kelurahan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->kelurahan_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Kecamatan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->kecamatan_ayah ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">No. Tlp/HP/WA</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->nomor_hp_ayah ?: '-' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <table class="parent-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="3" style="text-align: left;">DATA IBU</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="parent-label">Nama Lengkap</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ strtoupper((string) ($application->nama_ibu ?: '-')) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Tempat/Tgl Lahir</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->tempat_tanggal_lahir_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Pendidikan Terakhir</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->pendidikan_terakhir_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Pekerjaan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->pekerjaan_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Penghasilan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->penghasilan_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Alamat</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->alamat_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Kelurahan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->kelurahan_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">Kecamatan</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->kecamatan_ibu ?: '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="parent-label">No. Tlp/HP/WA</td>
+                                    <td class="sep-col">:</td>
+                                    <td>{{ $application->nomor_hp_ibu ?: '-' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
         </table>
 
         <div class="declaration-title">PERNYATAAN CALON MURID BARU</div>
@@ -1008,6 +1041,14 @@
                 </td>
             </tr>
         </table>
+        
+        @if(isset($documentSecurity) && is_array($documentSecurity))
+            <div class="security-box" style="margin-top: 10px;">
+                <strong>Referensi Dokumen</strong><br>
+                Nomor pendaftaran: {{ $application->nomor_pendaftaran ?: '-' }} | 
+                Kode dokumen: {{ $documentSecurity['document_code'] ?? '-' }}
+            </div>
+        @endif
     </div>
 
     <div class="page-break"></div>
