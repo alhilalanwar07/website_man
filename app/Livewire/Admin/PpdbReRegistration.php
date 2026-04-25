@@ -6,6 +6,7 @@ use App\Models\PpdbApplication;
 use App\Models\PpdbPeriod;
 use App\Models\PpdbTrack;
 use App\Models\User;
+use App\Support\PpdbNipdAllocator;
 use App\Support\PpdbPeriodResolver;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
@@ -149,6 +150,7 @@ class PpdbReRegistration extends Component
         ]);
 
         $application = PpdbApplication::where('hasil_seleksi', 'passed')->findOrFail($this->selectedId);
+        $hadNipd = (bool) $application->nipd;
         $processedAt = in_array($this->verificationStatus, ['verified', 'rejected'], true) ? now() : null;
 
         $application->update([
@@ -161,7 +163,19 @@ class PpdbReRegistration extends Component
             'verified_daftar_ulang_at' => $processedAt,
         ]);
 
-        $this->dispatch('toast', type: 'success', message: 'Verifikasi daftar ulang berhasil disimpan.');
+        $assignedNipd = null;
+
+        if ($this->verificationStatus === 'verified') {
+            $assignedNipd = app(PpdbNipdAllocator::class)->assignIfEligible($application);
+        }
+
+        $message = 'Verifikasi daftar ulang berhasil disimpan.';
+
+        if (! $hadNipd && $assignedNipd) {
+            $message .= ' NIPD ' . $assignedNipd . ' ditetapkan otomatis.';
+        }
+
+        $this->dispatch('toast', type: 'success', message: $message);
     }
 
     public function applyBulkVerification(): void
@@ -182,6 +196,7 @@ class PpdbReRegistration extends Component
             ->get();
 
         foreach ($applications as $application) {
+            $hadNipd = (bool) $application->nipd;
             $processedAt = in_array($this->bulkVerificationStatus, ['verified', 'rejected'], true) ? now() : null;
 
             $application->update([
@@ -193,6 +208,10 @@ class PpdbReRegistration extends Component
                 'verified_daftar_ulang_by' => $processedAt ? auth()->id() : null,
                 'verified_daftar_ulang_at' => $processedAt,
             ]);
+
+            if (! $hadNipd && $this->bulkVerificationStatus === 'verified') {
+                app(PpdbNipdAllocator::class)->assignIfEligible($application);
+            }
         }
 
         $processedCount = $applications->count();

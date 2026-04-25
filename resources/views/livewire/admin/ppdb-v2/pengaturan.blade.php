@@ -339,6 +339,57 @@
                                 </div>
                             </form>
                         </div>
+
+                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">Pengaturan NIPD Otomatis</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">NIPD akan diberikan otomatis ketika peserta dinyatakan lulus, sudah ditetapkan jurusan, dan daftar ulang diverifikasi.</p>
+
+                            <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Tersimpan di Periode</p>
+                                    <p class="mt-2 text-2xl font-black text-slate-900 dark:text-white">{{ number_format($configuredLastNipd, 0, ',', '.') }}</p>
+                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Nilai manual saat ini</p>
+                                </div>
+                                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Terakhir Terpakai</p>
+                                    <p class="mt-2 text-2xl font-black text-slate-900 dark:text-white">{{ number_format($lastAssignedNipd, 0, ',', '.') }}</p>
+                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">NIPD terbesar dari data pendaftar</p>
+                                </div>
+                                <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">NIPD Efektif</p>
+                                    <p class="mt-2 text-2xl font-black text-slate-900 dark:text-white">{{ number_format($effectiveLastNipd, 0, ',', '.') }}</p>
+                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Acuan nomor terakhir final</p>
+                                </div>
+                                <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-900 dark:bg-blue-950/20">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Preview Berikutnya</p>
+                                    <p class="mt-2 text-2xl font-black text-blue-700 dark:text-blue-300">{{ number_format($nextNipdPreview, 0, ',', '.') }}</p>
+                                    <p class="mt-1 text-xs text-blue-700/80 dark:text-blue-300/80">Teraplikasi saat verifikasi daftar ulang</p>
+                                </div>
+                            </div>
+
+                            <form wire:submit.prevent="openActionModal('save-nipd-settings')" class="mt-4 space-y-4">
+                                <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                                    <div>
+                                        <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Set Manual NIPD Terakhir</label>
+                                        <input wire:model.blur="nipdSettings.last_nipd" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                        @error('nipdSettings.last_nipd') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Gunakan nilai terbesar terakhir. Sistem akan melanjutkan ke nomor setelahnya.</p>
+                                    </div>
+                                    <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                                        <p class="font-semibold text-slate-900 dark:text-white">Distribusi NIPD Periode Ini</p>
+                                        <p class="mt-2">Total peserta yang sudah memiliki NIPD: <span class="font-bold">{{ number_format($nipdAssignedCount, 0, ',', '.') }}</span></p>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">NIPD tidak akan dihapus otomatis ketika verifikasi daftar ulang dibatalkan.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end">
+                                    <button type="submit" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                        <span wire:loading.remove wire:target="openActionModal">Simpan Pengaturan NIPD</span>
+                                        <span wire:loading wire:target="openActionModal">Memproses...</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 @elseif($tab === 'jalur')
                     <form wire:submit.prevent="openActionModal('save-track-settings')" class="space-y-4">

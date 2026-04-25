@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\PpdbV2;
 
 use App\Models\PpdbApplication;
 use App\Models\PpdbPeriod;
+use App\Support\PpdbNipdAllocator;
 use Livewire\Component;
 
 class DaftarUlang extends Component
@@ -14,24 +15,38 @@ class DaftarUlang extends Component
     public function toggleStatus($studentId)
     {
         $student = PpdbApplication::find($studentId);
-        if ($student) {
-            $isAlreadyVerified = $student->status_daftar_ulang === 'verified';
-            
-            $student->update([
-                'status_daftar_ulang' => $isAlreadyVerified ? 'pending' : 'verified',
-                'daftar_ulang_at' => $isAlreadyVerified ? null : now(),
-                'verified_daftar_ulang_by' => $isAlreadyVerified ? null : auth()->id(),
-                'verified_daftar_ulang_at' => $isAlreadyVerified ? null : now(),
-            ]);
 
-            session()->flash('message', 'Status daftar ulang atas nama ' . $student->nama_lengkap . ' '. ($isAlreadyVerified ? 'dibatalkan.' : 'telah diselesaikan.'));
+        if (! $student) {
+            return;
         }
+
+        $isAlreadyVerified = $student->status_daftar_ulang === 'verified';
+        $hadNipd = (bool) $student->nipd;
+
+        $student->update([
+            'status_daftar_ulang' => $isAlreadyVerified ? 'pending' : 'verified',
+            'daftar_ulang_at' => $isAlreadyVerified ? null : now(),
+            'verified_daftar_ulang_by' => $isAlreadyVerified ? null : auth()->id(),
+            'verified_daftar_ulang_at' => $isAlreadyVerified ? null : now(),
+        ]);
+
+        $nipdMessage = '';
+
+        if (! $isAlreadyVerified) {
+            $assignedNipd = app(PpdbNipdAllocator::class)->assignIfEligible($student);
+
+            if (! $hadNipd && $assignedNipd) {
+                $nipdMessage = ' NIPD ' . $assignedNipd . ' ditetapkan otomatis.';
+            }
+        }
+
+        session()->flash('message', 'Status daftar ulang atas nama ' . $student->nama_lengkap . ' ' . ($isAlreadyVerified ? 'dibatalkan.' : 'telah diselesaikan.') . $nipdMessage);
     }
 
     public function render()
     {
         $period = PpdbPeriod::where('is_active', true)->first();
-        $query = PpdbApplication::query();
+        $query = PpdbApplication::with('programDiterima');
 
         if ($period) {
             $query->where('period_id', $period->id);
@@ -40,18 +55,19 @@ class DaftarUlang extends Component
         }
 
         if ($this->search) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->where('nama_lengkap', 'like', '%' . $this->search . '%')
-                  ->orWhere('nomor_pendaftaran', 'like', '%' . $this->search . '%');
+                    ->orWhere('nomor_pendaftaran', 'like', '%' . $this->search . '%')
+                    ->orWhere('nipd', 'like', '%' . $this->search . '%');
             });
         }
 
         if ($this->statusFilter === 'selesai') {
             $query->where('status_daftar_ulang', 'verified');
         } elseif ($this->statusFilter === 'belum') {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->whereNull('status_daftar_ulang')
-                  ->orWhere('status_daftar_ulang', '!=', 'verified');
+                    ->orWhere('status_daftar_ulang', '!=', 'verified');
             });
         }
 

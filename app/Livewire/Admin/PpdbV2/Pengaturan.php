@@ -11,6 +11,7 @@ use App\Models\PpdbQuota;
 use App\Models\PpdbTrack;
 use App\Models\ProgramKeahlian;
 use App\Models\ProfilSekolah;
+use App\Support\PpdbNipdAllocator;
 use App\Support\PpdbPeriodResolver;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -57,6 +58,7 @@ class Pengaturan extends Component
     public array $importantDateSettings = [];
     public array $documentRequirementSettings = [];
     public array $mapColorSettings = [];
+    public array $nipdSettings = [];
     public array $newPeriodForm = [];
 
     public bool $showActionModal = false;
@@ -171,6 +173,9 @@ class Pengaturan extends Component
                     break;
                 case 'save-map-color-settings':
                     $this->saveMapColorSettings();
+                    break;
+                case 'save-nipd-settings':
+                    $this->saveNipdSettings();
                     break;
                 default:
                     $this->dispatch('toast', type: 'error', message: 'Aksi tidak dikenali. Silakan muat ulang halaman.');
@@ -594,6 +599,36 @@ class Pengaturan extends Component
         $this->dispatch('toast', type: 'success', message: 'Pengaturan warna map jurusan berhasil diperbarui.');
     }
 
+    public function saveNipdSettings(): void
+    {
+        if (! $this->managementPeriodId) {
+            $this->dispatch('toast', type: 'error', message: 'Belum ada periode aktif untuk pengaturan NIPD.');
+            return;
+        }
+
+        $validated = $this->validate([
+            'nipdSettings.last_nipd' => 'nullable|integer|min:0|max:999999999999',
+        ]);
+
+        $manualLastNipd = (int) ($validated['nipdSettings']['last_nipd'] ?? 0);
+
+        $period = PpdbPeriod::findOrFail($this->managementPeriodId);
+        $lastAssignedNipd = app(PpdbNipdAllocator::class)->resolveLastAssignedForPeriod($period->id);
+
+        if ($manualLastNipd < $lastAssignedNipd) {
+            $this->addError('nipdSettings.last_nipd', 'NIPD manual tidak boleh lebih kecil dari NIPD terakhir yang sudah terpakai.');
+            $this->dispatch('toast', type: 'error', message: 'NIPD manual harus lebih besar atau sama dengan NIPD terakhir yang terpakai.');
+            return;
+        }
+
+        $period->update([
+            'nipd_last_number' => $manualLastNipd,
+        ]);
+
+        $this->refreshSelectedPeriod();
+        $this->dispatch('toast', type: 'success', message: 'Pengaturan NIPD terakhir berhasil diperbarui.');
+    }
+
     public function addContactPersonRow(): void
     {
         $this->contactPersonSettings[] = $this->defaultContactPersonRow(false);
@@ -863,6 +898,22 @@ class Pengaturan extends Component
         $availablePeriods = app(PpdbPeriodResolver::class)->adminOptions();
         $selectedPeriodId = $activePeriod?->id;
 
+        $configuredLastNipd = 0;
+        $lastAssignedNipd = 0;
+        $effectiveLastNipd = 0;
+        $nextNipdPreview = 1;
+        $nipdAssignedCount = 0;
+
+        if ($activePeriod) {
+            $allocator = app(PpdbNipdAllocator::class);
+
+            $configuredLastNipd = (int) ($activePeriod->nipd_last_number ?? 0);
+            $lastAssignedNipd = $allocator->resolveLastAssignedForPeriod($activePeriod->id);
+            $effectiveLastNipd = max($configuredLastNipd, $lastAssignedNipd);
+            $nextNipdPreview = $effectiveLastNipd + 1;
+            $nipdAssignedCount = $activePeriod->applications()->whereNotNull('nipd')->count();
+        }
+
         $quotaOverview = $activePeriod
             ? $activePeriod->quotas->where('status_aktif', true)->values()
             : collect();
@@ -874,7 +925,12 @@ class Pengaturan extends Component
             'quotaOverview',
             'availablePeriods',
             'selectedPeriodId',
-            'tabOptions'
+            'tabOptions',
+            'configuredLastNipd',
+            'lastAssignedNipd',
+            'effectiveLastNipd',
+            'nextNipdPreview',
+            'nipdAssignedCount'
         ))->layout('components.layouts.admin', ['title' => 'Pengaturan PPDB']);
     }
 
@@ -932,6 +988,7 @@ class Pengaturan extends Component
             $this->importantDateSettings = [];
             $this->documentRequirementSettings = [];
             $this->mapColorSettings = [];
+            $this->nipdSettings = [];
 
             return;
         }
@@ -1049,6 +1106,10 @@ class Pengaturan extends Component
                 ];
             })
             ->toArray();
+
+        $this->nipdSettings = [
+            'last_nipd' => (int) ($period->nipd_last_number ?? 0),
+        ];
     }
 
     protected function resetNewPeriodForm(?PpdbPeriod $period = null): void
@@ -1107,6 +1168,12 @@ class Pengaturan extends Component
                 'title' => 'Simpan Pengaturan Periode?',
                 'message' => 'Perubahan jadwal, status, dan pengumuman akan langsung mempengaruhi perilaku portal frontend.',
                 'confirm_label' => 'Ya, Simpan Periode',
+                'tone' => 'primary',
+            ],
+            'save-nipd-settings' => [
+                'title' => 'Simpan Pengaturan NIPD?',
+                'message' => 'Nilai NIPD terakhir akan dipakai sebagai acuan nomor berikutnya saat daftar ulang diverifikasi.',
+                'confirm_label' => 'Ya, Simpan NIPD',
                 'tone' => 'primary',
             ],
             'save-track-settings' => [

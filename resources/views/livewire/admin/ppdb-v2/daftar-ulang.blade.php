@@ -43,7 +43,7 @@
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <x-admin.icon name="search" class="h-4 w-4 text-slate-400" />
                 </div>
-                <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter" type="text" class="block w-full rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama siswa...">
+                <input wire:model.live.debounce.300ms="search" wire:loading.attr="disabled" wire:target="search,statusFilter" type="text" class="block w-full rounded-xl border-slate-300 pl-10 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60" placeholder="Cari nama, no daftar, atau NIPD...">
             </div>
             
             <div class="flex rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 p-1">
@@ -72,7 +72,7 @@
                             <td class="px-4 py-3 text-center text-slate-400 font-medium">{{ $index + 1 }}</td>
                             <td class="px-4 py-3">
                                 <div class="font-bold {{ $isSelesai ? 'text-slate-500 line-through' : 'text-slate-900 dark:text-white' }}">{{ $item->nama_lengkap }}</div>
-                                <div class="text-[11px] mt-0.5 text-slate-500">Nomor: {{ $item->nomor_pendaftaran }} • Asal: {{ $item->asal_sekolah }}</div>
+                                <div class="text-[11px] mt-0.5 text-slate-500">Nomor: {{ $item->nomor_pendaftaran }} • NIPD: {{ $item->nipd ? number_format($item->nipd, 0, ',', '.') : '-' }} • Asal: {{ $item->asal_sekolah }}</div>
                             </td>
                             <td class="px-4 py-3 font-semibold text-slate-700 dark:text-slate-300">
                                 {{ $item->programDiterima?->nama_program ?? '-' }}

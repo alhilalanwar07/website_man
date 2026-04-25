@@ -26,6 +26,7 @@ class PpdbPeriod extends Model
         'status_pengumuman',
         'hasil_diumumkan_at',
         'catatan_pengumuman',
+        'nipd_last_number',
         'is_active',
     ];
 
@@ -41,6 +42,7 @@ class PpdbPeriod extends Model
             'tanggal_mulai_daftar_ulang' => 'date',
             'tanggal_selesai_daftar_ulang' => 'date',
             'hasil_diumumkan_at' => 'datetime',
+            'nipd_last_number' => 'integer',
             'is_active' => 'boolean',
         ];
     }

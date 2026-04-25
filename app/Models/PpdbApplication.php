@@ -21,6 +21,7 @@ class PpdbApplication extends Model
         'period_id',
         'track_id',
         'nomor_pendaftaran',
+        'nipd',
         'nama_lengkap',
         'nisn',
         'nik',
@@ -127,6 +128,7 @@ class PpdbApplication extends Model
     {
         return [
             'tanggal_lahir' => 'date',
+            'nipd' => 'integer',
             'punya_kip' => 'boolean',
             'menerima_kip' => 'boolean',
             'jarak_tempat_tinggal_km' => 'decimal:2',
