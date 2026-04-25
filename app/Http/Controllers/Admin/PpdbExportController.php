@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pegawai;
 use App\Models\PpdbApplication;
+use App\Models\ProfilSekolah;
 use App\Support\PpdbPeriodResolver;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
@@ -64,6 +66,27 @@ class PpdbExportController extends Controller
         $timestamp = now()->format('Ymd-His');
 
         if ($format === 'pdf') {
+            $profilSekolah = ProfilSekolah::query()->first();
+            $kepalaSekolah = Pegawai::query()
+                ->aktif()
+                ->where(function (Builder $query): void {
+                    $query->where('jabatan', 'like', '%Kepala Sekolah%')
+                        ->orWhere('jabatan', 'like', '%Kepsek%');
+                })
+                ->orderByDesc('updated_at')
+                ->first();
+
+            $logoAbsolutePath = null;
+            $logoPath = trim((string) ($profilSekolah?->logo_path ?? ''));
+
+            if ($logoPath !== '') {
+                $storageLogoPath = storage_path('app/public/' . ltrim($logoPath, '/'));
+
+                if (is_file($storageLogoPath)) {
+                    $logoAbsolutePath = $storageLogoPath;
+                }
+            }
+
             $pdf = Pdf::loadView('pdf.admin.ppdb-re-registration-export', [
                 'applications' => $applications,
                 'period' => $activePeriod,
@@ -72,6 +95,19 @@ class PpdbExportController extends Controller
                     'status_daftar_ulang' => $request->string('registration_status')->value(),
                     'program_id' => $request->integer('program_id'),
                     'search' => $request->string('search')->value(),
+                ],
+                'documentMeta' => [
+                    'school_name' => $profilSekolah?->nama_sekolah ?: 'SMK Negeri 1 Kolaka',
+                    'school_npsn' => $profilSekolah?->npsn,
+                    'school_address' => $profilSekolah?->alamat_lengkap,
+                    'school_phone' => $profilSekolah?->nomor_telepon,
+                    'school_email' => $profilSekolah?->email_resmi,
+                    'logo_absolute_path' => $logoAbsolutePath,
+                    'sign_location' => 'Kolaka',
+                    'sign_date' => now()->translatedFormat('d F Y'),
+                    'sign_title' => $kepalaSekolah?->jabatan ?: 'Kepala Sekolah',
+                    'sign_name' => $kepalaSekolah?->nama_lengkap ?: '........................................',
+                    'sign_nip' => $kepalaSekolah?->nip,
                 ],
             ])->setPaper('a4', 'landscape');
 

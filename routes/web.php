@@ -79,19 +79,6 @@ Route::post('/logout', function () {
     return redirect('/login');
 })->middleware('auth')->name('logout');
 
-// Admin
-// OLD ROUTES PPDB - DISABLED (Untuk dibuat ulang versi Simple)
-/*
-Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/ppdb', Ppdb::class)->name('ppdb');
-    Route::get('/ppdb/export', PpdbExportController::class)->name('ppdb.export');
-    Route::get('/ppdb/pendaftar', PpdbApplicants::class)->name('ppdb.applicants');
-    Route::get('/ppdb/penilaian-tes', PpdbTestScoring::class)->name('ppdb.tests');
-    Route::get('/ppdb/verifikasi-daftar-ulang', PpdbReRegistration::class)->name('ppdb.re-registration');
-    Route::get('/ppdb/pengaturan', PpdbSettings::class)->name('ppdb.settings');
-});
-*/
-
 // ROUTES PPDB V2 (Simple UI)
 Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin/ppdb')->name('admin.ppdb.')->group(function () {
     Route::get('/', PpdbDashboardV2::class)->name('dashboard');

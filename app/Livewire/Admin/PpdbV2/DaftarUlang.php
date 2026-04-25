@@ -42,10 +42,11 @@ class DaftarUlang extends Component
     {
         if ($value) {
             $pageItems = $this->getFilteredQuery($this->getActivePeriod())
+                ->where('status_daftar_ulang', 'submitted')
                 ->orderByRaw("CASE WHEN status_daftar_ulang = 'submitted' THEN 0 WHEN status_daftar_ulang = 'rejected' THEN 1 WHEN status_daftar_ulang = 'pending' THEN 2 WHEN status_daftar_ulang = 'not_available' THEN 3 WHEN status_daftar_ulang = 'verified' THEN 4 ELSE 5 END")
                 ->orderByDesc('daftar_ulang_at')
                 ->orderBy('nama_lengkap')
-                ->paginate(15, ['*'], $this->getPageName(), $this->getPage())
+                ->paginate(15, ['*'], 'page', $this->getPage())
                 ->pluck('id')
                 ->map(fn ($id) => (string) $id)
                 ->all();
@@ -95,8 +96,11 @@ class DaftarUlang extends Component
             return;
         }
 
+        $selectedCount = count($this->selectedIds);
+
         $students = PpdbApplication::query()
             ->whereIn('id', $this->selectedIds)
+            ->where('status_daftar_ulang', 'submitted')
             ->get();
 
         $processedCount = 0;
@@ -119,7 +123,14 @@ class DaftarUlang extends Component
 
         $this->resetSelection();
 
-        session()->flash('message', $processedCount . ' siswa berhasil diverifikasi massal pada daftar ulang.');
+        $skippedCount = $selectedCount - $processedCount;
+        $message = $processedCount . ' siswa berhasil diverifikasi massal pada daftar ulang.';
+
+        if ($skippedCount > 0) {
+            $message .= ' ' . $skippedCount . ' siswa dilewati karena statusnya bukan Menunggu Verifikasi.';
+        }
+
+        session()->flash('message', $message);
     }
 
     protected function getActivePeriod(): ?PpdbPeriod

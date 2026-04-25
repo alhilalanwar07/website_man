@@ -132,10 +132,11 @@
                     @forelse ($pendaftar as $index => $item)
                         @php
                             $isSelesai = $item->status_daftar_ulang === 'verified';
+                            $canBulkVerify = $item->status_daftar_ulang === 'submitted';
                         @endphp
                         <tr wire:key="daftar-ulang-row-{{ $item->id }}" class="{{ $isSelesai ? 'bg-emerald-50/10 dark:bg-emerald-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }} transition">
                             <td class="px-4 py-3 text-center">
-                                <input wire:model.live="selectedIds" value="{{ $item->id }}" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
+                                <input wire:model.live="selectedIds" value="{{ $item->id }}" type="checkbox" @disabled(! $canBulkVerify) class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:opacity-40">
                             </td>
                             <td class="px-4 py-3 text-center font-medium text-slate-400">{{ $pendaftar->firstItem() + $index }}</td>
                             <td class="px-4 py-3">
