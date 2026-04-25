@@ -1,10 +1,10 @@
 <div>
     <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
         <span wire:loading wire:target="search,statusFilter,programFilter">Memuat daftar daftar ulang.</span>
-        <span wire:loading wire:target="toggleStatus">Memproses status daftar ulang.</span>
+        <span wire:loading wire:target="toggleStatus,bulkVerifySelected">Memproses status daftar ulang.</span>
     </div>
 
-    <div wire:loading.flex wire:target="search,statusFilter,programFilter,toggleStatus" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
+    <div wire:loading.flex wire:target="search,statusFilter,programFilter,toggleStatus,bulkVerifySelected" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
         <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
         Memuat pembaruan daftar ulang...
     </div>
@@ -102,12 +102,25 @@
                 <button wire:click="$set('statusFilter', 'rejected')" wire:loading.attr="disabled" wire:target="statusFilter,programFilter,search" class="px-4 py-1.5 text-xs font-bold rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60 {{ $statusFilter === 'rejected' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Ditolak</button>
                 <button wire:click="$set('statusFilter', 'unfinished')" wire:loading.attr="disabled" wire:target="statusFilter,programFilter,search" class="px-4 py-1.5 text-xs font-bold rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60 {{ $statusFilter === 'unfinished' ? 'bg-white shadow relative text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-700' }}">Belum Final</button>
             </div>
+
+            @if(count($selectedIds) > 0)
+                <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-900 dark:bg-emerald-950/20">
+                    <p class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">{{ count($selectedIds) }} siswa dipilih untuk verifikasi massal.</p>
+                    <button wire:click="bulkVerifySelected" wire:loading.attr="disabled" wire:target="bulkVerifySelected" class="inline-flex items-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60">
+                        <span wire:loading.remove wire:target="bulkVerifySelected">Verifikasi Terpilih</span>
+                        <span wire:loading wire:target="bulkVerifySelected">Memproses...</span>
+                    </button>
+                </div>
+            @endif
         </div>
 
-        <div class="overflow-x-auto" wire:loading.remove wire:target="search,statusFilter,programFilter,toggleStatus">
+        <div class="overflow-x-auto" wire:loading.remove wire:target="search,statusFilter,programFilter,toggleStatus,bulkVerifySelected">
             <table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
                 <thead class="border-b border-slate-200 bg-slate-50/80 text-xs uppercase text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
                     <tr>
+                        <th scope="col" class="w-10 px-4 py-3 text-center">
+                            <input wire:model.live="selectPage" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
+                        </th>
                         <th scope="col" class="w-10 px-4 py-3 text-center">#</th>
                         <th scope="col" class="px-4 py-3">Data Siswa Diterima</th>
                         <th scope="col" class="px-4 py-3">Diterima di Jurusan</th>
@@ -121,10 +134,13 @@
                             $isSelesai = $item->status_daftar_ulang === 'verified';
                         @endphp
                         <tr wire:key="daftar-ulang-row-{{ $item->id }}" class="{{ $isSelesai ? 'bg-emerald-50/10 dark:bg-emerald-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50' }} transition">
+                            <td class="px-4 py-3 text-center">
+                                <input wire:model.live="selectedIds" value="{{ $item->id }}" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600">
+                            </td>
                             <td class="px-4 py-3 text-center font-medium text-slate-400">{{ $pendaftar->firstItem() + $index }}</td>
                             <td class="px-4 py-3">
                                 <div class="font-bold {{ $isSelesai ? 'text-slate-500 line-through' : 'text-slate-900 dark:text-white' }}">{{ $item->nama_lengkap }}</div>
-                                <div class="mt-0.5 text-[11px] text-slate-500">Nomor: {{ $item->nomor_pendaftaran }} • NIPD: {{ $item->nipd ? number_format($item->nipd, 0, ',', '.') : '-' }} • Asal: {{ $item->asal_sekolah }}</div>
+                                <div class="mt-0.5 text-[11px] text-slate-500">Nomor: {{ $item->nomor_pendaftaran }} • NIPD: {{ $item->nipd ?: '-' }} • Asal: {{ $item->asal_sekolah }}</div>
                             </td>
                             <td class="px-4 py-3 font-semibold text-slate-700 dark:text-slate-300">
                                 {{ $item->programDiterima?->nama_jurusan ?? '-' }}
@@ -157,7 +173,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-12 text-center">
+                            <td colspan="6" class="px-4 py-12 text-center">
                                 <div class="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
                                     <x-admin.icon name="check-circle" class="h-6 w-6" />
                                 </div>
@@ -174,8 +190,8 @@
             {{ $pendaftar->links() }}
         </div>
 
-        <div wire:loading.block wire:target="search,statusFilter,programFilter,toggleStatus" class="p-4">
-            <x-admin.skeleton.table :columns="5" :rows="6" />
+        <div wire:loading.block wire:target="search,statusFilter,programFilter,toggleStatus,bulkVerifySelected" class="p-4">
+            <x-admin.skeleton.table :columns="6" :rows="6" />
         </div>
     </div>
 </div>

@@ -17,20 +17,45 @@ class DaftarUlang extends Component
     public $search = '';
     public $statusFilter = '';
     public $programFilter = '';
+    public array $selectedIds = [];
+    public bool $selectPage = false;
 
     public function updatingSearch(): void
     {
         $this->resetPage();
+        $this->resetSelection();
     }
 
     public function updatingStatusFilter(): void
     {
         $this->resetPage();
+        $this->resetSelection();
     }
 
     public function updatingProgramFilter(): void
     {
         $this->resetPage();
+        $this->resetSelection();
+    }
+
+    public function updatedSelectPage(bool $value): void
+    {
+        if ($value) {
+            $pageItems = $this->getFilteredQuery($this->getActivePeriod())
+                ->orderByRaw("CASE WHEN status_daftar_ulang = 'submitted' THEN 0 WHEN status_daftar_ulang = 'rejected' THEN 1 WHEN status_daftar_ulang = 'pending' THEN 2 WHEN status_daftar_ulang = 'not_available' THEN 3 WHEN status_daftar_ulang = 'verified' THEN 4 ELSE 5 END")
+                ->orderByDesc('daftar_ulang_at')
+                ->orderBy('nama_lengkap')
+                ->paginate(15, ['*'], $this->getPageName(), $this->getPage())
+                ->pluck('id')
+                ->map(fn ($id) => (string) $id)
+                ->all();
+
+            $this->selectedIds = $pageItems;
+
+            return;
+        }
+
+        $this->selectedIds = [];
     }
 
     public function toggleStatus($studentId)
@@ -64,9 +89,48 @@ class DaftarUlang extends Component
         session()->flash('message', 'Status daftar ulang atas nama ' . $student->nama_lengkap . ' ' . ($isAlreadyVerified ? 'dibatalkan.' : 'telah diselesaikan.') . $nipdMessage);
     }
 
+    public function bulkVerifySelected(): void
+    {
+        if ($this->selectedIds === []) {
+            return;
+        }
+
+        $students = PpdbApplication::query()
+            ->whereIn('id', $this->selectedIds)
+            ->get();
+
+        $processedCount = 0;
+
+        foreach ($students as $student) {
+            if ($student->status_daftar_ulang === 'verified') {
+                continue;
+            }
+
+            $student->update([
+                'status_daftar_ulang' => 'verified',
+                'daftar_ulang_at' => $student->daftar_ulang_at ?? now(),
+                'verified_daftar_ulang_by' => auth()->id(),
+                'verified_daftar_ulang_at' => now(),
+            ]);
+
+            app(PpdbNipdAllocator::class)->assignIfEligible($student);
+            $processedCount++;
+        }
+
+        $this->resetSelection();
+
+        session()->flash('message', $processedCount . ' siswa berhasil diverifikasi massal pada daftar ulang.');
+    }
+
     protected function getActivePeriod(): ?PpdbPeriod
     {
         return PpdbPeriod::query()->where('is_active', true)->first();
+    }
+
+    protected function resetSelection(): void
+    {
+        $this->selectedIds = [];
+        $this->selectPage = false;
     }
 
     protected function getFilteredQuery(?PpdbPeriod $period): Builder

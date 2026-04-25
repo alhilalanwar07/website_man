@@ -56,6 +56,7 @@
             @if($searched)
                 @if($result)
                 @php
+                    $announcementPublished = $result->period?->isAnnouncementPublished();
                     $selectionBadge = match ($result->hasil_seleksi) {
                         'passed' => 'bg-emerald-50 text-emerald-700',
                         'reserve' => 'bg-amber-50 text-amber-700',
@@ -72,7 +73,11 @@
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $result->verification_status_key === 'approved' ? 'bg-emerald-50 text-emerald-700' : ($result->verification_status_key === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700') }}">Verifikasi: {{ $result->verification_status_label }}</span>
+                            @if($announcementPublished)
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold {{ $selectionBadge }}">Hasil: {{ $result->hasil_seleksi_label }}</span>
+                            @else
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Hasil: Menunggu Pengumuman</span>
+                            @endif
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700">Pendaftaran: {{ $result->status_pendaftaran_label }}</span>
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Berkas: {{ $result->status_berkas_label }}</span>
                         </div>
@@ -112,7 +117,7 @@
                         @endif
                     </div>
 
-                    @if($result->period?->isAnnouncementPublished())
+                    @if($announcementPublished)
                     <div class="rounded-3xl border border-emerald-100 bg-emerald-50 p-6">
                         <p class="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">Pengumuman Resmi</p>
                         <h3 class="text-xl font-black text-slate-900 mt-3">{{ $result->hasPassedSelection() ? 'Selamat, Anda dinyatakan lulus.' : ($result->hasil_seleksi === 'reserve' ? 'Anda masuk daftar cadangan.' : ($result->hasil_seleksi === 'failed' ? 'Anda belum dinyatakan lulus.' : 'Hasil masih diproses.')) }}</h3>
@@ -147,11 +152,11 @@
                         <div class="rounded-3xl bg-slate-50 p-6">
                             <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400 mb-3">Hasil Seleksi</p>
                             <div class="space-y-2 text-sm text-slate-700">
-                                <p><span class="font-semibold">Skor:</span> {{ $result->period?->isAnnouncementPublished() ? number_format((float) ($result->skor_seleksi ?? 0), 2) : 'Belum ditampilkan' }}</p>
-                                <p><span class="font-semibold">Ranking Jalur:</span> {{ $result->period?->isAnnouncementPublished() ? ($result->ranking_jalur ?? '-') : '-' }}</p>
-                                <p><span class="font-semibold">Ranking Program:</span> {{ $result->period?->isAnnouncementPublished() ? ($result->ranking_program ?? '-') : '-' }}</p>
-                                <p><span class="font-semibold">Program Diterima:</span> {{ $result->period?->isAnnouncementPublished() ? ($result->programDiterima->nama_jurusan ?? 'Belum ditetapkan') : 'Menunggu pengumuman resmi' }}</p>
-                                <p><span class="font-semibold">Daftar Ulang:</span> {{ $result->status_daftar_ulang_label }}</p>
+                                <p><span class="font-semibold">Skor:</span> {{ $announcementPublished ? number_format((float) ($result->skor_seleksi ?? 0), 2) : 'Belum ditampilkan' }}</p>
+                                <p><span class="font-semibold">Ranking Jalur:</span> {{ $announcementPublished ? ($result->ranking_jalur ?? '-') : '-' }}</p>
+                                <p><span class="font-semibold">Ranking Program:</span> {{ $announcementPublished ? ($result->ranking_program ?? '-') : '-' }}</p>
+                                <p><span class="font-semibold">Jurusan Diterima:</span> {{ $announcementPublished ? ($result->programDiterima->nama_jurusan ?? 'Belum ditetapkan') : 'Menunggu pengumuman resmi' }}</p>
+                                <p><span class="font-semibold">Daftar Ulang:</span> {{ $announcementPublished ? $result->status_daftar_ulang_label : 'Menunggu pengumuman resmi' }}</p>
                             </div>
                         </div>
                         <div class="rounded-3xl bg-slate-50 p-6">

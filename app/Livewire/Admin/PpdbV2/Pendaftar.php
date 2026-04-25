@@ -186,6 +186,21 @@ class Pendaftar extends Component
         session()->flash('message', 'Berkas pendaftar terpilih berhasil diverifikasi massal.');
     }
 
+    public function rejectSelected()
+    {
+        if (empty($this->selectedRows)) return;
+
+        PpdbApplication::whereIn('id', $this->selectedRows)->update([
+            'status_berkas' => 'revision',
+            'verified_at' => now(),
+            'verified_by' => auth()->id() ?? 1,
+        ]);
+
+        $this->selectedRows = [];
+        $this->selectAll = false;
+        session()->flash('message', 'Berkas pendaftar terpilih berhasil ditandai perlu revisi.');
+    }
+
     public function verifySingle($id)
     {
         PpdbApplication::where('id', $id)->update([
