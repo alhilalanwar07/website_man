@@ -14,8 +14,11 @@
             document.documentElement.classList.add('dark');
         }
     </script>
+    <style>
+
+    </style>
 </head>
-<body class="antialiased font-sans bg-slate-100 dark:bg-slate-950 min-h-screen flex items-center justify-center">
+<body class=" antialiased font-sans bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-blue-500 selection:text-white">
     {{ $slot }}
 </body>
 </html>

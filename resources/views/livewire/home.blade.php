@@ -808,11 +808,11 @@
                 Bergabunglah dengan ribuan alumni sukses SMKN 1 Kolaka. Masa depan cerahmu dimulai dari langkah pertama.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="{{ route('jurusan.index') }}" class="px-10 py-5 bg-white text-slate-900 font-bold rounded-2xl hover:shadow-2xl hover:shadow-white/20 hover:-translate-y-1 transition-all duration-300 text-lg">
+                <a href="/ppdb" class="px-10 py-5 bg-white text-slate-900 font-bold rounded-2xl hover:shadow-2xl hover:shadow-white/20 hover:-translate-y-1 transition-all duration-300 text-lg">
                     Daftar Sekarang
                 </a>
-                <a href="{{ route('profil') }}" class="px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 text-lg">
-                    Pelajari Lebih Lanjut
+                <a href="/profil" class="px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 text-lg">
+                    Profil Sekolah
                 </a>
             </div>
         </div>

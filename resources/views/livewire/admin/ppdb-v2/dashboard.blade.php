@@ -108,13 +108,36 @@
         </div>
         
         <!-- Status Jurusan -->
-        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 overflow-hidden flex flex-col">
             <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
                 <h3 class="font-bold text-slate-800 dark:text-white">Grafik Kuota Jurusan</h3>
                 <a href="{{ route('admin.ppdb.penentuan-jurusan') }}" class="text-sm font-bold text-blue-600 transition hover:text-blue-700">Atur Jurusan</a>
             </div>
-            <div class="p-5 text-center text-slate-500">
-                <p>Belum ada data distribusi jurusan.</p>
+            <div class="p-5 flex-1 flex flex-col gap-5 overflow-y-auto max-h-[300px]">
+                @forelse($programDistribusi as $program)
+                    <div>
+                        <div class="flex justify-between items-end mb-1.5">
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-white" title="{{ $program['nama'] }}">{{ $program['singkatan'] }}</h4>
+                                <p class="text-[11px] text-slate-500 font-medium">Peminat (Pilihan 1): {{ $program['pilihan_satu'] }}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">{{ $program['diterima'] }}</span>
+                                <span class="text-xs text-slate-500">/ {{ $program['kuota'] ?: '?' }}</span>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 mb-1 overflow-hidden">
+                            <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500 ease-out {{ $program['persentase_terisi'] >= 100 ? 'bg-emerald-500' : ($program['persentase_terisi'] >= 80 ? 'bg-amber-500' : 'bg-blue-600') }}" style="width: {{ $program['persentase_terisi'] }}%"></div>
+                        </div>
+                        <p class="text-[10px] text-right font-medium {{ $program['persentase_terisi'] >= 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400' }}">
+                            Terisi {{ $program['persentase_terisi'] }}%
+                        </p>
+                    </div>
+                @empty
+                    <div class="text-center text-slate-500 py-6">
+                        <p>Belum ada data distribusi jurusan.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
