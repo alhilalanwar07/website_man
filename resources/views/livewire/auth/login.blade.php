@@ -1,4 +1,13 @@
-<div class="w-full max-w-md mx-auto relative z-10">
+@php
+    $profil = \Illuminate\Support\Facades\Cache::remember(
+        'site:profil:v1',
+        now()->addMinutes(10),
+        fn () => \App\Models\ProfilSekolah::first()
+    );
+    $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
+@endphp
+
+<div class="w-full max-w-md mx-auto px-4 relative z-10 py-12">
     <!-- Floating orbs for background effect -->
     <div class="absolute -top-32 -left-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 dark:opacity-20 animate-blob pointer-events-none"></div>
     <div class="absolute -bottom-32 -right-20 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 dark:opacity-20 animate-blob animation-delay-2000 pointer-events-none"></div>
@@ -10,13 +19,17 @@
 
         {{-- Logo & Header --}}
         <div class="text-center mb-10 relative">
-            <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-lg shadow-blue-500/40 transform transition-all duration-300 hover:scale-105 hover:-rotate-3 group/logo">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 group-hover/logo:animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-            </div>
+            @if($profil && $profil->logo_path)
+                <img src="{{ Storage::url($profil->logo_path) }}" class="w-20 h-20 object-contain mx-auto mb-6 drop-shadow-xl transform transition-all duration-300 hover:scale-110 hover:-rotate-3" alt="{{ $namaSekolah }}">
+            @else
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-lg shadow-blue-500/40 transform transition-all duration-300 hover:scale-105 hover:-rotate-3 group/logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 group-hover/logo:animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+            @endif
             <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Admin Portal</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">SMK Negeri 1 Kolaka</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">{{ $namaSekolah }}</p>
         </div>
 
         {{-- Form --}}
@@ -25,8 +38,8 @@
             <div class="space-y-2">
                 <label for="email" class="block text-sm font-bold text-slate-700 dark:text-slate-300">Email Address</label>
                 <div class="relative group/input">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within/input:text-blue-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" /></svg>
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within/input:text-blue-500 transition-colors">
+                        <x-admin.icon name="mail" class="w-5 h-5" />
                     </div>
                     <input wire:model="email" type="email" id="email" placeholder="admin@smkn1kolaka.sch.id"
                         class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-300 hover:bg-white dark:hover:bg-slate-800 text-sm shadow-sm" autocomplete="username">
@@ -38,8 +51,10 @@
             <div class="space-y-2">
                 <label for="password" class="block text-sm font-bold text-slate-700 dark:text-slate-300">Password</label>
                 <div class="relative group/input">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within/input:text-blue-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within/input:text-blue-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
                     </div>
                     <input wire:model="password" type="password" id="password" placeholder="••••••••"
                         class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-300 hover:bg-white dark:hover:bg-slate-800 text-sm shadow-sm" autocomplete="current-password">
@@ -78,7 +93,7 @@
         </form>
     </div>
 
-    <p class="text-center text-[11px] font-bold text-slate-500/80 dark:text-slate-500 mt-10 tracking-widest uppercase">&copy; {{ date('Y') }} SMK Negeri 1 Kolaka</p>
+    <p class="text-center text-[11px] font-bold text-slate-500/80 dark:text-slate-500 mt-10 tracking-widest uppercase">&copy; {{ date('Y') }} {{ $namaSekolah }}</p>
 
     <style>
         @keyframes blob {
