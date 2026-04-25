@@ -59,6 +59,9 @@ class PpdbDaftarUlang extends Component
             })
             ->whereDate('tanggal_lahir', $this->tanggal_lahir)
             ->first();
+
+        $this->catatan_daftar_ulang = (string) ($this->result?->catatan_daftar_ulang ?? '');
+        $this->submitted = $this->result?->status_daftar_ulang === 'submitted';
     }
 
     public function submitReRegistration(): void
@@ -84,8 +87,16 @@ class PpdbDaftarUlang extends Component
             return;
         }
 
-        if ($application->hasil_seleksi !== 'passed') {
+        if (! $application->hasPassedSelection()) {
             $this->addError('nomor_pendaftaran', 'Daftar ulang hanya tersedia untuk peserta yang dinyatakan lulus.');
+            return;
+        }
+
+        if (in_array($application->status_daftar_ulang, ['submitted', 'verified'], true)) {
+            $this->result = $application->fresh(['period', 'track', 'programDiterima']);
+            $this->catatan_daftar_ulang = (string) ($this->result->catatan_daftar_ulang ?? '');
+            $this->submitted = $application->status_daftar_ulang === 'submitted';
+
             return;
         }
 
@@ -104,6 +115,7 @@ class PpdbDaftarUlang extends Component
         ]);
 
         $this->result = $application->fresh(['period', 'track', 'programDiterima']);
+        $this->catatan_daftar_ulang = (string) ($this->result->catatan_daftar_ulang ?? '');
         $this->submitted = true;
         $this->dispatch('toast', type: 'success', message: 'Konfirmasi daftar ulang berhasil dikirim.');
     }

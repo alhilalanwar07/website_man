@@ -134,7 +134,7 @@ class PpdbStatus extends Component
             return;
         }
 
-        if (! $application->period?->isAnnouncementPublished() || $application->hasil_seleksi !== 'passed') {
+        if (! $application->period?->isAnnouncementPublished() || ! $application->hasPassedSelection()) {
             $this->setActionFeedback('error', 'Daftar ulang hanya tersedia setelah pengumuman resmi untuk peserta yang dinyatakan lulus.');
 
             return;

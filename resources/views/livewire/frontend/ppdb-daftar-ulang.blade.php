@@ -27,8 +27,8 @@
                 </div>
                 <div class="bg-white rounded-[24px] border border-slate-100 p-6 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">Lanjutan</p>
-                    <h3 class="text-lg font-black text-slate-900 mt-3">Menunggu Verifikasi</h3>
-                    <p class="text-sm text-slate-500 mt-2">Setelah dikirim, status daftar ulang akan berubah saat panitia menyetujui atau meminta penyesuaian.</p>
+                    <h3 class="text-lg font-black text-slate-900 mt-3">Akses Siswa Baru</h3>
+                    <p class="text-sm text-slate-500 mt-2">Setelah konfirmasi terkirim, halaman ini berubah menjadi panduan lanjutan agar siswa tahu langkah berikutnya tanpa bingung.</p>
                 </div>
             </div>
 
@@ -82,7 +82,61 @@
                     </div>
                 </div>
 
-                @if($result->hasil_seleksi === 'passed' && $result->period->isAnnouncementPublished() && $result->status_daftar_ulang !== 'verified')
+                @php
+                    $canShowGroupAccess = $result->hasPassedSelection() && in_array($result->status_daftar_ulang, ['submitted', 'verified'], true);
+                    $canSubmitReRegistration = $result->hasPassedSelection() && $result->period->isAnnouncementPublished() && in_array($result->status_daftar_ulang, ['pending', 'not_available', 'rejected'], true);
+                @endphp
+
+                @if($canShowGroupAccess)
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+                    <div class="rounded-[28px] border border-emerald-200 bg-emerald-50 p-6">
+                        <p class="text-xs font-bold uppercase tracking-[0.25em] text-emerald-600">Langkah Berikutnya</p>
+                        <h3 class="mt-3 text-2xl font-black text-slate-900">
+                            {{ $result->status_daftar_ulang === 'verified' ? 'Daftar ulang Anda sudah diverifikasi.' : 'Konfirmasi daftar ulang sudah diterima.' }}
+                        </h3>
+                        <p class="mt-3 text-sm leading-relaxed text-slate-700">
+                            {{ $result->status_daftar_ulang === 'verified'
+                                ? 'Silakan masuk ke grup siswa baru untuk menerima informasi resmi lanjutan dari panitia dan sekolah.'
+                                : 'Sambil menunggu verifikasi panitia, Anda sudah bisa masuk ke grup siswa baru agar tidak tertinggal informasi lanjutan.' }}
+                        </p>
+
+                        @if($result->period->hasStudentWhatsappGroup())
+                        <div class="mt-5 flex flex-wrap gap-3">
+                            <a href="{{ $result->period->student_whatsapp_group_url }}" target="_blank" rel="noopener" class="inline-flex items-center rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700">
+                                Gabung {{ $result->period->student_whatsapp_group_label }}
+                            </a>
+                            <p class="self-center text-xs text-slate-600">Gunakan tombol ini atau scan QR code di samping.</p>
+                        </div>
+                        <ol class="mt-5 space-y-2 text-sm text-slate-700">
+                            <li>1. Pastikan nama akun WhatsApp Anda mudah dikenali.</li>
+                            <li>2. Klik tombol gabung atau scan QR code.</li>
+                            <li>3. Simpan grup agar tidak ketinggalan pengumuman berikutnya.</li>
+                        </ol>
+                        @else
+                        <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800">
+                            Tautan grup siswa baru belum dipublikasikan admin. Status daftar ulang Anda sudah tercatat, jadi cukup pantau halaman ini secara berkala.
+                        </div>
+                        @endif
+                    </div>
+
+                    <div class="rounded-[28px] border border-slate-200 bg-white p-6">
+                        <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">QR Code Grup</p>
+                        @if($result->period->student_whatsapp_group_qr_url)
+                            <div class="mt-4 rounded-3xl border border-slate-100 bg-slate-50 p-4">
+                                <img src="{{ $result->period->student_whatsapp_group_qr_url }}" alt="QR code grup WhatsApp siswa baru" class="mx-auto aspect-square w-full max-w-[240px] rounded-2xl border border-slate-200 bg-white p-3">
+                            </div>
+                            <p class="mt-4 text-center text-sm font-semibold text-slate-900">{{ $result->period->student_whatsapp_group_label }}</p>
+                            <p class="mt-1 text-center text-xs leading-relaxed text-slate-500">Arahkan kamera atau aplikasi WhatsApp ke QR code ini untuk membuka tautan grup dengan cepat.</p>
+                        @else
+                            <div class="mt-4 flex min-h-[240px] items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 text-center text-sm leading-relaxed text-slate-500">
+                                QR code akan tampil otomatis setelah admin mengisi tautan grup WhatsApp siswa baru.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
+
+                @if($canSubmitReRegistration)
                 <form wire:submit="submitReRegistration" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Catatan Daftar Ulang</label>
@@ -96,9 +150,15 @@
                 </form>
                 @endif
 
+                @if($result->status_daftar_ulang === 'rejected')
+                <div class="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-700">
+                    Panitia meminta penyesuaian daftar ulang. Periksa catatan panitia di atas, lalu kirim ulang konfirmasi setelah data Anda diperbarui.
+                </div>
+                @endif
+
                 @if($submitted)
                 <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm font-semibold text-emerald-700">
-                    Konfirmasi daftar ulang sudah diterima. Panitia akan memverifikasi data Anda.
+                    Konfirmasi daftar ulang sudah diterima. Halaman ini sudah beralih ke panduan lanjutan agar Anda bisa langsung mengikuti informasi siswa baru.
                 </div>
                 @endif
             </div>

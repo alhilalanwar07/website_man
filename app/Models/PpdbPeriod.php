@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class PpdbPeriod extends Model
 {
@@ -26,6 +27,8 @@ class PpdbPeriod extends Model
         'status_pengumuman',
         'hasil_diumumkan_at',
         'catatan_pengumuman',
+        'student_whatsapp_group_label',
+        'student_whatsapp_group_url',
         'nipd_last_number',
         'is_active',
     ];
@@ -143,5 +146,48 @@ class PpdbPeriod extends Model
         ]);
 
         return implode(' - ', $segments);
+    }
+
+    public function hasStudentWhatsappGroup(): bool
+    {
+        return $this->student_whatsapp_group_url !== null;
+    }
+
+    public function getStudentWhatsappGroupLabelAttribute(?string $value): string
+    {
+        $label = trim((string) $value);
+
+        return $label !== '' ? $label : 'Grup WhatsApp Siswa Baru';
+    }
+
+    public function getStudentWhatsappGroupUrlAttribute(?string $value): ?string
+    {
+        return $this->normalizeExternalUrl($value);
+    }
+
+    public function getStudentWhatsappGroupQrUrlAttribute(): ?string
+    {
+        $url = $this->student_whatsapp_group_url;
+
+        if (! $url) {
+            return null;
+        }
+
+        return 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=12&data=' . rawurlencode($url);
+    }
+
+    protected function normalizeExternalUrl(?string $value): ?string
+    {
+        $url = trim((string) $value);
+
+        if ($url === '') {
+            return null;
+        }
+
+        if (! Str::startsWith($url, ['http://', 'https://'])) {
+            $url = 'https://' . ltrim($url, '/');
+        }
+
+        return $url;
     }
 }

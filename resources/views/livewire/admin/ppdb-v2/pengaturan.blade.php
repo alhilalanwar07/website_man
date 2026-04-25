@@ -327,6 +327,35 @@
                                         @error('periodForm.deskripsi') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
+                                <div class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 dark:border-emerald-900 dark:bg-emerald-950/20">
+                                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                        <div class="max-w-2xl">
+                                            <p class="text-sm font-bold text-emerald-900 dark:text-emerald-200">Akses Grup WhatsApp Siswa Baru</p>
+                                            <p class="mt-1 text-xs leading-relaxed text-emerald-800/80 dark:text-emerald-200/80">
+                                                Tautan ini akan ditampilkan kepada siswa yang sudah lulus dan sudah mengirim konfirmasi daftar ulang. Portal siswa menampilkan tombol gabung dan QR code agar instruksinya lebih jelas.
+                                            </p>
+                                        </div>
+                                        @if(!empty($periodForm['student_whatsapp_group_url']))
+                                            <a href="{{ str_starts_with($periodForm['student_whatsapp_group_url'], 'http') ? $periodForm['student_whatsapp_group_url'] : 'https://' . ltrim($periodForm['student_whatsapp_group_url'], '/') }}" target="_blank" rel="noopener" class="inline-flex items-center rounded-xl border border-emerald-300 bg-white px-4 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-800 dark:bg-slate-900 dark:text-emerald-300">
+                                                Cek Tautan Grup
+                                            </a>
+                                        @endif
+                                    </div>
+                                    <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
+                                        <div>
+                                            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Label Tombol / Judul Grup</label>
+                                            <input wire:model.blur="periodForm.student_whatsapp_group_label" type="text" placeholder="Grup WhatsApp Siswa Baru" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Opsional. Jika kosong, sistem memakai label bawaan yang tetap mudah dipahami siswa.</p>
+                                            @error('periodForm.student_whatsapp_group_label') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        </div>
+                                        <div>
+                                            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Tautan Invite Grup WhatsApp</label>
+                                            <input wire:model.blur="periodForm.student_whatsapp_group_url" type="text" placeholder="https://chat.whatsapp.com/..." class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Boleh tempel tautan penuh atau domain WhatsApp tanpa `https://`.</p>
+                                            @error('periodForm.student_whatsapp_group_url') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                                        </div>
+                                    </div>
+                                </div>
                                 <label class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
                                     <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Gunakan sebagai periode aktif bawaan</span>
                                     <input wire:model="periodForm.is_active" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">

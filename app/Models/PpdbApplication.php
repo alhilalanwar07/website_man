@@ -204,6 +204,7 @@ class PpdbApplication extends Model
         return $this->mapStatusLabel($this->hasil_seleksi, [
             'pending' => 'Menunggu Hasil',
             'passed' => 'Lulus',
+            'lulus' => 'Lulus',
             'reserve' => 'Cadangan',
             'failed' => 'Tidak Lulus',
         ]);
@@ -312,5 +313,10 @@ class PpdbApplication extends Model
         return $this->hasMany(PpdbAchievement::class, 'application_id')
             ->orderBy('sort_order')
             ->orderBy('id');
+    }
+
+    public function hasPassedSelection(): bool
+    {
+        return in_array($this->hasil_seleksi, ['passed', 'lulus'], true);
     }
 }

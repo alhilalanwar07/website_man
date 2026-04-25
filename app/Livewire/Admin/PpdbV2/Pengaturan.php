@@ -13,6 +13,7 @@ use App\Models\ProgramKeahlian;
 use App\Models\ProfilSekolah;
 use App\Support\PpdbNipdAllocator;
 use App\Support\PpdbPeriodResolver;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
@@ -196,6 +197,8 @@ class Pengaturan extends Component
             return;
         }
 
+        $this->periodForm['student_whatsapp_group_url'] = $this->normalizeExternalUrl((string) ($this->periodForm['student_whatsapp_group_url'] ?? '')) ?? '';
+
         $validated = $this->validate([
             'periodForm.nama_periode' => 'required|string|max:255',
             'periodForm.tahun_ajaran' => 'required|string|max:50',
@@ -212,6 +215,8 @@ class Pengaturan extends Component
             'periodForm.is_active' => 'boolean',
             'periodForm.status_pengumuman' => 'required|in:draft,published',
             'periodForm.catatan_pengumuman' => 'nullable|string',
+            'periodForm.student_whatsapp_group_label' => 'nullable|string|max:120',
+            'periodForm.student_whatsapp_group_url' => 'nullable|url|max:500',
             'periodForm.deskripsi' => 'nullable|string',
         ]);
 
@@ -236,6 +241,8 @@ class Pengaturan extends Component
         $period = PpdbPeriod::findOrFail($this->managementPeriodId);
         $payload = $validated['periodForm'];
         $payload['is_active'] = (bool) ($payload['is_active'] ?? false);
+        $payload['student_whatsapp_group_label'] = trim((string) ($payload['student_whatsapp_group_label'] ?? '')) ?: null;
+        $payload['student_whatsapp_group_url'] = $this->normalizeExternalUrl((string) ($payload['student_whatsapp_group_url'] ?? ''));
 
         if ($payload['is_active'] && $status === 'draft') {
             $this->addError('periodForm.status', 'Periode draf tidak dapat dijadikan aktif bawaan. Ubah status terlebih dahulu.');
@@ -734,6 +741,8 @@ class Pengaturan extends Component
         $payload['status_pengumuman'] = 'draft';
         $payload['hasil_diumumkan_at'] = null;
         $payload['catatan_pengumuman'] = null;
+        $payload['student_whatsapp_group_label'] = null;
+        $payload['student_whatsapp_group_url'] = null;
 
         if ($payload['is_active']) {
             PpdbPeriod::query()->update(['is_active' => false]);
@@ -1010,6 +1019,8 @@ class Pengaturan extends Component
             'is_active' => (bool) $period->is_active,
             'status_pengumuman' => $period->status_pengumuman ?? 'draft',
             'catatan_pengumuman' => $period->catatan_pengumuman ?? '',
+            'student_whatsapp_group_label' => $period->getRawOriginal('student_whatsapp_group_label') ?? '',
+            'student_whatsapp_group_url' => $period->getRawOriginal('student_whatsapp_group_url') ?? '',
             'deskripsi' => $period->deskripsi ?? '',
         ];
 
@@ -1382,5 +1393,20 @@ class Pengaturan extends Component
         }
 
         return $digits;
+    }
+
+    protected function normalizeExternalUrl(string $value): ?string
+    {
+        $url = trim($value);
+
+        if ($url === '') {
+            return null;
+        }
+
+        if (! Str::startsWith($url, ['http://', 'https://'])) {
+            $url = 'https://' . ltrim($url, '/');
+        }
+
+        return $url;
     }
 }
