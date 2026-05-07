@@ -44,8 +44,10 @@ use App\Livewire\Admin\PpdbV2\Dashboard as PpdbDashboardV2;
 use App\Livewire\Admin\PpdbV2\Pendaftar as PpdbPendaftarV2;
 use App\Livewire\Admin\PpdbV2\PenentuanJurusan as PpdbPenentuanJurusanV2;
 use App\Livewire\Admin\PpdbV2\DaftarUlang as PpdbDaftarUlangV2;
+use App\Livewire\Admin\PpdbV2\Reports as PpdbReportsV2;
 use App\Livewire\Admin\PpdbV2\Broadcast as PpdbBroadcastV2;
 use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
+
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
@@ -85,6 +87,7 @@ Route::middleware(['auth', 'role:admin,ppdb-admin'])->prefix('admin/ppdb')->name
     Route::get('/pendaftar', PpdbPendaftarV2::class)->name('pendaftar');
     Route::get('/penentuan-jurusan', PpdbPenentuanJurusanV2::class)->name('penentuan-jurusan');
     Route::get('/daftar-ulang', PpdbDaftarUlangV2::class)->name('daftar-ulang');
+    Route::get('/laporan', PpdbReportsV2::class)->name('laporan');
     Route::get('/broadcast', PpdbBroadcastV2::class)->name('broadcast');
     Route::get('/pengaturan', PpdbPengaturanV2::class)->name('pengaturan');
 });

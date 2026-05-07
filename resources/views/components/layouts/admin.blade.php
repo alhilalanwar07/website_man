@@ -117,6 +117,7 @@
                         <x-admin.nav-link href="{{ route('admin.ppdb.pendaftar') }}" icon="users" :active="request()->routeIs('admin.ppdb.pendaftar')">Data Pendaftar</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.penentuan-jurusan') }}" icon="clipboard-check" :active="request()->routeIs('admin.ppdb.penentuan-jurusan')">Penentuan Jurusan</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.daftar-ulang') }}" icon="document-text" :active="request()->routeIs('admin.ppdb.daftar-ulang')">Daftar Ulang</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.laporan') }}" icon="chart-bar" :active="request()->routeIs('admin.ppdb.laporan')">Laporan</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.broadcast') }}" icon="megaphone" :active="request()->routeIs('admin.ppdb.broadcast')">Broadcast</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.pengaturan') }}" icon="cog" :active="request()->routeIs('admin.ppdb.pengaturan')">Pengaturan</x-admin.nav-link>
                     </div>

@@ -13,6 +13,7 @@
         "laravel/mcp": "^0.6.7",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^4.2",
+        "phpoffice/phpspreadsheet": "^5.7",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {

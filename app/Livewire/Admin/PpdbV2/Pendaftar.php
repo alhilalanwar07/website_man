@@ -61,6 +61,32 @@ class Pendaftar extends Component
         $this->applyManualDefaults();
     }
 
+    public function exportAssessmentExcel()
+    {
+        $query = array_filter([
+            'format' => 'xlsx',
+            'type' => 'assessment',
+            'search' => $this->search,
+            'track_id' => $this->trackFilter,
+            'program_id' => $this->programFilter,
+        ], fn ($value) => filled($value));
+
+        return $this->redirect(route('admin.ppdb.export', $query), navigate: false);
+    }
+
+    public function exportAssessmentPdf()
+    {
+        $query = array_filter([
+            'format' => 'pdf',
+            'scope' => 'assessment-form',
+            'search' => $this->search,
+            'track_id' => $this->trackFilter,
+            'program_id' => $this->programFilter,
+        ], fn ($value) => filled($value));
+
+        return $this->redirect(route('admin.ppdb.export', $query), navigate: false);
+    }
+
     public function updatedShowAddModal($value): void
     {
         if (! $value) {
@@ -104,16 +130,6 @@ class Pendaftar extends Component
     {
         $this->selectedSiswaId = null;
         $this->selectedSecureDocument = null;
-    }
-
-    public function exportExcel()
-    {
-        session()->flash('message', 'Mengekspor data Pendaftar ke format Excel (.xlsx)...');
-    }
-
-    public function exportPdf()
-    {
-        session()->flash('message', 'Mengekspor data Pendaftar ke format PDF...');
     }
 
     public function updatedSearch()

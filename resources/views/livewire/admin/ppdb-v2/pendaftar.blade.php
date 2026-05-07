@@ -16,22 +16,18 @@
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Data pendaftar baru yang masuk hari ini. Gunakan panel ini untuk mengecek keabsahan berkas.</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-            <!-- Ekspor Group -->
-            <div class="flex rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm">
-                <button wire:click="exportExcel" wire:loading.attr="disabled" wire:target="exportExcel" class="flex items-center px-4 py-2.5 text-sm font-bold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/40 border-r border-slate-200 dark:border-slate-700 transition disabled:cursor-not-allowed disabled:opacity-60">
-                    <span wire:loading.remove wire:target="exportExcel" class="inline-flex items-center gap-2">
-                        <x-admin.icon name="document-text" class="w-4 h-4" /> Excel
-                    </span>
-                    <span wire:loading wire:target="exportExcel">Menyiapkan...</span>
-                </button>
-                <button wire:click="exportPdf" wire:loading.attr="disabled" wire:target="exportPdf" class="flex items-center px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/40 transition disabled:cursor-not-allowed disabled:opacity-60">
-                    <span wire:loading.remove wire:target="exportPdf" class="inline-flex items-center gap-2">
-                        <x-admin.icon name="document-text" class="w-4 h-4" /> PDF
-                    </span>
-                    <span wire:loading wire:target="exportPdf">Menyiapkan...</span>
-                </button>
-            </div>
-            
+            <button wire:click="exportAssessmentPdf" wire:loading.attr="disabled" wire:target="exportAssessmentPdf,exportAssessmentExcel" class="inline-flex items-center justify-center gap-2 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60">
+                <span wire:loading.remove wire:target="exportAssessmentPdf">
+                    <x-admin.icon name="document-text" class="w-4 h-4" /> Form Tes (PDF)
+                </span>
+                <span wire:loading wire:target="exportAssessmentPdf">Mengunduh...</span>
+            </button>
+            <button wire:click="exportAssessmentExcel" wire:loading.attr="disabled" wire:target="exportAssessmentPdf,exportAssessmentExcel" class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60">
+                <span wire:loading.remove wire:target="exportAssessmentExcel">
+                    <x-admin.icon name="table-cells" class="w-4 h-4" /> Form Tes (Excel)
+                </span>
+                <span wire:loading wire:target="exportAssessmentExcel">Mengunduh...</span>
+            </button>
             <button wire:click="$set('showAddModal', true)" class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md">
                 <x-admin.icon name="plus" class="w-4 h-4" /> Tambah Offline
             </button>
