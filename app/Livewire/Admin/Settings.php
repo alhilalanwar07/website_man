@@ -22,21 +22,21 @@ class Settings extends Component
 
     // System Environment Properties
     public string $appEnv = 'local';
-    public bool $appDebug = true;
+    public string $appDebug = '1';
     public bool $isMaintenanceMode = false;
     public string $maintenanceSecret = 'admin123'; // Default secret
 
     public function mount()
     {
         $this->appEnv = config('app.env', 'local');
-        $this->appDebug = config('app.debug', true);
+        $this->appDebug = config('app.debug', true) ? '1' : '0';
         $this->isMaintenanceMode = app()->isDownForMaintenance();
     }
 
     public function updateSystemEnv()
     {
         $this->setEnvValue('APP_ENV', $this->appEnv);
-        $this->setEnvValue('APP_DEBUG', $this->appDebug ? 'true' : 'false');
+        $this->setEnvValue('APP_DEBUG', $this->appDebug === '1' ? 'true' : 'false');
         
         // Clear caches to apply changes
         Artisan::call('optimize:clear');
