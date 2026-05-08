@@ -22,7 +22,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3">
-            <select wire:model="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[320px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
+            <select wire:model.live="period" wire:loading.attr="disabled" wire:target="period" class="min-w-[320px] rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
                 @foreach($availablePeriods as $periodOption)
                     <option wire:key="settings-period-option-{{ $periodOption->id }}" value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach
