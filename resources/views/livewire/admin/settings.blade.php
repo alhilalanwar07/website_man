@@ -4,15 +4,86 @@
         <span wire:loading wire:target="delete">Sedang memperbarui daftar pengaturan.</span>
     </div>
 
-    <div wire:loading.flex wire:target="delete" class="mb-4 items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
+    <div wire:loading.flex wire:target="delete, updateSystemEnv, toggleMaintenance" class="mb-4 items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
         <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor" stroke-width="4"></circle>
             <path d="M4 12a8 8 0 0 1 8-8" class="opacity-75" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
         </svg>
-        <span>Menyegarkan data pengaturan...</span>
+        <span>Memproses permintaan...</span>
     </div>
 
-    <div class="flex justify-end mb-6">
+    {{-- System Environment Settings --}}
+    <div class="mb-8 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+            <div>
+                <h3 class="font-bold text-slate-800 dark:text-white">System Environment & Maintenance</h3>
+                <p class="text-sm text-slate-500 mt-1">Ubah mode aplikasi, debug, atau aktifkan Maintenance Mode.</p>
+            </div>
+        </div>
+        <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {{-- Env & Debug --}}
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Application Environment (APP_ENV)</label>
+                    <select wire:model="appEnv" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow">
+                        <option value="local">Local (Development)</option>
+                        <option value="production">Production (Live)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Debug Mode (APP_DEBUG)</label>
+                    <select wire:model="appDebug" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow">
+                        <option value="1">True (Tampilkan Detail Error)</option>
+                        <option value="0">False (Sembunyikan Error Detail)</option>
+                    </select>
+                </div>
+                <div class="pt-2">
+                    <button wire:click="updateSystemEnv" class="px-4 py-2 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition w-full sm:w-auto">
+                        Simpan Environment
+                    </button>
+                    <p class="text-xs text-amber-600 mt-2">* Menyimpan akan otomatis mereset cache server (optimize:clear).</p>
+                </div>
+            </div>
+
+            {{-- Maintenance Mode --}}
+            <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-700 {{ $isMaintenanceMode ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-slate-50 dark:bg-slate-800/50' }}">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center {{ $isMaintenanceMode ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-500' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-white leading-tight">Maintenance Mode</h4>
+                        <p class="text-sm text-slate-500 mt-0.5">Status: <span class="font-bold {{ $isMaintenanceMode ? 'text-amber-600' : 'text-emerald-600' }}">{{ $isMaintenanceMode ? 'Aktif (Sedang Perbaikan)' : 'Non-Aktif (Online)' }}</span></p>
+                    </div>
+                </div>
+
+                @if(!$isMaintenanceMode)
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Secret Key / Bypass Link</label>
+                    <input type="text" wire:model="maintenanceSecret" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-shadow" placeholder="Contoh: admin123">
+                    <p class="text-xs text-slate-500 mt-1">Gunakan kata kunci ini untuk tetap bisa mengakses web.</p>
+                </div>
+                <button wire:click="toggleMaintenance" class="w-full px-4 py-2 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition">
+                    Aktifkan Mode Maintenance
+                </button>
+                @else
+                <div class="mb-4 p-3 bg-white dark:bg-slate-800 rounded-lg border border-amber-200 dark:border-amber-800 text-sm">
+                    <span class="block text-slate-500 mb-1">Akses website melalui link ini:</span>
+                    <a href="{{ url('/' . $maintenanceSecret) }}" target="_blank" class="font-mono font-bold text-blue-600 hover:underline">{{ url('/' . $maintenanceSecret) }}</a>
+                </div>
+                <button wire:click="toggleMaintenance" class="w-full px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition">
+                    Matikan Maintenance & Online-kan Web
+                </button>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-end mb-6">
+        <div>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white">Database Settings</h3>
+            <p class="text-sm text-slate-500 mt-1">Pengaturan kustom yang tersimpan di database.</p>
+        </div>
         <button wire:click="create" wire:loading.attr="disabled" wire:target="create" class="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition disabled:opacity-60">
             <span wire:loading.remove wire:target="create">+ Tambah Setting</span>
             <span wire:loading wire:target="create">Membuka...</span>
