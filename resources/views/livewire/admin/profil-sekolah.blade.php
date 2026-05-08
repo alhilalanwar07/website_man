@@ -49,6 +49,20 @@
                     <input wire:model="email_resmi" type="email" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
                     @error('email_resmi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Akreditasi</label>
+                    <select wire:model="akreditasi" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                        <option value="">— Pilih —</option>
+                        <option value="A">A (Unggul)</option>
+                        <option value="B">B (Baik)</option>
+                        <option value="C">C (Cukup)</option>
+                        <option value="Belum">Belum Terakreditasi</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nama Kepala Sekolah</label>
+                    <input wire:model="nama_kepsek" type="text" placeholder="Nama lengkap kepala sekolah" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                </div>
             </div>
         </div>
 

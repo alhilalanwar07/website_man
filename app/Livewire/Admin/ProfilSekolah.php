@@ -35,6 +35,10 @@ class ProfilSekolah extends Component
     public ?string $existing_favicon = null;
     public ?string $existing_foto_kepsek = null;
 
+    // Akreditasi & Kepsek
+    public string $akreditasi = '';
+    public string $nama_kepsek = '';
+
     // Social media links
     public string $sosmed_facebook = '';
     public string $sosmed_instagram = '';
@@ -58,6 +62,8 @@ class ProfilSekolah extends Component
             $this->existing_logo = $profil->logo_path;
             $this->existing_favicon = $profil->favicon_path;
             $this->existing_foto_kepsek = $profil->foto_kepsek;
+            $this->akreditasi = $profil->akreditasi ?? '';
+            $this->nama_kepsek = $profil->nama_kepsek ?? '';
 
             $sosmed = $profil->tautan_sosmed ?? [];
             $this->sosmed_facebook = $sosmed['facebook'] ?? '';
@@ -87,6 +93,8 @@ class ProfilSekolah extends Component
             'nomor_telepon' => $this->nomor_telepon,
             'email_resmi' => $this->email_resmi,
             'teks_sambutan_kepsek' => $this->teks_sambutan_kepsek,
+            'akreditasi' => $this->akreditasi,
+            'nama_kepsek' => $this->nama_kepsek,
             'visi_teks' => $this->visi_teks,
             'misi_teks' => $this->misi_teks,
             'tautan_sosmed' => array_filter([

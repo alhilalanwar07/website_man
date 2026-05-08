@@ -23,6 +23,7 @@
         @page { size: 297mm 210mm; margin: 15mm 12mm 15mm 12mm; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: "Times New Roman", Times, serif; font-size: 10pt; color: #111; line-height: 1.25; }
+        .sym { font-family: DejaVu Sans, sans-serif; }
 
         /* ===== KOP STYLES (matches registration form) ===== */
         .kop-table { width: 100%; border-collapse: collapse; margin-bottom: 3px; }
@@ -56,7 +57,7 @@
         .sign-name { font-weight: 700; text-decoration: underline; text-transform: uppercase; }
     </style>
 </head>
-<body>
+<body style="margin: 20px;">
     {{-- KOP SURAT --}}
     <table class="kop-table">
         <tr>
@@ -102,7 +103,7 @@
                 <th rowspan="2" style="width:70px;">Tanggal Lahir</th>
                 <th rowspan="2" style="width:55px;">Nilai Akademik</th>
                 <th rowspan="2" style="width:55px;">Nilai Wawancara</th>
-                <th colspan="{{ $programs->count() }}">Jurusan yang Direkomendasikan (✓)</th>
+                <th colspan="{{ $programs->count() }}">Jurusan yang Direkomendasikan (<span class="sym">&#10003;</span>)</th>
             </tr>
             <tr>
                 @foreach($programs as $program)
@@ -123,7 +124,7 @@
                 @foreach($programs as $program)
                 <td class="c empty-fill">
                     @if($app->pilihan_program_1_id === $program->id)
-                        <span style="font-size:7pt; color:#999;">☆</span>
+                        <span class="sym" style="font-size:7pt; color:#999;">&#9734;</span>
                     @endif
                 </td>
                 @endforeach
@@ -137,8 +138,8 @@
         <p><strong>Keterangan:</strong></p>
         <ul>
             <li>Kolom <strong>Nilai Akademik</strong> dan <strong>Nilai Wawancara</strong> diisi oleh guru penguji.</li>
-            <li>Berikan tanda <strong>✓ (centang)</strong> pada kolom jurusan yang direkomendasikan.</li>
-            <li>Tanda <strong>☆</strong> menandakan pilihan pertama calon siswa (sebagai referensi).</li>
+            <li>Berikan tanda <strong><span class="sym">&#10003;</span> (centang)</strong> pada kolom jurusan yang direkomendasikan.</li>
+            <li>Tanda <strong><span class="sym">&#9734;</span></strong> menandakan pilihan pertama calon siswa (sebagai referensi).</li>
         </ul>
     </div>
 

@@ -22,11 +22,11 @@
     <section class="relative min-h-screen flex items-center overflow-hidden bg-slate-950 noise">
         {{-- Animated Gradient Mesh Background --}}
         <div class="absolute inset-0">
-            <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/30 rounded-full blur-[120px] animate-blob"></div>
-            <div class="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-600/25 rounded-full blur-[100px] animate-blob" style="animation-delay:2s"></div>
-            <div class="absolute top-[30%] right-[20%] w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-[100px] animate-blob" style="animation-delay:4s"></div>
-            <div class="absolute bottom-[20%] left-[30%] w-[300px] h-[300px] bg-cyan-500/15 rounded-full blur-[80px] animate-float-slow"></div>
-            <div class="absolute top-[10%] left-[50%] w-[200px] h-[200px] bg-emerald-500/10 rounded-full blur-[60px] animate-float" style="animation-delay:3s"></div>
+            <div class="absolute top-[-20%] left-[-10%] w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-blue-600/30 rounded-full blur-[80px] sm:blur-[120px] animate-blob"></div>
+            <div class="absolute bottom-[-10%] right-[-5%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] bg-indigo-600/25 rounded-full blur-[60px] sm:blur-[100px] animate-blob" style="animation-delay:2s"></div>
+            <div class="absolute top-[30%] right-[20%] w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] bg-purple-500/20 rounded-full blur-[60px] sm:blur-[100px] animate-blob" style="animation-delay:4s"></div>
+            <div class="absolute bottom-[20%] left-[30%] w-[150px] sm:w-[300px] h-[150px] sm:h-[300px] bg-cyan-500/15 rounded-full blur-[50px] sm:blur-[80px] animate-float-slow"></div>
+            <div class="absolute top-[10%] left-[50%] w-[100px] sm:w-[200px] h-[100px] sm:h-[200px] bg-emerald-500/10 rounded-full blur-[40px] sm:blur-[60px] animate-float" style="animation-delay:3s"></div>
         </div>
 
         {{-- Floating Geometric Shapes --}}
@@ -49,7 +49,7 @@
         <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
 
         {{-- Hero Content --}}
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-32">
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
                 {{-- Left: Text Content --}}
                 <div class="lg:col-span-3" x-show="shown.hero" x-transition:enter="transition ease-out duration-1000" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
@@ -74,48 +74,48 @@
                     </div>
 
                     {{-- Main Heading --}}
-                    <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white mb-8 leading-[0.95] animate-fade-up delay-200">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight text-white mb-6 sm:mb-8 leading-[0.95] animate-fade-up delay-200">
                         Masa Depan
                         <span class="block text-gradient">Dimulai</span>
                         <span class="block">di Sini.</span>
                     </h1>
 
-                    <p class="text-lg sm:text-xl text-slate-400 mb-12 max-w-xl leading-relaxed animate-fade-up delay-300">
+                    <p class="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-12 max-w-xl leading-relaxed animate-fade-up delay-300">
                         Tempat talenta muda bertransformasi menjadi profesional yang siap mengubah dunia melalui pendidikan vokasi berkualitas.
                     </p>
 
                     {{-- CTA Buttons --}}
-                    <div class="flex flex-wrap gap-4 animate-fade-up delay-500">
-                        <a href="{{ route('jurusan.index') }}" class="group relative px-8 py-4 bg-white text-slate-900 font-bold rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 hover:-translate-y-1">
-                            <span class="relative z-10 flex items-center gap-2">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-up delay-500">
+                        <a href="{{ route('jurusan.index') }}" class="group relative px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-slate-900 font-bold rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 hover:-translate-y-1 text-center">
+                            <span class="relative z-10 flex items-center justify-center gap-2">
                                 Jelajahi Program
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                             </span>
                         </a>
-                        <a href="{{ route('profil') }}" class="px-8 py-4 glass text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300">
+                        <a href="{{ route('profil') }}" class="px-6 sm:px-8 py-3.5 sm:py-4 glass text-white font-bold rounded-2xl hover:bg-white/10 transition-all duration-300 text-center">
                             Tentang Kami
                         </a>
                     </div>
 
                     {{-- Trust Badges --}}
-                    <div class="flex items-center gap-6 mt-10 animate-fade-up delay-700">
+                    <div class="flex items-center gap-4 sm:gap-6 mt-8 sm:mt-10 animate-fade-up delay-700 overflow-x-auto pb-2 -mx-1 px-1">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                             </div>
-                            <span class="text-xs text-slate-400 font-semibold">Akreditasi A</span>
+                            <span class="text-xs text-slate-400 font-semibold whitespace-nowrap">Akreditasi A</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
                             </div>
-                            <span class="text-xs text-slate-400 font-semibold">SMK PK</span>
+                            <span class="text-xs text-slate-400 font-semibold whitespace-nowrap">SMK PK</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                             </div>
-                            <span class="text-xs text-slate-400 font-semibold">Sekolah Unggul</span>
+                            <span class="text-xs text-slate-400 font-semibold whitespace-nowrap">Sekolah Unggul</span>
                         </div>
                     </div>
                 </div>
@@ -147,10 +147,10 @@
     <section class="relative py-10 bg-white overflow-hidden border-b border-slate-100"
         x-data="{ visible: true }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
                 @foreach($stats as $index => $stat)
                 <div class="text-center group" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-1 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
-                    <div class="w-12 h-12 mx-auto bg-gradient-to-br {{ $stat['color'] }} rounded-2xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto bg-gradient-to-br {{ $stat['color'] }} rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         @if($stat['icon'] === 'academic')
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
                         @elseif($stat['icon'] === 'users')
@@ -165,8 +165,8 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         @endif
                     </div>
-                    <span class="block text-3xl font-black text-slate-900" x-text="counters['stat{{ $index }}'] !== undefined ? counters['stat{{ $index }}'] : '0'">0</span>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">{{ $stat['label'] }}</span>
+                    <span class="block text-xl sm:text-3xl font-black text-slate-900" x-text="counters['stat{{ $index }}'] !== undefined ? counters['stat{{ $index }}'] : '0'">0</span>
+                    <span class="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1 line-clamp-1">{{ $stat['label'] }}</span>
                 </div>
                 @endforeach
             </div>
@@ -197,61 +197,96 @@
     {{-- 4. SAMBUTAN KEPALA SEKOLAH --}}
     {{-- ============================================ --}}
     @if($profil && $profil->teks_sambutan_kepsek)
-    <section class="py-28 bg-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-indigo-50 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
+    <section class="py-16 sm:py-24 lg:py-32 bg-white relative overflow-hidden">
+        {{-- Ambient background --}}
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-50 to-indigo-50 rounded-full blur-[140px] -translate-y-1/3 translate-x-1/3 opacity-70"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-slate-50 to-blue-50 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 opacity-60"></div>
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                {{-- Image --}}
-                <div class="relative"
-                    x-data="{ vis: true }">
-                    <div class="relative z-10" x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 -translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 sm:gap-12 lg:gap-20 items-center">
+
+                {{-- Photo Column (2/5) --}}
+                <div class="lg:col-span-2 relative" x-data="{ vis: true }">
+                    {{-- Decorative offset borders --}}
+                    <div class="absolute -top-3 -left-3 w-full h-full rounded-3xl border-2 border-blue-200/30"></div>
+                    <div class="absolute -bottom-3 -right-3 w-full h-full rounded-3xl border-2 border-indigo-200/20"></div>
+
+                    {{-- Photo --}}
+                    <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10 mx-auto max-w-sm sm:max-w-none" x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
                         @if($profil->foto_kepsek)
-                            <img src="{{ Storage::url($profil->foto_kepsek) }}" class="rounded-[32px] w-full object-cover max-h-[500px] shadow-2xl" alt="Kepala Sekolah">
+                            <img src="{{ Storage::url($profil->foto_kepsek) }}" class="w-full aspect-[3/4] object-cover object-top" alt="Kepala Sekolah {{ $profil->nama_kepsek }}">
                         @else
-                            <div class="aspect-[4/5] rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-white/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            <div class="w-full aspect-[3/4] bg-gradient-to-br from-slate-700 via-blue-800 to-indigo-900 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 text-white/8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a7.5 7.5 0 0 1 13 0"/></svg>
                             </div>
                         @endif
+
+                        {{-- Name plate overlay --}}
+                        @if($profil->nama_kepsek)
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent pt-16 pb-5 px-5">
+                            <h3 class="text-white font-black text-lg tracking-wide uppercase">{{ $profil->nama_kepsek }}</h3>
+                            <p class="text-white/70 text-xs font-semibold tracking-widest uppercase mt-0.5">Kepala Sekolah</p>
+                        </div>
+                        @endif
                     </div>
-                    <div class="absolute -top-4 -left-4 w-full h-full rounded-[32px] border-2 border-blue-500/20 -z-0"></div>
-                    <div class="absolute -bottom-4 -right-4 w-full h-full rounded-[32px] border-2 border-indigo-500/10 -z-0"></div>
-                    {{-- Floating badge --}}
-                    <div class="absolute -bottom-6 -right-6 lg:right-[-30px] glass-white rounded-2xl px-6 py-4 z-20 animate-float shadow-xl">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <div>
-                                <span class="block text-2xl font-black text-slate-900">A</span>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Akreditasi</span>
+
+                    {{-- Akreditasi badge --}}
+                    <div class="absolute -bottom-4 sm:-bottom-5 -right-4 sm:-right-5 z-20 animate-float">
+                        <div class="bg-white rounded-xl sm:rounded-2xl px-3.5 sm:px-5 py-2.5 sm:py-3.5 shadow-xl shadow-slate-900/8 border border-slate-100">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
+                                </div>
+                                <div>
+                                    <span class="block text-xl sm:text-2xl font-black text-slate-900 leading-none">{{ $profil->akreditasi ?: 'A' }}</span>
+                                    <span class="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em]">Akreditasi</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {{-- Top left year badge --}}
-                    <div class="absolute -top-6 -left-6 lg:left-[-20px] glass-white rounded-2xl px-5 py-3 z-20 animate-float-reverse shadow-xl">
-                        <span class="block text-lg font-black text-gradient-blue">Est. 1965</span>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Berdiri Sejak</span>
+
+                    {{-- Est. badge --}}
+                    <div class="absolute -top-4 sm:-top-5 -left-4 sm:-left-5 z-20 animate-float-reverse">
+                        <div class="bg-white rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 shadow-xl shadow-slate-900/8 border border-slate-100">
+                            <span class="block text-sm sm:text-base font-black text-gradient-blue leading-tight">Est. 1965</span>
+                            <span class="text-[7px] sm:text-[8px] font-bold text-slate-400 uppercase tracking-[0.15em]">Berdiri Sejak</span>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Content --}}
-                <div x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
-                    <span class="inline-block px-4 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded-full uppercase tracking-wider mb-6">Sambutan Kepala Sekolah</span>
-                    <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-8 leading-[1.1]">
-                        Selamat Datang di<br><span class="text-gradient">SMKN 1 Kolaka</span>
+                {{-- Content Column (3/5) --}}
+                <div class="lg:col-span-3" x-data="{ vis: true }" x-show="vis" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded-full uppercase tracking-wider mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                        Sambutan Kepala Sekolah
+                    </span>
+
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-6 sm:mb-8 leading-[1.1]">
+                        Selamat Datang di<br><span class="text-gradient">{{ $profil->nama_sekolah ?: 'SMKN 1 Kolaka' }}</span>
                     </h2>
 
-                    {{-- Quote mark --}}
+                    {{-- Quote block --}}
                     <div class="relative">
-                        <svg class="absolute -top-4 -left-4 w-12 h-12 text-blue-100" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/></svg>
-                        <div class="text-slate-600 leading-relaxed pl-8 border-l-4 border-blue-500/20 line-clamp-6">
-                            {{ Str::limit($profil->teks_sambutan_kepsek, 400) }}
+                        <svg class="absolute -top-3 -left-2 w-10 h-10 text-blue-100" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/></svg>
+                        <div class="pl-8 border-l-4 border-blue-500/20">
+                            <p class="text-slate-600 leading-relaxed text-[15px] line-clamp-6">
+                                {{ Str::limit($profil->teks_sambutan_kepsek, 500) }}
+                            </p>
                         </div>
                     </div>
 
-                    <a href="{{ route('profil') }}" class="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 mt-8 group">
+                    {{-- Signature line --}}
+                    @if($profil->nama_kepsek)
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-12 h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
+                        <div>
+                            <p class="text-sm font-black text-slate-800 uppercase tracking-wide">{{ $profil->nama_kepsek }}</p>
+                            <p class="text-xs text-slate-400 font-medium">Kepala {{ $profil->nama_sekolah ?: 'SMK Negeri 1 Kolaka' }}</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    <a href="{{ route('profil') }}" class="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition-all hover:shadow-lg hover:shadow-slate-900/20 group">
                         Baca Selengkapnya
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                     </a>
@@ -265,7 +300,7 @@
     {{-- 5. JURUSAN — Cards --}}
     {{-- ============================================ --}}
     @if($jurusans->count() > 0)
-    <section class="py-28 bg-slate-50 relative overflow-hidden">
+    <section class="py-16 sm:py-28 bg-slate-50 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16"
@@ -273,7 +308,7 @@
                 x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="max-w-xl">
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-blue-600 bg-blue-100 rounded-full uppercase tracking-wider mb-4">Program Unggulan</span>
-                    <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.1]">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.1]">
                         Konsentrasi<br>
                         <span class="text-gradient">Keahlian</span>
                     </h2>
@@ -323,7 +358,7 @@
     {{-- ============================================ --}}
     {{-- 6. KEUNGGULAN — Bento Grid --}}
     {{-- ============================================ --}}
-    <section class="py-28 bg-slate-950 text-white relative overflow-hidden noise">
+    <section class="py-16 sm:py-28 bg-slate-950 text-white relative overflow-hidden noise">
         <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px]"></div>
         <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px]"></div>
         <div class="absolute top-[50%] left-[50%] w-[300px] h-[300px] bg-purple-600/5 rounded-full blur-[80px]"></div>
@@ -333,7 +368,7 @@
                 x-data="{ vis: true }"
                 x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
                 <span class="inline-block px-4 py-1.5 text-xs font-bold text-blue-400 glass rounded-full uppercase tracking-wider mb-4">Kenapa Memilih Kami?</span>
-                <h2 class="text-4xl lg:text-5xl font-black tracking-tight leading-[1.1]">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1]">
                     Bukan Sekadar<br>
                     <span class="text-gradient">Sekolah Biasa</span>
                 </h2>
@@ -353,7 +388,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($features as $index => $f)
-                <div class="glass rounded-[28px] p-8 group hover:bg-white/10 transition-all duration-500"
+                <div class="glass rounded-[20px] sm:rounded-[28px] p-6 sm:p-8 group hover:bg-white/10 transition-all duration-500"
                     x-data="{ vis: true }"
                     x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="w-14 h-14 bg-gradient-to-br {{ $f['color'] }} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -440,9 +475,9 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 @foreach($galeriItems as $index => $item)
-                <div class="group relative rounded-[20px] overflow-hidden {{ $index === 0 || $index === 5 ? 'md:col-span-2 md:row-span-2' : '' }}"
+                <div class="group relative rounded-[16px] sm:rounded-[20px] overflow-hidden {{ $index === 0 || $index === 5 ? 'md:col-span-2 md:row-span-2' : '' }}"
                     x-data="{ vis: true }"
                     x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" style="transition-delay: {{ $index * 80 }}ms">
                     <div class="aspect-square overflow-hidden bg-slate-800">
@@ -480,7 +515,7 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 @foreach($upcomingAgenda as $index => $a)
                 <div class="group relative bg-white rounded-[24px] border border-slate-100 p-7 card-hover"
                     x-data="{ vis: true }"
@@ -801,17 +836,17 @@
                 </span>
                 <span class="text-xs font-bold text-white tracking-wide uppercase">Pendaftaran Dibuka</span>
             </div>
-            <h2 class="text-4xl lg:text-6xl font-black text-white mb-6 leading-tight">
+            <h2 class="text-3xl sm:text-4xl lg:text-6xl font-black text-white mb-6 leading-tight">
                 Siap Memulai<br>Perjalananmu?
             </h2>
-            <p class="text-lg text-blue-100 mb-12 max-w-2xl mx-auto">
+            <p class="text-base sm:text-lg text-blue-100 mb-8 sm:mb-12 max-w-2xl mx-auto">
                 Bergabunglah dengan ribuan alumni sukses SMKN 1 Kolaka. Masa depan cerahmu dimulai dari langkah pertama.
             </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="/ppdb" class="px-10 py-5 bg-white text-slate-900 font-bold rounded-2xl hover:shadow-2xl hover:shadow-white/20 hover:-translate-y-1 transition-all duration-300 text-lg">
+            <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
+                <a href="/ppdb" class="px-8 sm:px-10 py-4 sm:py-5 bg-white text-slate-900 font-bold rounded-2xl hover:shadow-2xl hover:shadow-white/20 hover:-translate-y-1 transition-all duration-300 text-base sm:text-lg text-center">
                     Daftar Sekarang
                 </a>
-                <a href="/profil" class="px-10 py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 text-lg">
+                <a href="/profil" class="px-8 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 text-base sm:text-lg text-center">
                     Profil Sekolah
                 </a>
             </div>

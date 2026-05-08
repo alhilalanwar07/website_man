@@ -15,11 +15,13 @@ class ProfilSekolah extends Model
         'koordinat_peta',
         'nomor_telepon',
         'email_resmi',
+        'akreditasi',
         'tautan_sosmed',
         'logo_path',
         'favicon_path',
         'teks_sambutan_kepsek',
         'foto_kepsek',
+        'nama_kepsek',
         'visi_teks',
         'misi_teks',
     ];
