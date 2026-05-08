@@ -1,20 +1,5 @@
-<div x-data="{
-    shown: {},
-    counters: {},
-    startCounter(id, target) {
-        if (this.counters[id] !== undefined) return;
-        this.counters[id] = 0;
-        const duration = 2000;
-        const step = Math.max(1, Math.floor(target / (duration / 16)));
-        const interval = setInterval(() => {
-            this.counters[id] += step;
-            if (this.counters[id] >= target) {
-                this.counters[id] = target;
-                clearInterval(interval);
-            }
-        }, 16);
-    }
-}" x-init="setTimeout(() => shown.hero = true, 100); @foreach($stats as $i => $s) startCounter('stat{{ $i }}', {{ $s['value'] }}); @endforeach">
+<div x-data="{ shown: {}, counters: {}, countersStarted: false, startCounter(id, target) { if (this.counters[id] !== undefined) return; this.counters[id] = 0; const duration = 2000; const step = Math.max(1, Math.floor(target / (duration / 16))); const interval = setInterval(() => { this.counters[id] += step; if (this.counters[id] >= target) { this.counters[id] = target; clearInterval(interval); } }, 16); }, startAllCounters() { if (this.countersStarted) return; this.countersStarted = true; @foreach($stats as $i => $s) this.startCounter('stat{{ $i }}', {{ $s['value'] }}); @endforeach }
+}" x-init="setTimeout(() => shown.hero = true, 100)">
 
     {{-- ============================================ --}}
     {{-- 1. HERO — Immersive Full-Screen --}}
@@ -63,9 +48,8 @@
                     </div>
 
                     {{-- School Name Badge --}}
-                    <div class="flex items-center gap-3 mb-6 animate-fade-up delay-100">
-                        @if($profil && $profil->logo_path)
-                        <img src="{{ Storage::url($profil->logo_path) }}" class="w-12 h-12 rounded-xl" alt="Logo">
+                    <div class="flex items-center gap-3 mb-6 animate-fade-up delay-100"> @if($profil && $profil->logo_path)
+                        <img loading="lazy" decoding="async" src="{{ Storage::url($profil->logo_path) }}" class="w-12 h-12 rounded-xl" alt="Logo">
                         @endif
                         <div>
                             <span class="text-sm font-bold text-white/80 uppercase tracking-wider">SMK Negeri 1 Kolaka</span>
@@ -121,8 +105,7 @@
                 </div>
 
                 {{-- Right: Stats Cards --}}
-                <div class="hidden lg:grid lg:col-span-2 grid-cols-2 gap-4 animate-fade-up delay-700">
-                    @foreach(array_slice($stats, 0, 4) as $index => $stat)
+                <div class="hidden lg:grid lg:col-span-2 grid-cols-2 gap-4 animate-fade-up delay-700"> @foreach(array_slice($stats, 0, 4) as $index => $stat)
                     <div class="glass rounded-2xl px-5 py-6 text-center animate-float{{ $index % 2 === 0 ? '' : '-reverse' }}" style="animation-delay: {{ $index * 0.5 }}s">
                         <span class="block text-3xl font-black text-white mb-1">{{ $stat['value'] }}</span>
                         <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider leading-tight">{{ $stat['label'] }}</span>
@@ -144,11 +127,9 @@
     {{-- ============================================ --}}
     {{-- 2. STATS COUNTER BAR — Animated Numbers --}}
     {{-- ============================================ --}}
-    <section class="relative py-10 bg-white overflow-hidden border-b border-slate-100"
-        x-data="{ visible: true }">
+    <section class="relative py-10 bg-white overflow-hidden border-b border-slate-100" x-data="{ visible: true }" x-init="new IntersectionObserver((entries, obs) => { entries.forEach(e => { if(e.isIntersecting) { $root.startAllCounters(); obs.unobserve(e.target); } }); }, {threshold: 0.2}).observe($el)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
-                @foreach($stats as $index => $stat)
+            <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6"> @foreach($stats as $index => $stat)
                 <div class="text-center group" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-1 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto bg-gradient-to-br {{ $stat['color'] }} rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         @if($stat['icon'] === 'academic')
@@ -171,32 +152,20 @@
                 @endforeach
             </div>
         </div>
-    </section>
-
-    {{-- ============================================ --}}
-    {{-- 3. MARQUEE PENGUMUMAN TICKER --}}
-    {{-- ============================================ --}}
-    @if($pengumuman->count() > 0)
+    </section> {{-- ============================================ --}} {{-- 3. MARQUEE PENGUMUMAN TICKER --}} {{-- ============================================ --}} @if($pengumuman->count() > 0)
     <section class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 py-3 overflow-hidden">
         <div class="flex animate-marquee whitespace-nowrap">
             @for($i = 0; $i < 3; $i++)
             @foreach($pengumuman as $p)
             <span class="mx-12 text-sm font-bold text-white flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
-                {{ $p->judul_pengumuman }}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg> {{ $p->judul_pengumuman }}
                 <span class="text-white/60">—</span>
                 <span class="text-white/80 font-normal">s/d {{ $p->tanggal_akhir_tampil->format('d M Y') }}</span>
             </span>
             @endforeach
             @endfor
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 4. SAMBUTAN KEPALA SEKOLAH --}}
-    {{-- ============================================ --}}
-    @if($profil && $profil->teks_sambutan_kepsek)
+    </section> @endif {{-- ============================================ --}} {{-- 4. SAMBUTAN KEPALA SEKOLAH --}} {{-- ============================================ --}} @if($profil && $profil->teks_sambutan_kepsek)
     <section class="py-16 sm:py-24 lg:py-32 bg-white relative overflow-hidden">
         {{-- Ambient background --}}
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-50 to-indigo-50 rounded-full blur-[140px] -translate-y-1/3 translate-x-1/3 opacity-70"></div>
@@ -206,23 +175,18 @@
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 sm:gap-12 lg:gap-20 items-center">
 
                 {{-- Photo Column (2/5) --}}
-                <div class="lg:col-span-2 relative" x-data="{ vis: true }">
+                <div class="lg:col-span-2 relative" >
                     {{-- Decorative offset borders --}}
                     <div class="absolute -top-3 -left-3 w-full h-full rounded-3xl border-2 border-blue-200/30"></div>
                     <div class="absolute -bottom-3 -right-3 w-full h-full rounded-3xl border-2 border-indigo-200/20"></div>
 
                     {{-- Photo --}}
-                    <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10 mx-auto max-w-sm sm:max-w-none" x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
-                        @if($profil->foto_kepsek)
-                            <img src="{{ Storage::url($profil->foto_kepsek) }}" class="w-full aspect-[3/4] object-cover object-top" alt="Kepala Sekolah {{ $profil->nama_kepsek }}">
+                    <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/10 mx-auto max-w-sm sm:max-w-none" > @if($profil->foto_kepsek)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($profil->foto_kepsek) }}" class="w-full aspect-[3/4] object-cover object-top" alt="Kepala Sekolah {{ $profil->nama_kepsek }}">
                         @else
                             <div class="w-full aspect-[3/4] bg-gradient-to-br from-slate-700 via-blue-800 to-indigo-900 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 text-white/8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="12" cy="8" r="4"/><path d="M5.5 21a7.5 7.5 0 0 1 13 0"/></svg>
-                            </div>
-                        @endif
-
-                        {{-- Name plate overlay --}}
-                        @if($profil->nama_kepsek)
+                            </div> @endif {{-- Name plate overlay --}} @if($profil->nama_kepsek)
                         <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent pt-16 pb-5 px-5">
                             <h3 class="text-white font-black text-lg tracking-wide uppercase">{{ $profil->nama_kepsek }}</h3>
                             <p class="text-white/70 text-xs font-semibold tracking-widest uppercase mt-0.5">Kepala Sekolah</p>
@@ -255,7 +219,7 @@
                 </div>
 
                 {{-- Content Column (3/5) --}}
-                <div class="lg:col-span-3" x-data="{ vis: true }" x-show="vis" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
+                <div class="lg:col-span-3" >
                     <span class="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 rounded-full uppercase tracking-wider mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                         Sambutan Kepala Sekolah
@@ -269,14 +233,10 @@
                     <div class="relative">
                         <svg class="absolute -top-3 -left-2 w-10 h-10 text-blue-100" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/></svg>
                         <div class="pl-8 border-l-4 border-blue-500/20">
-                            <p class="text-slate-600 leading-relaxed text-[15px] line-clamp-6">
-                                {{ Str::limit($profil->teks_sambutan_kepsek, 500) }}
+                            <p class="text-slate-600 leading-relaxed text-[15px] line-clamp-6"> {{ Str::limit($profil->teks_sambutan_kepsek, 500) }}
                             </p>
                         </div>
-                    </div>
-
-                    {{-- Signature line --}}
-                    @if($profil->nama_kepsek)
+                    </div> {{-- Signature line --}} @if($profil->nama_kepsek)
                     <div class="mt-8 flex items-center gap-4">
                         <div class="w-12 h-[2px] bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
                         <div>
@@ -293,19 +253,11 @@
                 </div>
             </div>
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 5. JURUSAN — Cards --}}
-    {{-- ============================================ --}}
-    @if($jurusans->count() > 0)
+    </section> @endif {{-- ============================================ --}} {{-- 5. JURUSAN — Cards --}} {{-- ============================================ --}} @if($jurusans->count() > 0)
     <section class="py-16 sm:py-28 bg-slate-50 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16" >
                 <div class="max-w-xl">
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-blue-600 bg-blue-100 rounded-full uppercase tracking-wider mb-4">Program Unggulan</span>
                     <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.1]">
@@ -320,14 +272,10 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ min($jurusans->count(), 4) }} gap-6">
-                @foreach($jurusans as $index => $j)
-                <a href="{{ route('jurusan.show', $j->slug) }}" class="group relative bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100" wire:key="jurusan-{{ $j->id }}"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
-                    <div class="aspect-[4/3] overflow-hidden relative">
-                        @if($j->gambar_cover)
-                            <img src="{{ Storage::url($j->gambar_cover) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $j->nama_jurusan }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ min($jurusans->count(), 4) }} gap-6"> @foreach($jurusans as $index => $j)
+                <a href="{{ route('jurusan.show', $j->slug) }}" class="group relative bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100" wire:key="jurusan-{{ $j->id }}" style="transition-delay: {{ $index * 100 }}ms">
+                    <div class="aspect-[4/3] overflow-hidden relative"> @if($j->gambar_cover)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($j->gambar_cover) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $j->nama_jurusan }}">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
@@ -364,33 +312,19 @@
         <div class="absolute top-[50%] left-[50%] w-[300px] h-[300px] bg-purple-600/5 rounded-full blur-[80px]"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="text-center mb-16" >
                 <span class="inline-block px-4 py-1.5 text-xs font-bold text-blue-400 glass rounded-full uppercase tracking-wider mb-4">Kenapa Memilih Kami?</span>
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1]">
                     Bukan Sekadar<br>
                     <span class="text-gradient">Sekolah Biasa</span>
                 </h2>
                 <p class="text-slate-400 mt-4 max-w-2xl mx-auto">Kami memadukan kurikulum modern, fasilitas canggih, dan jaringan industri yang luas untuk mencetak lulusan terbaik.</p>
-            </div>
-
-            @php
-            $features = [
-                ['icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', 'title' => 'Kurikulum Industri 4.0', 'desc' => 'Materi disusun langsung bersama praktisi industri dengan pendekatan project-based learning.', 'color' => 'from-blue-400 to-blue-600'],
-                ['icon' => 'M9.75 17L9 21h6l-.75-4M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Lab & Workshop Premium', 'desc' => 'Fasilitas standar industri untuk praktik langsung sejak semester pertama.', 'color' => 'from-indigo-400 to-indigo-600'],
-                ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Langsung Kerja', 'desc' => 'Program magang dan kerjasama industri menjamin penyerapan lulusan tinggi.', 'color' => 'from-emerald-400 to-emerald-600'],
-                ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'title' => 'Sertifikasi Kompetensi', 'desc' => 'Siswa mendapat sertifikasi profesi yang diakui dunia industri nasional & internasional.', 'color' => 'from-purple-400 to-purple-600'],
-                ['icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Wawasan Global', 'desc' => 'Exposure internasional melalui program pertukaran dan kompetisi tingkat dunia.', 'color' => 'from-cyan-400 to-cyan-600'],
-                ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Karakter Unggul', 'desc' => 'Pembinaan karakter, disiplin, dan kepemimpinan menjadi fondasi pendidikan kami.', 'color' => 'from-amber-400 to-amber-600'],
+            </div> @php $features = [ ['icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', 'title' => 'Kurikulum Industri 4.0', 'desc' => 'Materi disusun langsung bersama praktisi industri dengan pendekatan project-based learning.', 'color' => 'from-blue-400 to-blue-600'], ['icon' => 'M9.75 17L9 21h6l-.75-4M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Lab & Workshop Premium', 'desc' => 'Fasilitas standar industri untuk praktik langsung sejak semester pertama.', 'color' => 'from-indigo-400 to-indigo-600'], ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Langsung Kerja', 'desc' => 'Program magang dan kerjasama industri menjamin penyerapan lulusan tinggi.', 'color' => 'from-emerald-400 to-emerald-600'], ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'title' => 'Sertifikasi Kompetensi', 'desc' => 'Siswa mendapat sertifikasi profesi yang diakui dunia industri nasional & internasional.', 'color' => 'from-purple-400 to-purple-600'], ['icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Wawasan Global', 'desc' => 'Exposure internasional melalui program pertukaran dan kompetisi tingkat dunia.', 'color' => 'from-cyan-400 to-cyan-600'], ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Karakter Unggul', 'desc' => 'Pembinaan karakter, disiplin, dan kepemimpinan menjadi fondasi pendidikan kami.', 'color' => 'from-amber-400 to-amber-600'],
             ];
             @endphp
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($features as $index => $f)
-                <div class="glass rounded-[20px] sm:rounded-[28px] p-6 sm:p-8 group hover:bg-white/10 transition-all duration-500"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" style="transition-delay: {{ $index * 100 }}ms">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> @foreach($features as $index => $f)
+                <div class="glass rounded-[20px] sm:rounded-[28px] p-6 sm:p-8 group hover:bg-white/10 transition-all duration-500" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="w-14 h-14 bg-gradient-to-br {{ $f['color'] }} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $f['icon'] }}" /></svg>
                     </div>
@@ -400,18 +334,11 @@
                 @endforeach
             </div>
         </div>
-    </section>
-
-    {{-- ============================================ --}}
-    {{-- 7. TEFA PRODUK SHOWCASE --}}
-    {{-- ============================================ --}}
-    @if($tefaProduks->count() > 0)
+    </section> {{-- ============================================ --}} {{-- 7. TEFA PRODUK SHOWCASE --}} {{-- ============================================ --}} @if($tefaProduks->count() > 0)
     <section class="py-28 bg-white relative overflow-hidden">
         <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-emerald-50 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14" >
                 <div>
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase tracking-wider mb-4">Teaching Factory</span>
                     <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900">
@@ -421,14 +348,10 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($tefaProduks as $index => $tp)
-                <div class="group bg-white rounded-[24px] border border-slate-100 overflow-hidden card-hover"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
-                    <div class="aspect-square overflow-hidden bg-slate-100">
-                        @if($tp->gambar_utama)
-                            <img src="{{ Storage::url($tp->gambar_utama) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $tp->nama_produk_jasa }}">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"> @foreach($tefaProduks as $index => $tp)
+                <div class="group bg-white rounded-[24px] border border-slate-100 overflow-hidden card-hover" style="transition-delay: {{ $index * 100 }}ms">
+                    <div class="aspect-square overflow-hidden bg-slate-100"> @if($tp->gambar_utama)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($tp->gambar_utama) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $tp->nama_produk_jasa }}">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
@@ -437,8 +360,7 @@
                     </div>
                     <div class="p-5">
                         <span class="inline-block px-2 py-0.5 text-[10px] font-bold text-emerald-600 bg-emerald-50 rounded uppercase tracking-wider mb-2">{{ $tp->status_ketersediaan }}</span>
-                        <h4 class="font-bold text-slate-900 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{{ $tp->nama_produk_jasa }}</h4>
-                        @if($tp->harga_estimasi)
+                        <h4 class="font-bold text-slate-900 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{{ $tp->nama_produk_jasa }}</h4> @if($tp->harga_estimasi)
                         <p class="text-sm font-black text-gradient-blue">Rp {{ number_format($tp->harga_estimasi, 0, ',', '.') }}</p>
                         @endif
                     </div>
@@ -446,22 +368,14 @@
                 @endforeach
             </div>
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 8. GALERI PREVIEW — Masonry Grid --}}
-    {{-- ============================================ --}}
-    @if($galeriItems->count() > 0)
+    </section> @endif {{-- ============================================ --}} {{-- 8. GALERI PREVIEW — Masonry Grid --}} {{-- ============================================ --}} @if($galeriItems->count() > 0)
     <section class="py-28 bg-slate-950 text-white relative overflow-hidden noise">
         <div class="absolute inset-0">
             <div class="absolute top-[10%] right-[-5%] w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[100px]"></div>
             <div class="absolute bottom-[10%] left-[5%] w-[300px] h-[300px] bg-blue-600/10 rounded-full blur-[80px]"></div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14" >
                 <div>
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-cyan-400 glass rounded-full uppercase tracking-wider mb-4">Dokumentasi</span>
                     <h2 class="text-4xl lg:text-5xl font-black tracking-tight">
@@ -475,16 +389,12 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                @foreach($galeriItems as $index => $item)
-                <div class="group relative rounded-[16px] sm:rounded-[20px] overflow-hidden {{ $index === 0 || $index === 5 ? 'md:col-span-2 md:row-span-2' : '' }}"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" style="transition-delay: {{ $index * 80 }}ms">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"> @foreach($galeriItems as $index => $item)
+                <div class="group relative rounded-[16px] sm:rounded-[20px] overflow-hidden {{ $index === 0 || $index === 5 ? 'md:col-span-2 md:row-span-2' : '' }}" style="transition-delay: {{ $index * 80 }}ms">
                     <div class="aspect-square overflow-hidden bg-slate-800">
-                        <img src="{{ Storage::url($item->file_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $item->caption ?? 'Galeri' }}">
+                        <img loading="lazy" decoding="async" src="{{ Storage::url($item->file_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $item->caption ?? 'Galeri' }}">
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
-                        @if($item->caption)
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5"> @if($item->caption)
                         <p class="text-sm text-white font-semibold">{{ $item->caption }}</p>
                         @endif
                     </div>
@@ -492,19 +402,11 @@
                 @endforeach
             </div>
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 9. AGENDA — Timeline Cards --}}
-    {{-- ============================================ --}}
-    @if($upcomingAgenda->count() > 0)
+    </section> @endif {{-- ============================================ --}} {{-- 9. AGENDA — Timeline Cards --}} {{-- ============================================ --}} @if($upcomingAgenda->count() > 0)
     <section class="py-28 bg-white relative overflow-hidden">
         <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14" >
                 <div>
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 rounded-full uppercase tracking-wider mb-4">Jadwal Kegiatan</span>
                     <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900">Agenda <span class="text-gradient">Mendatang</span></h2>
@@ -515,11 +417,8 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                @foreach($upcomingAgenda as $index => $a)
-                <div class="group relative bg-white rounded-[24px] border border-slate-100 p-7 card-hover"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"> @foreach($upcomingAgenda as $index => $a)
+                <div class="group relative bg-white rounded-[24px] border border-slate-100 p-7 card-hover" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="flex items-center gap-4 mb-5">
                         <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex flex-col items-center justify-center shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-shadow">
                             <span class="text-xl font-black text-white leading-none">{{ $a->waktu_mulai->format('d') }}</span>
@@ -530,11 +429,9 @@
                             <span class="text-xs text-slate-400">{{ $a->waktu_mulai->format('Y') }}</span>
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">{{ $a->nama_kegiatan }}</h3>
-                    @if($a->lokasi_pelaksanaan)
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">{{ $a->nama_kegiatan }}</h3> @if($a->lokasi_pelaksanaan)
                     <p class="text-xs text-slate-400 flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
-                        {{ $a->lokasi_pelaksanaan }}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg> {{ $a->lokasi_pelaksanaan }}
                     </p>
                     @endif
                     <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-[40px] rounded-tr-[24px] -z-0"></div>
@@ -542,19 +439,11 @@
                 @endforeach
             </div>
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 10. TENAGA PENDIDIK PREVIEW --}}
-    {{-- ============================================ --}}
-    @if($pegawaiHighlight->count() > 0)
+    </section> @endif {{-- ============================================ --}} {{-- 10. TENAGA PENDIDIK PREVIEW --}} {{-- ============================================ --}} @if($pegawaiHighlight->count() > 0)
     <section class="py-28 bg-slate-50 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-purple-50 rounded-full blur-[120px] -translate-y-1/2 -translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-14"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="text-center mb-14" >
                 <span class="inline-block px-4 py-1.5 text-xs font-bold text-purple-600 bg-purple-50 rounded-full uppercase tracking-wider mb-4">Tim Profesional</span>
                 <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900">
                     Tenaga <span class="text-gradient">Pendidik</span>
@@ -563,15 +452,11 @@
             </div>
 
             {{-- Horizontal scrollable on mobile --}}
-            <div class="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
-                @foreach($pegawaiHighlight as $index => $p)
-                <div class="snap-center shrink-0 w-[200px] lg:w-auto group"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" style="transition-delay: {{ $index * 80 }}ms">
+            <div class="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0"> @foreach($pegawaiHighlight as $index => $p)
+                <div class="snap-center shrink-0 w-[200px] lg:w-auto group" style="transition-delay: {{ $index * 80 }}ms">
                     <div class="bg-white rounded-[24px] border border-slate-100 overflow-hidden text-center card-hover">
-                        <div class="aspect-square bg-slate-100 overflow-hidden">
-                            @if($p->foto_profil)
-                                <img src="{{ Storage::url($p->foto_profil) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $p->nama_lengkap }}">
+                        <div class="aspect-square bg-slate-100 overflow-hidden"> @if($p->foto_profil)
+                                <img loading="lazy" decoding="async" src="{{ Storage::url($p->foto_profil) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $p->nama_lengkap }}">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
@@ -587,28 +472,18 @@
                 @endforeach
             </div>
 
-            <div class="text-center mt-10"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+            <div class="text-center mt-10" >
                 <a href="{{ route('profil') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-800 transition-colors group">
                     Lihat Semua Tenaga Pendidik
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </a>
             </div>
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 11. BERITA — Magazine-Style Layout --}}
-    {{-- ============================================ --}}
-    @if($recentBerita->count() > 0)
+    </section> @endif {{-- ============================================ --}} {{-- 11. BERITA — Magazine-Style Layout --}} {{-- ============================================ --}} @if($recentBerita->count() > 0)
     <section class="py-28 bg-white relative overflow-hidden">
         <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14" >
                 <div>
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-purple-600 bg-purple-50 rounded-full uppercase tracking-wider mb-4">Berita Terbaru</span>
                     <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900">
@@ -619,16 +494,11 @@
                     Lihat Semua
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </a>
-            </div>
-
-            @if($recentBerita->count() >= 3)
+            </div> @if($recentBerita->count() >= 3)
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <article class="group relative bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100 row-span-2"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 -translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
-                    <div class="aspect-[4/3] overflow-hidden bg-slate-100">
-                        @if($recentBerita[0]->gambar_thumbnail)
-                            <img src="{{ Storage::url($recentBerita[0]->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $recentBerita[0]->judul }}">
+                <article class="group relative bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100 row-span-2" >
+                    <div class="aspect-[4/3] overflow-hidden bg-slate-100"> @if($recentBerita[0]->gambar_thumbnail)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($recentBerita[0]->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $recentBerita[0]->judul }}">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
@@ -636,8 +506,7 @@
                         @endif
                     </div>
                     <div class="p-8">
-                        <div class="flex items-center gap-3 mb-4">
-                            @if($recentBerita[0]->kategori)
+                        <div class="flex items-center gap-3 mb-4"> @if($recentBerita[0]->kategori)
                             <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider rounded-lg">{{ $recentBerita[0]->kategori->nama_kategori }}</span>
                             @endif
                             <span class="text-xs text-slate-400">{{ $recentBerita[0]->published_at?->format('d M Y') }}</span>
@@ -647,15 +516,10 @@
                         </h3>
                         <p class="text-slate-500 line-clamp-3">{{ Str::limit(strip_tags($recentBerita[0]->konten_html), 180) }}</p>
                     </div>
-                </article>
-
-                @foreach($recentBerita->skip(1) as $si => $berita)
-                <article class="group bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100 flex flex-col sm:flex-row"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0" style="transition-delay: {{ $si * 150 }}ms">
-                    <div class="sm:w-2/5 aspect-video sm:aspect-auto overflow-hidden bg-slate-100">
-                        @if($berita->gambar_thumbnail)
-                            <img src="{{ Storage::url($berita->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $berita->judul }}">
+                </article> @foreach($recentBerita->skip(1) as $si => $berita)
+                <article class="group bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100 flex flex-col sm:flex-row" style="transition-delay: {{ $si * 150 }}ms">
+                    <div class="sm:w-2/5 aspect-video sm:aspect-auto overflow-hidden bg-slate-100"> @if($berita->gambar_thumbnail)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($berita->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $berita->judul }}">
                         @else
                             <div class="w-full h-full min-h-[160px] bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
@@ -663,8 +527,7 @@
                         @endif
                     </div>
                     <div class="sm:w-3/5 p-6 flex flex-col justify-center">
-                        <div class="flex items-center gap-3 mb-2">
-                            @if($berita->kategori)
+                        <div class="flex items-center gap-3 mb-2"> @if($berita->kategori)
                             <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider rounded">{{ $berita->kategori->nama_kategori }}</span>
                             @endif
                             <span class="text-xs text-slate-400">{{ $berita->published_at?->format('d M Y') }}</span>
@@ -681,9 +544,8 @@
             <div class="grid grid-cols-1 md:grid-cols-{{ $recentBerita->count() }} gap-8">
                 @foreach($recentBerita as $berita)
                 <article class="bg-white rounded-[28px] overflow-hidden group card-hover border border-slate-100">
-                    <div class="aspect-video overflow-hidden bg-slate-100">
-                        @if($berita->gambar_thumbnail)
-                            <img src="{{ Storage::url($berita->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $berita->judul }}">
+                    <div class="aspect-video overflow-hidden bg-slate-100"> @if($berita->gambar_thumbnail)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($berita->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $berita->judul }}">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
@@ -691,8 +553,7 @@
                         @endif
                     </div>
                     <div class="p-7">
-                        <div class="flex items-center gap-3 mb-3">
-                            @if($berita->kategori)
+                        <div class="flex items-center gap-3 mb-3"> @if($berita->kategori)
                             <span class="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider rounded-lg">{{ $berita->kategori->nama_kategori }}</span>
                             @endif
                             <span class="text-xs text-slate-400">{{ $berita->published_at?->format('d M Y') }}</span>
@@ -707,38 +568,23 @@
             </div>
             @endif
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 12. VISI MISI QUICK --}}
-    {{-- ============================================ --}}
-    @if($profil && ($profil->visi_teks || $profil->misi_teks))
+    </section> @endif {{-- ============================================ --}} {{-- 12. VISI MISI QUICK --}} {{-- ============================================ --}} @if($profil && ($profil->visi_teks || $profil->misi_teks))
     <section class="py-28 bg-slate-50 relative overflow-hidden">
         <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-blue-50 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-14"
-                x-data="{ vis: true }"
-                x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-6" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="text-center mb-14" >
                 <span class="inline-block px-4 py-1.5 text-xs font-bold text-indigo-600 bg-indigo-50 rounded-full uppercase tracking-wider mb-4">Arah & Tujuan</span>
                 <h2 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900">Visi & <span class="text-gradient">Misi</span></h2>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                @if($profil->visi_teks)
-                <div class="bg-white p-10 rounded-[28px] border border-slate-100 card-hover"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 -translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8"> @if($profil->visi_teks)
+                <div class="bg-white p-10 rounded-[28px] border border-slate-100 card-hover" >
                     <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                     </div>
                     <h3 class="text-2xl font-black text-slate-900 mb-4">Visi</h3>
                     <div class="text-slate-600 leading-relaxed">{!! nl2br(e(Str::limit($profil->visi_teks, 300))) !!}</div>
-                </div>
-                @endif
-                @if($profil->misi_teks)
-                <div class="bg-white p-10 rounded-[28px] border border-slate-100 card-hover"
-                    x-data="{ vis: true }"
-                    x-show="vis" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
+                </div> @endif @if($profil->misi_teks)
+                <div class="bg-white p-10 rounded-[28px] border border-slate-100 card-hover" >
                     <div class="w-14 h-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
                     </div>
@@ -748,24 +594,16 @@
                 @endif
             </div>
         </div>
-    </section>
-    @endif
-
-    {{-- ============================================ --}}
-    {{-- 13. LOKASI / PETA --}}
-    {{-- ============================================ --}}
-    @if($profil && $profil->alamat_lengkap)
+    </section> @endif {{-- ============================================ --}} {{-- 13. LOKASI / PETA --}} {{-- ============================================ --}} @if($profil && $profil->alamat_lengkap)
     <section class="py-28 bg-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-                x-data="{ vis: true }">
-                <div x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 -translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" >
+                <div >
                     <span class="inline-block px-4 py-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase tracking-wider mb-6">Lokasi Kami</span>
                     <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-6">Temukan <span class="text-gradient">Kami</span></h2>
                     <p class="text-slate-600 leading-relaxed mb-8">{{ $profil->alamat_lengkap }}</p>
 
-                    <div class="space-y-4">
-                        @if($profil->nomor_telepon)
+                    <div class="space-y-4"> @if($profil->nomor_telepon)
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
@@ -774,9 +612,7 @@
                                 <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Telepon</span>
                                 <p class="font-bold text-slate-900">{{ $profil->nomor_telepon }}</p>
                             </div>
-                        </div>
-                        @endif
-                        @if($profil->email_resmi)
+                        </div> @endif @if($profil->email_resmi)
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
@@ -791,15 +627,18 @@
                 </div>
 
                 {{-- Map Placeholder --}}
-                <div class="rounded-[28px] overflow-hidden shadow-xl border border-slate-100 aspect-[4/3] bg-slate-100"
-                    x-show="vis" x-transition:enter="transition ease-out duration-700 delay-200" x-transition:enter-start="opacity-0 translate-x-8" x-transition:enter-end="opacity-100 translate-x-0">
-                    @if($profil->koordinat_peta)
-                        @php
-                            $coords = explode(',', $profil->koordinat_peta);
+                <div class="rounded-[28px] overflow-hidden shadow-xl border border-slate-100 aspect-[4/3] bg-slate-100" > @if($profil->koordinat_peta) @php $coords = explode(',', $profil->koordinat_peta);
                             $lat = trim($coords[0] ?? '-4.0');
                             $lng = trim($coords[1] ?? '121.6');
                         @endphp
-                        <iframe src="https://maps.google.com/maps?q={{ $lat }},{{ $lng }}&z=15&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-full"></iframe>
+                        <div x-data="{ loadMap: false }" x-init="new IntersectionObserver((entries, obs) => { entries.forEach(e => { if(e.isIntersecting) { loadMap = true; obs.unobserve(e.target); } }); }, {rootMargin: '200px'}).observe($el)" class="w-full h-full">
+                            <template x-if="loadMap">
+                                <iframe src="https://maps.google.com/maps?q={{ $lat }},{{ $lng }}&z=15&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-full"></iframe>
+                            </template>
+                            <div x-show="!loadMap" class="w-full h-full flex items-center justify-center bg-slate-100 animate-pulse">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            </div>
+                        </div>
                     @else
                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 mb-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -826,9 +665,7 @@
         <div class="absolute top-[20%] right-[20%] w-4 h-4 bg-white/10 rounded-full animate-float" style="animation-delay:1s"></div>
         <div class="absolute bottom-[25%] left-[25%] w-3 h-3 bg-white/15 rounded-full animate-float-reverse" style="animation-delay:2s"></div>
 
-        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-            x-data="{ vis: true }"
-            x-show="vis" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" >
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8">
                 <span class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -852,7 +689,6 @@
             </div>
         </div>
     </section>
-
 
     <x-pamflet-modal />
 

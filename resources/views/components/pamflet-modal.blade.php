@@ -1,14 +1,18 @@
 {{-- Pamflet/Flyer Modal - Shows promotional pamphlet for active PPDB period --}}
 {{-- Conditionally rendered based on active period having uploaded pamflets --}}
 @php
-    $pamfletPeriod = \App\Models\PpdbPeriod::query()
-        ->where('is_active', true)
-        ->where('status', '!=', 'archived')
-        ->where(function($q) {
-            $q->whereNotNull('pamflet_desktop')
-              ->orWhereNotNull('pamflet_mobile');
-        })
-        ->first();
+    $pamfletPeriod = \Illuminate\Support\Facades\Cache::remember(
+        'pamflet:active_period',
+        now()->addMinutes(10),
+        fn () => \App\Models\PpdbPeriod::query()
+            ->where('is_active', true)
+            ->where('status', '!=', 'archived')
+            ->where(function($q) {
+                $q->whereNotNull('pamflet_desktop')
+                  ->orWhereNotNull('pamflet_mobile');
+            })
+            ->first()
+    );
 @endphp
 
 @if($pamfletPeriod)
@@ -31,7 +35,10 @@
             storageKey: '{{ $storageKey }}',
             hasDesktop: {{ $desktopToken ? 'true' : 'false' }},
             hasMobile: {{ $mobileToken ? 'true' : 'false' }},
+            desktopUrl: '{{ $desktopToken ? route('pamflet.show', $desktopToken) : '' }}',
+            mobileUrl: '{{ $mobileToken ? route('pamflet.show', $mobileToken) : '' }}',
             isMobileDevice: false,
+            imgSrc: '',
             init() {
                 try {
                     this.dismissed = localStorage.getItem(this.storageKey) === '1';
@@ -45,6 +52,7 @@
                 this.$nextTick(() => {
                     setTimeout(() => {
                         if (!this.dismissed && this.hasApplicableImage()) {
+                            this.resolveImageSrc();
                             this.open = true;
                         }
                     }, 800);
@@ -56,6 +64,13 @@
             hasApplicableImage() {
                 if (this.isMobileDevice) return this.hasMobile || this.hasDesktop;
                 return this.hasDesktop || this.hasMobile;
+            },
+            resolveImageSrc() {
+                if (this.isMobileDevice) {
+                    this.imgSrc = this.hasMobile ? this.mobileUrl : this.desktopUrl;
+                } else {
+                    this.imgSrc = this.hasDesktop ? this.desktopUrl : this.mobileUrl;
+                }
             },
             onImageLoad() {
                 this.imageLoaded = true;
@@ -130,7 +145,7 @@
                 </div>
             </div>
 
-            {{-- Image Container (hidden until loaded, then fade in) --}}
+            {{-- Single Image — Only loads the correct one for the device --}}
             <div
                 x-show="imageLoaded"
                 x-transition:enter="transition ease-out duration-500"
@@ -139,41 +154,12 @@
                 class="overflow-auto"
                 style="max-height: calc(90vh - 60px);"
             >
-                @if($desktopToken && $mobileToken)
-                    {{-- Both versions available - show based on device --}}
-                    <img
-                        x-show="!isMobileDevice"
-                        src="{{ route('pamflet.show', $desktopToken) }}"
-                        alt="Pamflet PPDB {{ $pamfletPeriod->nama_periode }}"
-                        class="w-full object-contain"
-                        loading="eager"
-                        @load="onImageLoad()"
-                    >
-                    <img
-                        x-show="isMobileDevice"
-                        src="{{ route('pamflet.show', $mobileToken) }}"
-                        alt="Pamflet PPDB {{ $pamfletPeriod->nama_periode }}"
-                        class="w-full object-contain"
-                        loading="eager"
-                        @load="onImageLoad()"
-                    >
-                @elseif($desktopToken)
-                    <img
-                        src="{{ route('pamflet.show', $desktopToken) }}"
-                        alt="Pamflet PPDB {{ $pamfletPeriod->nama_periode }}"
-                        class="w-full object-contain"
-                        loading="eager"
-                        @load="onImageLoad()"
-                    >
-                @elseif($mobileToken)
-                    <img
-                        src="{{ route('pamflet.show', $mobileToken) }}"
-                        alt="Pamflet PPDB {{ $pamfletPeriod->nama_periode }}"
-                        class="w-full object-contain"
-                        loading="eager"
-                        @load="onImageLoad()"
-                    >
-                @endif
+                <img
+                    x-bind:src="imgSrc"
+                    alt="Pamflet PPDB {{ $pamfletPeriod->nama_periode }}"
+                    class="w-full object-contain"
+                    @load="onImageLoad()"
+                >
             </div>
 
             {{-- Footer with "Don't show again" — only visible after image loads --}}

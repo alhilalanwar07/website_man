@@ -6,6 +6,7 @@ use App\Models\PpdbPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Serves pamphlet images via obfuscated signed URLs.
@@ -35,12 +36,34 @@ class PamfletController extends Controller
             abort(404);
         }
 
-        $file = Storage::disk('public')->get($path);
-        $mime = Storage::disk('public')->mimeType($path);
+        $fullPath = Storage::disk('public')->path($path);
+        $lastModified = filemtime($fullPath);
+        $etag = '"' . md5($path . $lastModified) . '"';
 
-        return response($file, 200, [
-            'Content-Type' => $mime,
-            'Cache-Control' => 'public, max-age=86400',
+        // Handle conditional requests (304 Not Modified)
+        $ifNoneMatch = $request->header('If-None-Match');
+        $ifModifiedSince = $request->header('If-Modified-Since');
+
+        if ($ifNoneMatch === $etag) {
+            return response('', 304)->withHeaders([
+                'ETag' => $etag,
+                'Cache-Control' => 'public, max-age=604800, immutable',
+            ]);
+        }
+
+        if ($ifModifiedSince && strtotime($ifModifiedSince) >= $lastModified) {
+            return response('', 304)->withHeaders([
+                'ETag' => $etag,
+                'Cache-Control' => 'public, max-age=604800, immutable',
+            ]);
+        }
+
+        // Stream file directly from disk using X-Sendfile/X-Accel-Redirect when available
+        return response()->file($fullPath, [
+            'Content-Type' => Storage::disk('public')->mimeType($path),
+            'Cache-Control' => 'public, max-age=604800, immutable',
+            'ETag' => $etag,
+            'Last-Modified' => gmdate('D, d M Y H:i:s', $lastModified) . ' GMT',
             'Content-Disposition' => 'inline',
         ]);
     }
