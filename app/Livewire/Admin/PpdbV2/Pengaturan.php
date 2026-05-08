@@ -18,10 +18,14 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class Pengaturan extends Component
 {
+    use WithFileUploads;
+
     protected const TAB_OPTIONS = [
         'periode',
         'jalur',
@@ -30,6 +34,7 @@ class Pengaturan extends Component
         'tanggal',
         'persyaratan',
         'warna-map',
+        'pamflet',
     ];
 
     protected const MAP_COLOR_PALETTE = [
@@ -61,6 +66,8 @@ class Pengaturan extends Component
     public array $mapColorSettings = [];
     public array $nipdSettings = [];
     public array $newPeriodForm = [];
+    public $pamfletDesktopUpload = null;
+    public $pamfletMobileUpload = null;
 
     public bool $showActionModal = false;
     public string $pendingAction = '';
@@ -177,6 +184,15 @@ class Pengaturan extends Component
                     break;
                 case 'save-nipd-settings':
                     $this->saveNipdSettings();
+                    break;
+                case 'save-pamflet':
+                    $this->savePamfletSettings();
+                    break;
+                case 'remove-pamflet-desktop':
+                    $this->removePamflet('desktop');
+                    break;
+                case 'remove-pamflet-mobile':
+                    $this->removePamflet('mobile');
                     break;
                 default:
                     $this->dispatch('toast', type: 'error', message: 'Aksi tidak dikenali. Silakan muat ulang halaman.');
@@ -634,6 +650,89 @@ class Pengaturan extends Component
 
         $this->refreshSelectedPeriod();
         $this->dispatch('toast', type: 'success', message: 'Pengaturan NIPD terakhir berhasil diperbarui.');
+    }
+
+
+    public function savePamfletSettings(): void
+    {
+        if (! $this->managementPeriodId) {
+            $this->dispatch('toast', type: 'error', message: 'Belum ada periode aktif untuk pamflet.');
+            return;
+        }
+
+        $period = PpdbPeriod::findOrFail($this->managementPeriodId);
+
+        if ($this->pamfletDesktopUpload) {
+            $this->validate(['pamfletDesktopUpload' => 'image|max:5120']);
+            $path = $this->convertAndStorePamflet($this->pamfletDesktopUpload, $period->id, 'desktop');
+            if ($period->getRawOriginal('pamflet_desktop')) {
+                Storage::disk('public')->delete($period->getRawOriginal('pamflet_desktop'));
+            }
+            $period->update(['pamflet_desktop' => $path]);
+            $this->pamfletDesktopUpload = null;
+        }
+
+        if ($this->pamfletMobileUpload) {
+            $this->validate(['pamfletMobileUpload' => 'image|max:5120']);
+            $path = $this->convertAndStorePamflet($this->pamfletMobileUpload, $period->id, 'mobile');
+            if ($period->getRawOriginal('pamflet_mobile')) {
+                Storage::disk('public')->delete($period->getRawOriginal('pamflet_mobile'));
+            }
+            $period->update(['pamflet_mobile' => $path]);
+            $this->pamfletMobileUpload = null;
+        }
+
+        $this->refreshSelectedPeriod();
+        $this->dispatch('toast', type: 'success', message: 'Pamflet PPDB berhasil disimpan.');
+    }
+
+    public function removePamflet(string $type): void
+    {
+        if (! $this->managementPeriodId) {
+            return;
+        }
+
+        $period = PpdbPeriod::findOrFail($this->managementPeriodId);
+        $field = $type === 'mobile' ? 'pamflet_mobile' : 'pamflet_desktop';
+        $currentPath = $period->getRawOriginal($field);
+
+        if ($currentPath) {
+            Storage::disk('public')->delete($currentPath);
+        }
+
+        $period->update([$field => null]);
+        $this->refreshSelectedPeriod();
+        $this->dispatch('toast', type: 'success', message: 'Pamflet ' . $type . ' berhasil dihapus.');
+    }
+
+    protected function convertAndStorePamflet($upload, int $periodId, string $type): string
+    {
+        $tempPath = $upload->getRealPath();
+        $hash = substr(md5($periodId . $type . time()), 0, 12);
+        $filename = "ppdb-pamflet/{$hash}.webp";
+
+        $ext = strtolower($upload->getClientOriginalExtension());
+        $image = match ($ext) {
+            'png' => imagecreatefrompng($tempPath),
+            'gif' => imagecreatefromgif($tempPath),
+            'webp' => imagecreatefromwebp($tempPath),
+            'bmp' => imagecreatefrombmp($tempPath),
+            default => imagecreatefromjpeg($tempPath),
+        };
+
+        $storagePath = Storage::disk('public')->path($filename);
+        $dir = dirname($storagePath);
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        imagepalettetotruecolor($image);
+        imagealphablending($image, true);
+        imagesavealpha($image, true);
+        imagewebp($image, $storagePath, 85);
+        imagedestroy($image);
+
+        return $filename;
     }
 
     public function addContactPersonRow(): void
@@ -1181,6 +1280,24 @@ class Pengaturan extends Component
                 'confirm_label' => 'Ya, Simpan Periode',
                 'tone' => 'primary',
             ],
+                        'save-pamflet' => [
+                'title' => 'Simpan Pamflet PPDB',
+                'message' => 'Upload pamflet akan dikonversi ke format WebP dan ditampilkan sebagai modal di halaman beranda dan PPDB.',
+                'confirm_label' => 'Simpan Pamflet',
+                'tone' => 'primary',
+            ],
+            'remove-pamflet-desktop' => [
+                'title' => 'Hapus Pamflet Desktop',
+                'message' => 'Pamflet versi desktop/tablet akan dihapus dari periode ini. Lanjutkan?',
+                'confirm_label' => 'Ya, Hapus',
+                'tone' => 'danger',
+            ],
+            'remove-pamflet-mobile' => [
+                'title' => 'Hapus Pamflet Mobile',
+                'message' => 'Pamflet versi mobile/potrait akan dihapus dari periode ini. Lanjutkan?',
+                'confirm_label' => 'Ya, Hapus',
+                'tone' => 'danger',
+            ],
             'save-nipd-settings' => [
                 'title' => 'Simpan Pengaturan NIPD?',
                 'message' => 'Nilai NIPD terakhir akan dipakai sebagai acuan nomor berikutnya saat daftar ulang diverifikasi.',
@@ -1271,6 +1388,12 @@ class Pengaturan extends Component
                 'label' => 'Warna Map Jurusan',
                 'description' => 'Aturan map per program',
                 'count' => count($this->mapColorSettings),
+            ],
+            [
+                'key' => 'pamflet',
+                'label' => 'Pamflet',
+                'description' => 'Upload pamflet promo desktop & mobile',
+                'count' => null,
             ],
         ];
     }

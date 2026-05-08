@@ -29,6 +29,8 @@ class PpdbPeriod extends Model
         'catatan_pengumuman',
         'student_whatsapp_group_label',
         'student_whatsapp_group_url',
+        'pamflet_desktop',
+        'pamflet_mobile',
         'nipd_last_number',
         'is_active',
     ];

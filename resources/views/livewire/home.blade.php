@@ -853,4 +853,7 @@
         </div>
     </section>
 
+
+    <x-pamflet-modal />
+
 </div>

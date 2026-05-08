@@ -51,6 +51,11 @@ use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
+
+// Secure pamflet image serving (obfuscated token, no direct file path)
+Route::get('/media/pamflet/{token}', [\App\Http\Controllers\PamfletController::class, 'show'])
+    ->name('pamflet.show');
+
 // Frontend
 Route::get('/', Home::class)->name('home');
 Route::get('/profil', Profil::class)->name('profil');

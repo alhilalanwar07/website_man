@@ -193,4 +193,7 @@
         </div>
     </section>
     @endif
+
+    <x-pamflet-modal />
+
 </div>

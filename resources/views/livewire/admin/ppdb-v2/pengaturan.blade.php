@@ -749,6 +749,104 @@
                             </button>
                         </div>
                     </form>
+                                @elseif($tab === 'pamflet')
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">Pamflet Promosi PPDB</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                Upload gambar pamflet yang akan ditampilkan sebagai modal popup saat pengunjung membuka halaman beranda dan PPDB.
+                                Gambar otomatis dikonversi ke format WebP untuk loading optimal.
+                            </p>
+                        </div>
+
+                        <div class="grid gap-6 lg:grid-cols-2">
+                            {{-- Desktop/Tablet (Landscape) --}}
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
+                                <div class="mb-3 flex items-center gap-3">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-900 dark:text-white">Versi Desktop / Tablet</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Orientasi landscape, max 5MB</p>
+                                    </div>
+                                </div>
+
+                                @if($activePeriod->pamflet_desktop)
+                                    <div class="mb-3 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-600">
+                                        <img src="{{ route('pamflet.show', \App\Http\Controllers\PamfletController::generateToken($activePeriod->id, 'desktop')) }}" alt="Pamflet Desktop" class="w-full object-contain" style="max-height: 280px;">
+                                    </div>
+                                    <button type="button" wire:click="openActionModal('remove-pamflet-desktop')" class="mb-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100">
+                                        Hapus Pamflet Desktop
+                                    </button>
+                                @endif
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Upload Baru (JPG/PNG/WebP)</label>
+                                    <input type="file" wire:model="pamfletDesktopUpload" accept="image/*" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                    @error('pamfletDesktopUpload') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    <div wire:loading wire:target="pamfletDesktopUpload" class="mt-2 text-xs text-blue-600">Mengupload...</div>
+                                    @if($pamfletDesktopUpload)
+                                        <div class="mt-2 overflow-hidden rounded-lg border border-blue-200 bg-blue-50 p-2">
+                                            <p class="text-xs font-semibold text-blue-700 mb-1">Preview:</p>
+                                            <img src="{{ $pamfletDesktopUpload->temporaryUrl() }}" alt="Preview" class="w-full rounded object-contain" style="max-height: 200px;">
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Mobile (Portrait) --}}
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
+                                <div class="mb-3 flex items-center gap-3">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-slate-900 dark:text-white">Versi Mobile</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Orientasi portrait, max 5MB</p>
+                                    </div>
+                                </div>
+
+                                @if($activePeriod->pamflet_mobile)
+                                    <div class="mb-3 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-600">
+                                        <img src="{{ route('pamflet.show', \App\Http\Controllers\PamfletController::generateToken($activePeriod->id, 'mobile')) }}" alt="Pamflet Mobile" class="w-full object-contain" style="max-height: 280px;">
+                                    </div>
+                                    <button type="button" wire:click="openActionModal('remove-pamflet-mobile')" class="mb-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100">
+                                        Hapus Pamflet Mobile
+                                    </button>
+                                @endif
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Upload Baru (JPG/PNG/WebP)</label>
+                                    <input type="file" wire:model="pamfletMobileUpload" accept="image/*" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800">
+                                    @error('pamfletMobileUpload') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                                    <div wire:loading wire:target="pamfletMobileUpload" class="mt-2 text-xs text-blue-600">Mengupload...</div>
+                                    @if($pamfletMobileUpload)
+                                        <div class="mt-2 overflow-hidden rounded-lg border border-emerald-200 bg-emerald-50 p-2">
+                                            <p class="text-xs font-semibold text-emerald-700 mb-1">Preview:</p>
+                                            <img src="{{ $pamfletMobileUpload->temporaryUrl() }}" alt="Preview" class="w-full rounded object-contain" style="max-height: 200px;">
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($pamfletDesktopUpload || $pamfletMobileUpload)
+                            <div class="flex justify-end">
+                                <button type="button" wire:click="openActionModal('save-pamflet')" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <span wire:loading.remove wire:target="openActionModal">Simpan Pamflet</span>
+                                    <span wire:loading wire:target="openActionModal">Memproses...</span>
+                                </button>
+                            </div>
+                        @endif
+
+                        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/20">
+                            <p class="text-xs font-semibold text-amber-800 dark:text-amber-300">
+                                💡 Pamflet akan ditampilkan otomatis saat pengunjung membuka halaman beranda dan PPDB.
+                                Pengunjung dapat menutup modal dan mencentang "Jangan tampilkan lagi" untuk menyembunyikan pamflet di perangkat tersebut.
+                            </p>
+                        </div>
+                    </div>
                 @endif
             </div>
         @else
