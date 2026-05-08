@@ -52,6 +52,25 @@ Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
 
+Route::get('/deploy/migrate-latest', function () {
+    $output = [];
+    
+    Artisan::call('migrate', [
+        '--path' => 'database/migrations/2026_05_08_051634_add_akreditasi_nama_kepsek_to_profil_sekolah.php',
+        '--force' => true
+    ]);
+    $output[] = "Akreditasi migration: " . Artisan::output();
+    
+    Artisan::call('migrate', [
+        '--path' => 'database/migrations/2026_05_08_140000_add_pamflet_fields_to_ppdb_periods.php',
+        '--force' => true
+    ]);
+    $output[] = "Pamflet migration: " . Artisan::output();
+    
+    return implode("<br>", $output);
+});
+
+
 // Secure pamflet image serving (obfuscated token, no direct file path)
 Route::get('/media/pamflet/{token}', [\App\Http\Controllers\PamfletController::class, 'show'])
     ->name('pamflet.show');
