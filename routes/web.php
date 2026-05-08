@@ -51,22 +51,6 @@ use App\Livewire\Admin\PpdbV2\Pengaturan as PpdbPengaturanV2;
 Route::post('/telegram/webhook', TelegramWebhookController::class)
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('telegram.webhook');
-
-// Deploy: run migration on hosting — akses: /deploy/migrate/smkn1kolaka2026
-Route::get('/deploy/migrate/{secret}', function (string $secret) {
-    if ($secret !== 'smkn1kolaka2026') {
-        abort(404);
-    }
-
-    Artisan::call('migrate', ['--force' => true]);
-    $output = Artisan::output();
-
-    return response()->json([
-        'status' => 'success',
-        'output' => $output,
-    ]);
-});
-    
 // Frontend
 Route::get('/', Home::class)->name('home');
 Route::get('/profil', Profil::class)->name('profil');
