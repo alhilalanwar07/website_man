@@ -91,8 +91,20 @@ coverage/
 /set-webhook.php
 /test-telegram.php
 /test-webhook-manual.php
+/replace_colors.php
 
 # Boost (if not needed in repo)
 boost.json
 # Added by code-review-graph
 .code-review-graph/
+
+# Storage uploads (user-generated content, not source code)
+/storage/app/temp_ppdb_manual_check.php
+
+# QA / manual check files
+/storage/app/*.pdf
+/storage/app/*.php
+
+# Planning & notes (local only)
+ppdb_admin_menu_plan.md
+NEXT_STEPS.md
