@@ -143,7 +143,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse ($applicants as $index => $applicant)
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                        <tr wire:key="report-row-{{ $applicant->id }}" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                             <td class="px-4 py-3 text-center font-medium text-slate-400">{{ $applicants->firstItem() + $index }}</td>
                             <td class="px-4 py-3 font-bold text-slate-900 dark:text-white">{{ $applicant->nama_lengkap }}</td>
                             <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $applicant->nomor_pendaftaran }}</td>

@@ -246,7 +246,7 @@
 
                         <div class="mt-4 grid grid-cols-1 gap-3 xl:grid-cols-3">
                             @forelse($auditOfficerStats as $stat)
-                                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                                <div wire:key="audit-officer-stat-{{ Str::slug($stat['name']) }}" class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
                                     <p class="text-sm font-bold text-slate-900 dark:text-white">{{ $stat['name'] }}</p>
                                     <div class="mt-3 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em]">
                                         <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">Terverifikasi {{ $stat['verified'] }}</span>

@@ -74,7 +74,7 @@
                     <p class="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Bagikan</p>
                     <div class="mt-3 flex flex-wrap gap-2">
                         @foreach($shareLinks as $label => $link)
-                        <a href="{{ $link }}" target="_blank" rel="noopener noreferrer" class="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-600">
+                        <a wire:key="share-{{ Str::slug($label) }}" href="{{ $link }}" target="_blank" rel="noopener noreferrer" class="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-600">
                             {{ $label }}
                         </a>
                         @endforeach
@@ -121,7 +121,7 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 @foreach($related as $r)
-                <article class="group bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100">
+                <article wire:key="related-{{ $r->id }}" class="group bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100">
                     <div class="aspect-video overflow-hidden bg-slate-100">
                         @if($r->gambar_thumbnail)
                             <img src="{{ Storage::url($r->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $r->judul }}">

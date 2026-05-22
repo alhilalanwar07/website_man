@@ -34,7 +34,7 @@
                 <div class="flex flex-wrap gap-2">
                     <button wire:click="$set('kategoriFilter', '')" class="px-5 py-2.5 text-xs font-bold rounded-full transition-all duration-200 uppercase tracking-wider {{ $kategoriFilter === '' ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">Semua</button>
                     @foreach($kategoris as $kat)
-                        <button wire:click="$set('kategoriFilter', '{{ $kat->id }}')" class="px-5 py-2.5 text-xs font-bold rounded-full transition-all duration-200 uppercase tracking-wider {{ $kategoriFilter == $kat->id ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">{{ $kat->nama_kategori }}</button>
+                        <button wire:key="kat-filter-{{ $kat->id }}" wire:click="$set('kategoriFilter', '{{ $kat->id }}')" class="px-5 py-2.5 text-xs font-bold rounded-full transition-all duration-200 uppercase tracking-wider {{ $kategoriFilter == $kat->id ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">{{ $kat->nama_kategori }}</button>
                     @endforeach
                 </div>
                 <div class="relative w-full sm:w-72">
@@ -54,7 +54,7 @@
             @if($berita->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($berita as $b)
-                <article class="group bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100">
+                <article wire:key="berita-list-{{ $b->id }}" class="group bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100">
                     <div class="aspect-video overflow-hidden bg-slate-100">
                         @if($b->gambar_thumbnail)
                             <img src="{{ Storage::url($b->gambar_thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $b->judul }}">

@@ -49,7 +49,7 @@
             @if($agendas->count() > 0)
             <div class="space-y-5">
                 @foreach($agendas as $a)
-                <div class="group bg-white rounded-[24px] border border-slate-100 p-7 card-hover flex flex-col sm:flex-row gap-6">
+                <div wire:key="agenda-list-{{ $a->id }}" class="group bg-white rounded-[24px] border border-slate-100 p-7 card-hover flex flex-col sm:flex-row gap-6">
                     {{-- Date Card --}}
                     <div class="flex-shrink-0">
                         <div class="w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex flex-col items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-shadow">

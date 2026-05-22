@@ -338,7 +338,7 @@
                         <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Identitas Siswa</h3>
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
-                        @foreach([
+                    @foreach([
                             'Nomor Pendaftaran' => $s->nomor_pendaftaran,
                             'NISN' => $s->nisn,
                             'NIK' => $s->nik,

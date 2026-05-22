@@ -115,7 +115,7 @@
             </div>
             <div class="p-5 flex-1 flex flex-col gap-5 overflow-y-auto max-h-[300px]">
                 @forelse($programDistribusi as $program)
-                    <div>
+                    <div wire:key="dist-{{ $program['singkatan'] }}">
                         <div class="flex justify-between items-end mb-1.5">
                             <div>
                                 <h4 class="text-sm font-bold text-slate-800 dark:text-white" title="{{ $program['nama'] }}">{{ $program['singkatan'] }}</h4>

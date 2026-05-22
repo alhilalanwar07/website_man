@@ -80,13 +80,13 @@
                 </div>
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                     @foreach($period->tracks as $track)
-                    <div class="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm">
+                    <div wire:key="ppdb-track-{{ $track->id }}" class="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm">
                         <p class="text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">{{ $track->slug }}</p>
                         <h3 class="text-xl font-black text-slate-900 mt-3">{{ $track->nama_jalur }}</h3>
                         <p class="text-sm text-slate-500 mt-3 leading-relaxed">{{ $track->deskripsi ?: 'Jalur pendaftaran yang disiapkan agar modul fase 1 ini bisa langsung berkembang ke fase seleksi dan scoring.' }}</p>
                         <div class="mt-6 space-y-3">
                             @foreach($period->quotas->where('track_id', $track->id) as $quota)
-                            <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                            <div wire:key="ppdb-quota-{{ $track->id }}-{{ $quota->id }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
                                 <span class="text-sm font-semibold text-slate-700">{{ $quota->programKeahlian->nama_jurusan }}</span>
                                 <span class="text-sm font-black text-slate-900">{{ $quota->kuota }}</span>
                             </div>

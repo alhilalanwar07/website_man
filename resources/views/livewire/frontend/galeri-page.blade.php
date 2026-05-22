@@ -38,7 +38,7 @@
                 @if($albums->count() > 0)
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($albums as $album)
-                    <div wire:click="openAlbum({{ $album->id }})" class="cursor-pointer group">
+                    <div wire:key="album-{{ $album->id }}" wire:click="openAlbum({{ $album->id }})" class="cursor-pointer group">
                         <div class="aspect-[4/3] rounded-[28px] overflow-hidden bg-slate-100 mb-5 card-hover border border-slate-100">
                             @php $cover = $album->items->where('tipe_file', 'foto')->first(); @endphp
                             @if($cover)
@@ -90,7 +90,7 @@
                 @if($selectedAlbum->items->count() > 0)
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     @foreach($selectedAlbum->items as $item)
-                    <div class="group relative">
+                    <div wire:key="album-item-{{ $item->id }}" class="group relative">
                         @if($item->tipe_file === 'foto')
                             <div class="aspect-square rounded-[20px] overflow-hidden bg-slate-100 card-hover border border-slate-100">
                                 <img src="{{ Storage::url($item->file_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $item->caption }}">
