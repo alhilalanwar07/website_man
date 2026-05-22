@@ -110,8 +110,9 @@
                 </div>
 
                 {{-- Right: Stats Cards --}}
-                <div class="hidden lg:grid lg:col-span-2 grid-cols-2 gap-4 animate-fade-up delay-700"> @foreach(array_slice($stats, 0, 4) as $index => $stat)
-                    <div class="glass rounded-2xl px-5 py-6 text-center animate-float{{ $index % 2 === 0 ? '' : '-reverse' }}" style="animation-delay: {{ $index * 0.5 }}s">
+                <div class="hidden lg:grid lg:col-span-2 grid-cols-2 gap-4 animate-fade-up delay-700">
+                    @foreach(array_slice($stats, 0, 4) as $index => $stat)
+                    <div wire:key="hero-stat-{{ $index }}" class="glass rounded-2xl px-5 py-6 text-center animate-float{{ $index % 2 === 0 ? '' : '-reverse' }}" style="animation-delay: {{ $index * 0.5 }}s">
                         <span class="block text-3xl font-black text-white mb-1">{{ $stat['value'] }}</span>
                         <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider leading-tight">{{ $stat['label'] }}</span>
                     </div>
@@ -134,8 +135,9 @@
     {{-- ============================================ --}}
     <section class="relative py-10 bg-white overflow-hidden border-b border-slate-100" x-data="{ visible: true }" x-init="new IntersectionObserver((entries, obs) => { entries.forEach(e => { if(e.isIntersecting) { $root.startAllCounters(); obs.unobserve(e.target); } }); }, {threshold: 0.2}).observe($el)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6"> @foreach($stats as $index => $stat)
-                <div class="text-center group" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-1 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
+            <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+                @foreach($stats as $index => $stat)
+                <div wire:key="stat-bar-{{ $index }}" class="text-center group" x-show="visible" x-transition:enter="transition ease-out duration-700" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-1 translate-y-0" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto bg-gradient-to-br {{ $stat['color'] }} rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         @if($stat['icon'] === 'academic')
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
@@ -277,7 +279,8 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ min($jurusans->count(), 4) }} gap-6"> @foreach($jurusans as $index => $j)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ min($jurusans->count(), 4) }} gap-6">
+                @foreach($jurusans as $index => $j)
                 <a href="{{ route('jurusan.show', $j->slug) }}" class="group relative bg-white rounded-[28px] overflow-hidden card-hover border border-slate-100" wire:key="jurusan-{{ $j->id }}" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="aspect-[4/3] overflow-hidden relative"> @if($j->gambar_cover)
                             <img loading="lazy" decoding="async" src="{{ Storage::url($j->gambar_cover) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $j->nama_jurusan }}">
@@ -336,8 +339,9 @@
                 ];
             @endphp
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> @foreach($features as $index => $f)
-                <div class="glass rounded-[20px] sm:rounded-[28px] p-6 sm:p-8 group hover:bg-white/10 transition-all duration-500" style="transition-delay: {{ $index * 100 }}ms">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($features as $index => $f)
+                <div wire:key="feature-{{ $index }}" class="glass rounded-[20px] sm:rounded-[28px] p-6 sm:p-8 group hover:bg-white/10 transition-all duration-500" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="w-14 h-14 bg-gradient-to-br {{ $f['color'] }} rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $f['icon'] }}" /></svg>
                     </div>
@@ -372,8 +376,9 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"> @foreach($galeriItems as $index => $item)
-                <div class="group relative rounded-[16px] sm:rounded-[20px] overflow-hidden {{ $index === 0 || $index === 5 ? 'md:col-span-2 md:row-span-2' : '' }}" style="transition-delay: {{ $index * 80 }}ms">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                @foreach($galeriItems as $index => $item)
+                <div wire:key="galeri-{{ $item->id }}" class="group relative rounded-[16px] sm:rounded-[20px] overflow-hidden {{ $index === 0 || $index === 5 ? 'md:col-span-2 md:row-span-2' : '' }}" style="transition-delay: {{ $index * 80 }}ms">
                     <div class="aspect-square overflow-hidden bg-slate-800">
                         <img loading="lazy" decoding="async" src="{{ Storage::url($item->file_path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $item->caption ?? 'Galeri' }}">
                     </div>
@@ -400,8 +405,9 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"> @foreach($upcomingAgenda as $index => $a)
-                <div class="group relative bg-white rounded-[24px] border border-slate-100 p-7 card-hover" style="transition-delay: {{ $index * 100 }}ms">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                @foreach($upcomingAgenda as $index => $a)
+                <div wire:key="agenda-{{ $a->id }}" class="group relative bg-white rounded-[24px] border border-slate-100 p-7 card-hover" style="transition-delay: {{ $index * 100 }}ms">
                     <div class="flex items-center gap-4 mb-5">
                         <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex flex-col items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition-shadow">
                             <span class="text-xl font-black text-white leading-none">{{ $a->waktu_mulai->format('d') }}</span>
@@ -435,8 +441,9 @@
             </div>
 
             {{-- Horizontal scrollable on mobile --}}
-            <div class="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0"> @foreach($pegawaiHighlight as $index => $p)
-                <div class="snap-center shrink-0 w-[200px] lg:w-auto group" style="transition-delay: {{ $index * 80 }}ms">
+            <div class="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
+                @foreach($pegawaiHighlight as $index => $p)
+                <div wire:key="pegawai-{{ $p->id }}" class="snap-center shrink-0 w-[200px] lg:w-auto group" style="transition-delay: {{ $index * 80 }}ms">
                     <div class="bg-white rounded-[24px] border border-slate-100 overflow-hidden text-center card-hover">
                         <div class="aspect-square bg-slate-100 overflow-hidden"> @if($p->foto_profil)
                                 <img loading="lazy" decoding="async" src="{{ Storage::url($p->foto_profil) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="{{ $p->nama_lengkap }}">
