@@ -1,159 +1,178 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Website Resmi MAN 2 Kolaka
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website madrasah berbasis Laravel + Livewire untuk **Madrasah Aliyah Negeri 2 Kolaka**, Sulawesi Tenggara.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Frontend publik** — Beranda, Profil Madrasah, Peminatan, Berita, Galeri, Agenda
+- **PPDB Online (PMBM)** — Formulir pendaftaran multi-step, cek status, daftar ulang
+- **Admin Panel** — Kelola konten, pegawai, ekstrakurikuler, pengaturan PPDB
+- **PPDB V2** — Dashboard, data pendaftar, penentuan peminatan, daftar ulang, broadcast, laporan
+- **Integrasi Telegram + AI** — Bot Telegram kirim foto → AI buat berita otomatis via NVIDIA API
+- **Export PDF & Excel** — Formulir pendaftaran, assessment, dapodik, re-registrasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Persyaratan
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2+
+- MySQL 8.0+
+- Node.js 18+
+- Composer 2+
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Instalasi
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# 1. Clone & install dependencies
+composer install
+npm install
 
-### Premium Partners
+# 2. Salin dan isi konfigurasi
+cp .env.example .env
+php artisan key:generate
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# 3. Buat database, lalu jalankan migrasi + seeder
+php artisan migrate --seed
 
-## Contributing
+# 4. Buat symlink storage
+php artisan storage:link
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 5. Build aset frontend
+npm run build
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Konfigurasi `.env` Penting
 
-## Security Vulnerabilities
+```env
+APP_NAME="MAN 2 Kolaka"
+APP_URL=https://domain-anda.com
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+DB_DATABASE=man2klk
+DB_USERNAME=root
+DB_PASSWORD=
 
-## License
+# Telegram Bot (opsional)
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_WEBHOOK_SECRET=
+TELEGRAM_ALLOWED_CHAT_IDS=
+TELEGRAM_NEWS_AUTHOR_EMAIL=admin@man2kolaka.sch.id
+TELEGRAM_NEWS_AUTO_PUBLISH=true
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# NVIDIA AI (untuk auto-berita Telegram)
+NVIDIA_AI_API_KEY=
+NVIDIA_AI_URL=https://integrate.api.nvidia.com/v1
+NVIDIA_AI_MODEL=qwen/qwen3.5-397b-a17b
 
-## Integrasi Telegram untuk Auto Berita AI
+# Queue (gunakan database untuk production)
+QUEUE_CONNECTION=database
+```
 
-Fitur ini memungkinkan bot Telegram menerima foto + judul, lalu server membuat berita dengan NVIDIA AI dan mengirim link berita kembali ke chat.
+---
 
-### 1. Konfigurasi `.env`
+## Integrasi Telegram + AI Berita
 
-Tambahkan nilai berikut:
+Bot Telegram menerima foto + judul, lalu server membuat berita dengan NVIDIA AI dan mengirim link berita kembali ke chat.
 
-- `TELEGRAM_BOT_TOKEN` = token bot dari BotFather
-- `TELEGRAM_WEBHOOK_SECRET` = secret token webhook (bebas, acak)
-- `TELEGRAM_ALLOWED_CHAT_IDS` = daftar chat ID yang diizinkan, pisahkan dengan koma
-- `TELEGRAM_NEWS_AUTHOR_EMAIL` = email user penulis berita otomatis
-- `TELEGRAM_NEWS_DEFAULT_CATEGORY_SLUG` = slug kategori default (opsional)
-- `TELEGRAM_NEWS_AUTO_PUBLISH` = `true` untuk langsung publish, `false` untuk simpan draft
-
-Endpoint webhook aplikasi:
-
-- `POST /telegram/webhook`
-
-### 2. Daftarkan webhook ke Telegram
-
-Contoh request (ganti domain, token, dan secret):
+### Daftarkan webhook
 
 ```bash
 curl -X POST "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook" \
-	-H "Content-Type: application/json" \
-	-d '{
-		"url": "https://domain-anda.com/telegram/webhook",
-		"secret_token": "<TELEGRAM_WEBHOOK_SECRET>",
-		"drop_pending_updates": true
-	}'
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://domain-anda.com/telegram/webhook",
+    "secret_token": "<TELEGRAM_WEBHOOK_SECRET>",
+    "drop_pending_updates": true
+  }'
 ```
 
-### 3. Format kirim dari Telegram
+### Format kirim dari Telegram
 
-- Opsi 1: kirim foto dengan caption berisi judul berita.
-- Opsi 2: kirim foto dulu, lalu kirim judul dalam pesan teks berikutnya (maksimal 15 menit).
+- **Opsi 1** — Kirim foto dengan caption berisi judul berita.
+- **Opsi 2** — Kirim foto dulu, lalu kirim judul teks berikutnya (maks. 15 menit).
 
-Setelah proses selesai, bot akan membalas judul hasil AI dan link berita.
+Bot akan membalas judul hasil AI dan link berita setelah proses selesai.
 
-### 4. Jalankan Queue Worker
-
-Proses AI Telegram berjalan asynchronous lewat queue. Gunakan `QUEUE_CONNECTION=database` dan jalankan worker:
+### Jalankan Queue Worker
 
 ```bash
 php artisan queue:work --queue=default --tries=3
 ```
 
-Jika `QUEUE_CONNECTION=sync`, proses akan kembali berjalan sinkron di request webhook dan berisiko timeout saat AI lambat.
+---
 
-### 5. Service Agar Queue Jalan Terus di Hosting
+## Queue Worker di Production
 
-Gunakan salah satu metode berikut di server Linux production.
-
-#### Opsi A: Supervisor
-
-1. Salin template [deploy/supervisor/web-smk1kolaka-queue.conf](deploy/supervisor/web-smk1kolaka-queue.conf) ke:
-	`/etc/supervisor/conf.d/web-smk1kolaka-queue.conf`
-2. Sesuaikan path project bila berbeda dari `/var/www/web-smk1kolaka`.
-3. Jalankan:
+### Opsi A: Supervisor
 
 ```bash
+# Salin config
+sudo cp deploy/supervisor/web-man2kolaka-queue.conf /etc/supervisor/conf.d/
+
+# Aktifkan
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start web-smk1kolaka-queue:*
-sudo supervisorctl status
+sudo supervisorctl start web-man2kolaka-queue:*
 ```
 
-#### Opsi B: systemd
-
-1. Salin template [deploy/systemd/web-smk1kolaka-queue.service](deploy/systemd/web-smk1kolaka-queue.service) ke:
-	`/etc/systemd/system/web-smk1kolaka-queue.service`
-2. Sesuaikan path project bila berbeda dari `/var/www/web-smk1kolaka`.
-3. Jalankan:
+### Opsi B: systemd
 
 ```bash
+sudo cp deploy/systemd/web-man2kolaka-queue.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable web-smk1kolaka-queue
-sudo systemctl start web-smk1kolaka-queue
-sudo systemctl status web-smk1kolaka-queue
+sudo systemctl enable web-man2kolaka-queue
+sudo systemctl start web-man2kolaka-queue
 ```
 
-#### Opsi C: Shared Hosting (Fallback Cron)
+### Opsi C: Shared Hosting (Cron Fallback)
 
-Jika tidak punya akses root (tidak bisa Supervisor/systemd), pakai cron dengan contoh pada:
-[deploy/hosting/queue-cron-fallback.txt](deploy/hosting/queue-cron-fallback.txt)
+Lihat contoh di [`deploy/hosting/queue-cron-fallback.txt`](deploy/hosting/queue-cron-fallback.txt).
 
-Untuk shared hosting (mis. cPanel):
-
-1. Pastikan .env memakai `QUEUE_CONNECTION=database`.
+1. Set `QUEUE_CONNECTION=database` di `.env`.
 2. Buat Cron Job per menit untuk `queue:work --stop-when-empty`.
-3. Gunakan path PHP CLI hasil `which php` dari terminal hosting.
-4. Pantau log di `storage/logs/queue-worker.log`.
+3. Pantau log di `storage/logs/queue-worker.log`.
 
-## Workflow MCP Assistant Tools
+---
 
-Panduan penggunaan TeamCreate, Context7, dan Sniper tersedia di:
+## Akun Default (setelah seeder)
 
-- [docs/mcp-assistant-tools-workflow.md](docs/mcp-assistant-tools-workflow.md)
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@man2kolaka.sch.id | password |
+| Editor | editor@man2kolaka.sch.id | password |
+| Admin PPDB | ppdb@man2kolaka.sch.id | password |
+
+> **Ganti password segera setelah login pertama kali di production.**
+
+---
+
+## Struktur Direktori Penting
+
+```
+app/
+  Livewire/
+    Admin/          # Komponen admin panel
+    Admin/PpdbV2/   # Modul PPDB V2
+    Frontend/       # Halaman publik
+resources/views/
+  livewire/
+    admin/          # Blade admin
+    frontend/       # Blade frontend
+  pdf/              # Template PDF export
+  emails/           # Template email
+database/
+  seeders/          # DatabaseSeeder.php
+  migrations/
+storage/app/public/ # Upload file (logo, foto, berkas PPDB)
+```
+
+---
+
+## Lisensi
+
+Proyek ini dikembangkan khusus untuk **MAN 2 Kolaka**. Tidak untuk didistribusikan ulang tanpa izin.
