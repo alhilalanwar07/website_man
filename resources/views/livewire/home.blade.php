@@ -48,11 +48,16 @@
                     </div>
 
                     {{-- School Name Badge --}}
-                    <div class="flex items-center gap-3 mb-6 animate-fade-up delay-100"> @if($profil && $profil->logo_path)
-                        <img loading="lazy" decoding="async" src="{{ Storage::url($profil->logo_path) }}" class="w-12 h-12 rounded-xl" alt="Logo">
+                    <div class="flex items-center gap-3 mb-6 animate-fade-up delay-100">
+                        @if($profil && $profil->logo_path)
+                            <img loading="lazy" decoding="async" src="{{ Storage::url($profil->logo_path) }}" class="w-12 h-12 rounded-xl object-contain" alt="Logo {{ $profil->nama_sekolah ?? 'Madrasah' }}">
+                        @else
+                            <div class="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                            </div>
                         @endif
                         <div>
-                            <span class="text-sm font-bold text-white/80 uppercase tracking-wider">MAN 2 Kolaka</span>
+                            <span class="text-sm font-bold text-white/80 uppercase tracking-wider">{{ $profil->nama_sekolah ?? 'Madrasah' }}</span>
                             <span class="block text-[10px] font-semibold text-emerald-400 uppercase tracking-widest">Madrasah Aliyah Negeri</span>
                         </div>
                     </div>
