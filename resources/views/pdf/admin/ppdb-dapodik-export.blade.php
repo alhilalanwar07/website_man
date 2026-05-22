@@ -13,7 +13,7 @@
     $meta = $documentMeta ?? [];
     $signLocation = $meta['sign_location'] ?? 'Kolaka';
     $signDate = $meta['sign_date'] ?? now()->translatedFormat('d F Y');
-    $signTitle = $meta['sign_title'] ?? 'Kepala Sekolah';
+    $signTitle = $meta['sign_title'] ?? 'Kepala Madrasah';
     $signName = $meta['sign_name'] ?? '........................................';
     $signNip = $meta['sign_nip'] ?? null;
     $extractYear = static function (?string $value): string {

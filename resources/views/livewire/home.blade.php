@@ -172,7 +172,7 @@
             @endforeach
             @endfor
         </div>
-    </section> @endif {{-- ============================================ --}} {{-- 4. SAMBUTAN KEPALA SEKOLAH --}} {{-- ============================================ --}} @if($profil && $profil->teks_sambutan_kepsek)
+    </section> @endif {{-- ============================================ --}} {{-- 4. SAMBUTAN KEPALA MADRASAH --}} {{-- ============================================ --}} @if($profil && $profil->teks_sambutan_kepsek)
     <section class="py-16 sm:py-24 lg:py-32 bg-white relative overflow-hidden">
         {{-- Ambient background --}}
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-emerald-50 to-teal-50 rounded-full blur-[140px] -translate-y-1/3 translate-x-1/3 opacity-70"></div>

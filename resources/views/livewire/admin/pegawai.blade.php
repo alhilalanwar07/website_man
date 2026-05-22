@@ -92,7 +92,7 @@
                     <p class="font-semibold">Data belum bisa disimpan. Periksa kembali input berikut:</p>
                     <ul class="mt-2 list-disc space-y-1 pl-5 text-xs">
                         @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li wire:key="pegawai-error-{{ $loop->index }}">{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>

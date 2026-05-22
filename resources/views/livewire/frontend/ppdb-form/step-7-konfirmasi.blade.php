@@ -127,7 +127,7 @@
                 <p class="text-slate-500">Belum ada data prestasi.</p>
             @else
                 @foreach($prestasiFilled as $item)
-                    <div class="rounded-xl border border-slate-200 p-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+                    <div wire:key="konfirmasi-prestasi-{{ $loop->index }}" class="rounded-xl border border-slate-200 p-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
                         <div><span class="text-slate-400">Jenis:</span> {{ $item['achievement_type'] ?: '-' }}</div>
                         <div><span class="text-slate-400">Nama:</span> {{ $item['achievement_name'] ?: '-' }}</div>
                         <div><span class="text-slate-400">Peringkat:</span> {{ $item['achievement_rank'] ?: '-' }}</div>
@@ -155,7 +155,7 @@
                 ];
             @endphp
             @foreach($berkas as $label => $file)
-                <span @class([
+                <span wire:key="konfirmasi-berkas-{{ $loop->index }}" @class([
                     'inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold',
                     'bg-emerald-50 text-emerald-700' => $file,
                     'bg-red-50 text-red-400' => !$file,

@@ -87,8 +87,7 @@
                                 'children' => [
                                     ['label' => 'Tentang Madrasah', 'route' => 'profil'],
                                     ['label' => 'Peminatan', 'route' => 'jurusan.index'],
-                                    ['label' => 'Guru & Tendik', 'url' => '#'],
-                                    ['label' => 'Zona Integritas', 'url' => '#'],
+                                    ['label' => 'Guru & Tendik', 'route' => 'profil'],
                                 ],
                             ],
                             [
@@ -108,17 +107,6 @@
                                     ['label' => 'Formulir PMBM', 'route' => 'ppdb.form'],
                                     ['label' => 'Cek Status Kelulusan', 'route' => 'ppdb.status'],
                                     ['label' => 'Daftar Ulang', 'route' => 'ppdb.daftar-ulang'],
-                                ],
-                            ],
-                            [
-                                'label' => 'Layanan',
-                                'url' => '#',
-                                'children' => [
-                                    ['label' => 'Portal e-RDM', 'url' => '#'],
-                                    ['label' => 'e-Learning', 'url' => '#'],
-                                    ['label' => 'Simpatika', 'url' => '#'],
-                                    ['label' => 'Aduan Masyarakat', 'url' => '#'],
-                                    ['label' => 'Download Area', 'url' => '#'],
                                 ],
                             ],
                             ['label' => 'Login', 'route' => 'login'],

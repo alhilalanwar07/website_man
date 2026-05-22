@@ -197,7 +197,7 @@
     @else
     <section class="py-16 sm:py-28 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-slate-400 text-base sm:text-lg">Profil sekolah belum diatur. Silakan lengkapi melalui panel admin.</p>
+            <p class="text-slate-400 text-base sm:text-lg">Profil madrasah belum diatur. Silakan lengkapi melalui panel admin.</p>
         </div>
     </section>
     @endif

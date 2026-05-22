@@ -1,7 +1,7 @@
 <div>
     <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
-        <span wire:loading wire:target="save">Sedang menyimpan profil sekolah.</span>
-        <span wire:loading wire:target="logo,favicon,foto_kepsek">Sedang memproses file gambar profil sekolah.</span>
+        <span wire:loading wire:target="save">Sedang menyimpan profil madrasah.</span>
+        <span wire:loading wire:target="logo,favicon,foto_kepsek">Sedang memproses file gambar profil madrasah.</span>
     </div>
 
     <div wire:loading.flex wire:target="save" class="mb-4 items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
@@ -9,7 +9,7 @@
             <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor" stroke-width="4"></circle>
             <path d="M4 12a8 8 0 0 1 8-8" class="opacity-75" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
         </svg>
-        <span>Menyimpan perubahan profil sekolah...</span>
+        <span>Menyimpan perubahan profil madrasah...</span>
     </div>
 
     <form wire:submit="save" class="relative space-y-6">
