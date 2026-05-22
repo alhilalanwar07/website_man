@@ -1,17 +1,46 @@
-# Website Resmi MAN 2 Kolaka
+# Template Website Madrasah Aliyah
 
-Website madrasah berbasis Laravel + Livewire untuk **Madrasah Aliyah Negeri 2 Kolaka**, Sulawesi Tenggara.
+Starter kit website madrasah berbasis **Laravel 11 + Livewire 3**, siap pakai dan mudah dikustomisasi untuk Madrasah Aliyah Negeri (MAN) maupun swasta.
+
+> Data MAN 2 Kolaka yang ada di project ini hanya digunakan sebagai **contoh/demo**. Ganti dengan data madrasah Anda melalui panel admin setelah instalasi.
 
 ---
 
-## Fitur Utama
+## Fitur
 
-- **Frontend publik** — Beranda, Profil Madrasah, Peminatan, Berita, Galeri, Agenda
-- **PPDB Online (PMBM)** — Formulir pendaftaran multi-step, cek status, daftar ulang
-- **Admin Panel** — Kelola konten, pegawai, ekstrakurikuler, pengaturan PPDB
-- **PPDB V2** — Dashboard, data pendaftar, penentuan peminatan, daftar ulang, broadcast, laporan
-- **Integrasi Telegram + AI** — Bot Telegram kirim foto → AI buat berita otomatis via NVIDIA API
-- **Export PDF & Excel** — Formulir pendaftaran, assessment, dapodik, re-registrasi
+### Frontend Publik
+- Beranda dinamis (hero, statistik, sambutan kepsek, peminatan, galeri, agenda, berita)
+- Halaman Profil Madrasah (visi misi, data madrasah, tenaga pendidik, peta lokasi)
+- Halaman Peminatan dengan detail fasilitas dan prospek
+- Berita & Artikel dengan kategori dan pencarian
+- Galeri Foto per album
+- Agenda Kegiatan
+
+### PPDB / PMBM Online
+- Formulir pendaftaran multi-step (7 langkah) dengan upload berkas
+- Cek status pendaftaran & verifikasi
+- Halaman daftar ulang dengan akses grup WhatsApp siswa baru
+- Export formulir PDF
+
+### Admin Panel
+- Manajemen konten (berita, pengumuman, agenda, galeri)
+- Profil madrasah & pengaturan
+- Manajemen pegawai
+- Manajemen peminatan
+- Manajemen ekstrakurikuler
+
+### PPDB Admin (V2)
+- Dashboard ringkasan pendaftar
+- Data pendaftar + verifikasi berkas + tambah offline
+- Penentuan peminatan (bulk & individual)
+- Verifikasi daftar ulang
+- Broadcast pesan (WhatsApp/Email)
+- Laporan & export (Excel, PDF, Dapodik)
+- Pengaturan periode, jalur, kuota, persyaratan berkas
+
+### Integrasi
+- **Telegram Bot + NVIDIA AI** — kirim foto ke bot → AI buat berita otomatis
+- **Queue Worker** — proses AI berjalan asynchronous
 
 ---
 
@@ -27,15 +56,15 @@ Website madrasah berbasis Laravel + Livewire untuk **Madrasah Aliyah Negeri 2 Ko
 ## Instalasi
 
 ```bash
-# 1. Clone & install dependencies
+# 1. Install dependencies
 composer install
 npm install
 
-# 2. Salin dan isi konfigurasi
+# 2. Konfigurasi environment
 cp .env.example .env
 php artisan key:generate
 
-# 3. Buat database, lalu jalankan migrasi + seeder
+# 3. Buat database, jalankan migrasi + seeder demo
 php artisan migrate --seed
 
 # 4. Buat symlink storage
@@ -47,13 +76,13 @@ npm run build
 
 ---
 
-## Konfigurasi `.env` Penting
+## Konfigurasi `.env`
 
 ```env
-APP_NAME="MAN 2 Kolaka"
+APP_NAME="Nama Madrasah Anda"
 APP_URL=https://domain-anda.com
 
-DB_DATABASE=man2klk
+DB_DATABASE=nama_database
 DB_USERNAME=root
 DB_PASSWORD=
 
@@ -61,85 +90,21 @@ DB_PASSWORD=
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_WEBHOOK_SECRET=
 TELEGRAM_ALLOWED_CHAT_IDS=
-TELEGRAM_NEWS_AUTHOR_EMAIL=admin@man2kolaka.sch.id
+TELEGRAM_NEWS_AUTHOR_EMAIL=admin@madrasah.sch.id
 TELEGRAM_NEWS_AUTO_PUBLISH=true
 
-# NVIDIA AI (untuk auto-berita Telegram)
+# NVIDIA AI — untuk fitur auto-berita via Telegram
 NVIDIA_AI_API_KEY=
 NVIDIA_AI_URL=https://integrate.api.nvidia.com/v1
 NVIDIA_AI_MODEL=qwen/qwen3.5-397b-a17b
 
-# Queue (gunakan database untuk production)
+# Gunakan database untuk production
 QUEUE_CONNECTION=database
 ```
 
 ---
 
-## Integrasi Telegram + AI Berita
-
-Bot Telegram menerima foto + judul, lalu server membuat berita dengan NVIDIA AI dan mengirim link berita kembali ke chat.
-
-### Daftarkan webhook
-
-```bash
-curl -X POST "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/setWebhook" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://domain-anda.com/telegram/webhook",
-    "secret_token": "<TELEGRAM_WEBHOOK_SECRET>",
-    "drop_pending_updates": true
-  }'
-```
-
-### Format kirim dari Telegram
-
-- **Opsi 1** — Kirim foto dengan caption berisi judul berita.
-- **Opsi 2** — Kirim foto dulu, lalu kirim judul teks berikutnya (maks. 15 menit).
-
-Bot akan membalas judul hasil AI dan link berita setelah proses selesai.
-
-### Jalankan Queue Worker
-
-```bash
-php artisan queue:work --queue=default --tries=3
-```
-
----
-
-## Queue Worker di Production
-
-### Opsi A: Supervisor
-
-```bash
-# Salin config
-sudo cp deploy/supervisor/web-man2kolaka-queue.conf /etc/supervisor/conf.d/
-
-# Aktifkan
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start web-man2kolaka-queue:*
-```
-
-### Opsi B: systemd
-
-```bash
-sudo cp deploy/systemd/web-man2kolaka-queue.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable web-man2kolaka-queue
-sudo systemctl start web-man2kolaka-queue
-```
-
-### Opsi C: Shared Hosting (Cron Fallback)
-
-Lihat contoh di [`deploy/hosting/queue-cron-fallback.txt`](deploy/hosting/queue-cron-fallback.txt).
-
-1. Set `QUEUE_CONNECTION=database` di `.env`.
-2. Buat Cron Job per menit untuk `queue:work --stop-when-empty`.
-3. Pantau log di `storage/logs/queue-worker.log`.
-
----
-
-## Akun Default (setelah seeder)
+## Akun Default (setelah seeder demo)
 
 | Role | Email | Password |
 |---|---|---|
@@ -147,32 +112,75 @@ Lihat contoh di [`deploy/hosting/queue-cron-fallback.txt`](deploy/hosting/queue-
 | Editor | editor@man2kolaka.sch.id | password |
 | Admin PPDB | ppdb@man2kolaka.sch.id | password |
 
-> **Ganti password segera setelah login pertama kali di production.**
+> Ganti email dan password segera setelah login pertama, lalu update data madrasah di menu **Profil Madrasah** pada admin panel.
 
 ---
 
-## Struktur Direktori Penting
+## Kustomisasi untuk Madrasah Anda
 
-```
-app/
-  Livewire/
-    Admin/          # Komponen admin panel
-    Admin/PpdbV2/   # Modul PPDB V2
-    Frontend/       # Halaman publik
-resources/views/
-  livewire/
-    admin/          # Blade admin
-    frontend/       # Blade frontend
-  pdf/              # Template PDF export
-  emails/           # Template email
-database/
-  seeders/          # DatabaseSeeder.php
-  migrations/
-storage/app/public/ # Upload file (logo, foto, berkas PPDB)
-```
+Setelah instalasi, login ke admin panel dan update:
+
+1. **Profil Madrasah** — nama, alamat, logo, foto kepsek, visi misi, koordinat peta
+2. **Peminatan** — hapus data demo, tambah peminatan madrasah Anda (IPA/IPS/Bahasa/Keagamaan)
+3. **Pegawai** — tambah data guru dan tenaga kependidikan
+4. **Pengaturan PPDB** — buka periode, atur jalur, kuota, dan persyaratan berkas
+5. **Berita & Konten** — hapus konten demo, mulai buat konten madrasah
 
 ---
 
-## Lisensi
+## Integrasi Telegram + AI Berita
 
-Proyek ini dikembangkan khusus untuk **MAN 2 Kolaka**. Tidak untuk didistribusikan ulang tanpa izin.
+Bot Telegram menerima foto + judul, lalu NVIDIA AI membuat artikel berita secara otomatis.
+
+### Daftarkan webhook
+
+```bash
+curl -X POST "https://api.telegram.org/bot<TOKEN>/setWebhook" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://domain-anda.com/telegram/webhook",
+    "secret_token": "<WEBHOOK_SECRET>",
+    "drop_pending_updates": true
+  }'
+```
+
+### Cara pakai
+
+- **Opsi 1** — Kirim foto dengan caption berisi judul berita.
+- **Opsi 2** — Kirim foto dulu, lalu kirim judul teks berikutnya (maks. 15 menit).
+
+Bot membalas judul hasil AI dan link berita setelah proses selesai.
+
+---
+
+## Queue Worker di Production
+
+### Supervisor
+
+```bash
+sudo cp deploy/supervisor/web-man2kolaka-queue.conf /etc/supervisor/conf.d/
+sudo supervisorctl reread && sudo supervisorctl update
+sudo supervisorctl start web-man2kolaka-queue:*
+```
+
+### systemd
+
+```bash
+sudo cp deploy/systemd/web-man2kolaka-queue.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now web-man2kolaka-queue
+```
+
+### Shared Hosting (Cron Fallback)
+
+Lihat [`deploy/hosting/queue-cron-fallback.txt`](deploy/hosting/queue-cron-fallback.txt).
+
+---
+
+## Stack Teknologi
+
+- [Laravel 11](https://laravel.com)
+- [Livewire 3](https://livewire.laravel.com)
+- [Alpine.js](https://alpinejs.dev)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [NVIDIA AI API](https://build.nvidia.com)
