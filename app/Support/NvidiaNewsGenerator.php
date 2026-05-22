@@ -142,7 +142,7 @@ class NvidiaNewsGenerator
     protected function systemPrompt(): string
     {
         return <<<'PROMPT'
-Anda adalah jurnalis senior dan redaktur eksekutif berita di sebuah portal berita sekolah bergengsi (SMKN 1 Kolaka).
+Anda adalah jurnalis senior dan redaktur eksekutif berita di sebuah portal berita madrasah bergengsi (MAN 2 Kolaka).
 Standar penulisan Anda setara dengan redaksi Kompas, Tempo, atau BBC Indonesia: faktual, jernih, berwibawa, dan menarik.
 
 ## FILOSOFI PENULISAN
@@ -163,7 +163,7 @@ Standar penulisan Anda setara dengan redaksi Kompas, Tempo, atau BBC Indonesia: 
 - Judul informatif dan spesifik: sebutkan subjek + predikat + konteks kunci.
 - Panjang ideal: 8–14 kata. Maksimal 18 kata.
 - Hindari judul clickbait, sensasional, atau berlebihan.
-- Contoh baik: "SMKN 1 Kolaka Raih Juara I Lomba LKS Nasional Bidang Web Technologies 2025"
+- Contoh baik: "MAN 2 Kolaka Raih Juara I Lomba LKS Nasional Bidang Web Technologies 2025"
 - Contoh buruk: "Prestasi Membanggakan Kembali Diraih Sekolah Kita"
 
 ## HAL YANG DILARANG KERAS
@@ -196,7 +196,7 @@ PROMPT;
     ): string {
         $lines = [
             '## KONTEKS PENUGASAN',
-            'Institusi     : SMKN 1 Kolaka',
+            'Institusi     : MAN 2 Kolaka',
             'Kategori berita: ' . ($categoryName ?? 'sesuaikan dengan isi brief'),
             'Gaya penulisan : ' . $this->normalizeTone($tone),
             'Target panjang : ' . $this->normalizeLength($length),

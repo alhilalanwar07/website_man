@@ -10,15 +10,15 @@
             @endif
         </td>
         <td class="kop-text">
-            <div class="line1">PEMERINTAH PROVINSI SULAWESI TENGGARA</div>
-            <div class="line2">DINAS PENDIDIKAN DAN KEBUDAYAAN</div>
-            <div class="line3">SMK NEGERI 1 KOLAKA</div>
-            <div class="line4">Jl. Pendidikan No. 49, Telp./Fax. (0405) 231378, Kab. Kolaka, 93517</div>
-            <div class="line5">Email: smk1kolaka@gmail.com</div>
+            <div class="line1">KEMENTERIAN AGAMA REPUBLIK INDONESIA</div>
+            <div class="line2">KANTOR KEMENTERIAN AGAMA KABUPATEN KOLAKA</div>
+            <div class="line3">{{ strtoupper($profil->nama_sekolah ?? 'MAN 2 KOLAKA') }}</div>
+            <div class="line4">{{ $profil->alamat_lengkap ?? 'Jl. Pemuda No. 12, Kelurahan Laloeha, Kecamatan Kolaka, Kabupaten Kolaka, Sulawesi Tenggara 93511' }}{{ $profil->nomor_telepon ? ' | Telp. ' . $profil->nomor_telepon : '' }}</div>
+            <div class="line5">Email: {{ $profil->email_resmi ?? 'info@man2kolaka.sch.id' }}</div>
         </td>
         <td class="logo-cell">
             @if($rightLogoBase64 ?? null)
-                <img src="{{ $rightLogoBase64 }}" alt="Logo SMK">
+                <img src="{{ $rightLogoBase64 }}" alt="Logo MAN">
             @endif
         </td>
     </tr>

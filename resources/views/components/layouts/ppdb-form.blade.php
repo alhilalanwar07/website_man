@@ -4,7 +4,7 @@
         now()->addMinutes(10),
         fn () => \App\Models\ProfilSekolah::first()
     );
-    $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
+    $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
@@ -15,7 +15,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'Form Pendaftaran PPDB' }} — {{ $namaSekolah }}</title>
-    <meta name="description" content="Formulir pendaftaran peserta didik baru {{ $namaSekolah }}. Isi data lengkap, pilih jurusan, dan unggah berkas secara online.">
+    <meta name="description" content="Formulir pendaftaran peserta didik baru {{ $namaSekolah }}. Isi data lengkap, pilih peminatan, dan unggah berkas secara online.">
     <meta name="robots" content="index,follow">
 
     @if($profil && $profil->favicon_path)
@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body class="antialiased font-sans bg-slate-50 text-slate-900 selection:bg-blue-500 selection:text-white min-h-screen flex flex-col">
+<body class="antialiased font-sans bg-slate-50 text-slate-900 selection:bg-emerald-500 selection:text-white min-h-screen flex flex-col">
     {{-- Minimal Top Bar --}}
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -41,21 +41,21 @@
                 @if($profil && $profil->logo_path)
                     <img src="{{ Storage::url($profil->logo_path) }}" class="w-9 h-9 rounded-lg object-contain transition-transform group-hover:scale-110" alt="{{ $namaSekolah }}">
                 @else
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
+                    <div class="w-9 h-9 bg-gradient-to-br from-emerald-600 to-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-emerald-500/25">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                     </div>
                 @endif
                 <div>
-                    <span class="block text-sm font-extrabold tracking-tight leading-none text-slate-900">SMKN 1 KOLAKA</span>
-                    <span class="text-[9px] font-semibold tracking-[0.2em] text-blue-600 uppercase">PPDB Online</span>
+                    <span class="block text-sm font-extrabold tracking-tight leading-none text-slate-900">MAN 2 KOLAKA</span>
+                    <span class="text-[9px] font-semibold tracking-[0.2em] text-emerald-600 uppercase">PPDB Online</span>
                 </div>
             </a>
             <div class="flex items-center gap-3">
-                <a href="{{ route('ppdb.status') }}" class="text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors hidden sm:inline-flex items-center gap-1.5">
+                <a href="{{ route('ppdb.status') }}" class="text-xs font-semibold text-slate-500 hover:text-emerald-600 transition-colors hidden sm:inline-flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     Cek Status
                 </a>
-                <a href="{{ route('ppdb.index') }}" class="text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors inline-flex items-center gap-1.5">
+                <a href="{{ route('ppdb.index') }}" class="text-xs font-semibold text-slate-500 hover:text-emerald-600 transition-colors inline-flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     Info PPDB
                 </a>

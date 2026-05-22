@@ -4,13 +4,13 @@
     <section class="relative overflow-hidden bg-slate-950 text-white noise">
         <div class="absolute inset-0 bg-mesh-hero opacity-70"></div>
         <div class="absolute inset-0">
-            <div class="absolute top-[-10%] left-[-5%] w-[28rem] h-[28rem] rounded-full bg-blue-600/20 blur-[110px] animate-blob"></div>
-            <div class="absolute bottom-[-15%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-indigo-600/20 blur-[120px] animate-blob" style="animation-delay: 2s"></div>
+            <div class="absolute top-[-10%] left-[-5%] w-[28rem] h-[28rem] rounded-full bg-emerald-600/20 blur-[110px] animate-blob"></div>
+            <div class="absolute bottom-[-15%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-teal-600/20 blur-[120px] animate-blob" style="animation-delay: 2s"></div>
         </div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
                 <div class="lg:col-span-3">
-                    <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6">PPDB SMKN 1 Kolaka</span>
+                    <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-emerald-300 mb-6">PPDB MAN 2 Kolaka</span>
                     <h1 class="text-4xl md:text-6xl xl:text-7xl font-black tracking-tight leading-[0.95]">
                         Pusat Informasi
                         <span class="block text-gradient">PPDB Online</span>
@@ -48,7 +48,7 @@
                             <p class="text-3xl font-black mt-2">{{ $period?->tracks?->count() ?? 0 }}</p>
                         </div>
                         <div class="glass rounded-[24px] p-5">
-                            <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">Jurusan</p>
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">Peminatan</p>
                             <p class="text-3xl font-black mt-2">{{ $programsCount }}</p>
                         </div>
                         <div class="glass rounded-[24px] p-5">
@@ -90,8 +90,8 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-            <div class="rounded-[24px] border border-blue-100 bg-blue-50 px-6 py-5">
-                <p class="text-xs font-bold uppercase tracking-[0.24em] text-blue-600">Tips Pemula</p>
+            <div class="rounded-[24px] border border-emerald-100 bg-emerald-50 px-6 py-5">
+                <p class="text-xs font-bold uppercase tracking-[0.24em] text-emerald-600">Tips Pemula</p>
                 <p class="mt-2 text-sm text-slate-700 leading-relaxed">Mulai dari membaca jadwal dan syarat berkas. Setelah itu isi formulir sekali sampai tuntas, lalu simpan nomor pendaftaran untuk memantau status tanpa bingung.</p>
             </div>
         </div>
@@ -109,8 +109,8 @@
                 <div class="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.25em] text-blue-500 font-bold">Langkah 2</p>
                     <h3 class="text-xl font-black text-slate-900 mt-3">Isi Formulir</h3>
-                    <p class="text-sm text-slate-500 mt-3 leading-relaxed">Buka route formulir khusus untuk mengisi identitas, pilihan jurusan, dan upload berkas secara lengkap dan terstruktur.</p>
-                    <a href="{{ route('ppdb.form', $periodQuery) }}" class="inline-flex mt-5 text-sm font-bold text-blue-600 hover:text-blue-700">Buka Formulir</a>
+                    <p class="text-sm text-slate-500 mt-3 leading-relaxed">Buka route formulir khusus untuk mengisi identitas, pilihan peminatan, dan upload berkas secara lengkap dan terstruktur.</p>
+                    <a href="{{ route('ppdb.form', $periodQuery) }}" class="inline-flex mt-5 text-sm font-bold text-emerald-600 hover:text-emerald-700">Buka Formulir</a>
                 </div>
                 <div class="bg-white rounded-[28px] border border-slate-100 p-7 shadow-sm">
                     <p class="text-xs uppercase tracking-[0.25em] text-blue-500 font-bold">Langkah 3</p>
@@ -122,7 +122,7 @@
             <div>
                 <div class="flex items-end justify-between gap-4 flex-wrap mb-8">
                     <div>
-                        <span class="inline-flex px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-[0.25em] mb-4">Jalur & Kuota</span>
+                        <span class="inline-flex px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-[0.25em] mb-4">Jalur & Kuota</span>
                         <h2 class="text-3xl lg:text-5xl font-black tracking-tight text-slate-900">Pilihan <span class="text-gradient">Jalur Pendaftaran</span></h2>
                     </div>
                     <a href="{{ route('ppdb.form', $periodQuery) }}" class="text-sm font-bold text-blue-600 hover:text-blue-700">Lanjut ke Form Pendaftaran</a>
@@ -154,13 +154,13 @@
                         <li>Data identitas siswa sesuai dokumen resmi.</li>
                         <li>Nomor HP siswa atau orang tua yang aktif.</li>
                         <li>Scan atau foto KK, akta lahir, rapor, pas foto, dan SKL bila tersedia.</li>
-                        <li>Pilihan jurusan utama dan cadangan yang sudah dipertimbangkan.</li>
+                        <li>Pilihan peminatan utama dan cadangan yang sudah dipertimbangkan.</li>
                     </ul>
                 </div>
                 <div class="bg-slate-900 text-white rounded-[32px] p-8 noise relative overflow-hidden">
                     <div class="absolute inset-0 bg-mesh-hero opacity-45"></div>
                     <div class="relative">
-                        <p class="text-xs uppercase tracking-[0.25em] text-blue-300 font-bold">Akses Cepat</p>
+                        <p class="text-xs uppercase tracking-[0.25em] text-emerald-300 font-bold">Akses Cepat</p>
                         <h3 class="text-2xl font-black mt-3">Portal Publik PPDB</h3>
                         <div class="mt-6 space-y-4">
                             <a href="{{ route('ppdb.form', $periodQuery) }}" class="flex items-center justify-between rounded-2xl glass px-5 py-4 font-bold hover:bg-white/10 transition">

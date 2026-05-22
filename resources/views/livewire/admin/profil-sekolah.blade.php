@@ -60,8 +60,8 @@
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nama Kepala Sekolah</label>
-                    <input wire:model="nama_kepsek" type="text" placeholder="Nama lengkap kepala sekolah" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nama Kepala Madrasah</label>
+                    <input wire:model="nama_kepsek" type="text" placeholder="Nama lengkap kepala madrasah" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition">
                 </div>
             </div>
         </div>
@@ -105,9 +105,14 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Favicon</label>
-                    <input wire:model="favicon" wire:loading.attr="disabled" wire:target="favicon" type="file" accept="image/*" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
+                    <input wire:model="favicon" wire:loading.attr="disabled" wire:target="favicon" type="file" accept="image/*,.ico" class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100">
                     @if($favicon)
-                        <img src="{{ $favicon->temporaryUrl() }}" class="mt-2 h-16 rounded">
+                        @php $faviconExt = strtolower($favicon->getClientOriginalExtension()); @endphp
+                        @if(in_array($faviconExt, ['ico', 'x-icon']))
+                            <p class="mt-2 text-xs text-emerald-600 font-medium">✓ File favicon.ico siap disimpan: {{ $favicon->getClientOriginalName() }}</p>
+                        @else
+                            <img src="{{ $favicon->temporaryUrl() }}" class="mt-2 h-16 rounded">
+                        @endif
                     @elseif($existing_favicon)
                         <img src="{{ Storage::url($existing_favicon) }}" class="mt-2 h-16 rounded">
                     @endif

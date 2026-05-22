@@ -4,7 +4,7 @@
         now()->addMinutes(10),
         fn () => \App\Models\ProfilSekolah::first()
     );
-    $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
+    $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -33,7 +33,7 @@
 
     </style>
 </head>
-<body class=" antialiased font-sans bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-blue-500 selection:text-white">
+<body class=" antialiased font-sans bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-emerald-500 selection:text-white">
     {{ $slot }}
 </body>
 </html>

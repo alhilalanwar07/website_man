@@ -24,7 +24,7 @@ use Livewire\WithFileUploads;
 use Throwable;
 
 #[Layout('components.layouts.ppdb-form')]
-#[Title('Form Pendaftaran PPDB')]
+#[Title('Form Pendaftaran PPDB - MAN 2 Kolaka')]
 class PpdbFormPage extends Component
 {
     use WithFileUploads;

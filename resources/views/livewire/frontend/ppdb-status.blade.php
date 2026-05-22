@@ -2,7 +2,7 @@
     <section class="relative overflow-hidden bg-slate-950 text-white py-24 noise">
         <div class="absolute inset-0 bg-mesh-hero opacity-70"></div>
         <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6">Portal PPDB</span>
+            <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-emerald-300 mb-6">Portal PPDB</span>
             <h1 class="text-4xl lg:text-6xl font-black tracking-tight leading-tight">Cek Status <span class="text-gradient">Verifikasi</span></h1>
             <p class="text-slate-300 max-w-2xl mx-auto mt-4">Masukkan nomor pendaftaran atau NISN dan tanggal lahir untuk melihat status verifikasi gabungan, detail status operasional, dan hasil sementara PPDB.</p>
         </div>
@@ -78,7 +78,7 @@
                             @else
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Hasil: Menunggu Pengumuman</span>
                             @endif
-                            <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700">Pendaftaran: {{ $result->status_pendaftaran_label }}</span>
+                            <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">Pendaftaran: {{ $result->status_pendaftaran_label }}</span>
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">Berkas: {{ $result->status_berkas_label }}</span>
                         </div>
                     </div>
@@ -88,16 +88,16 @@
                         <p class="text-sm text-slate-700 leading-relaxed">Dalam Proses berarti data pendaftaran atau berkas masih ditinjau. Terverifikasi / Diterima berarti tahapan verifikasi sudah siap lanjut. Ditolak berarti ada penolakan pada salah satu tahap verifikasi. Status Pendaftaran dan Berkas tetap ditampilkan sebagai detail operasional.</p>
                     </div>
 
-                    <div class="rounded-2xl border border-blue-200 bg-blue-50 p-4">
-                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-blue-600 mb-2">Aksi Mandiri Pendaftar</p>
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 mb-2">Aksi Mandiri Pendaftar</p>
                         <p class="text-sm text-slate-700 leading-relaxed">Anda bisa mengunduh ulang formulir PDF pendaftaran dan mengirim ulang email konfirmasi jika dibutuhkan.</p>
                         <div class="mt-3 flex flex-wrap items-center gap-3">
                             @if($resultDownloadUrl)
-                            <a href="{{ $resultDownloadUrl }}" target="_blank" rel="noopener" class="inline-flex rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-800">Unduh Formulir PDF</a>
+                            <a href="{{ $resultDownloadUrl }}" target="_blank" rel="noopener" class="inline-flex rounded-xl bg-emerald-700 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-800">Unduh Formulir PDF</a>
                             @endif
 
                             @if(filter_var((string) $result->email, FILTER_VALIDATE_EMAIL))
-                            <button type="button" wire:click="resendConfirmationEmail" wire:loading.attr="disabled" wire:target="resendConfirmationEmail" class="inline-flex rounded-xl border border-blue-300 bg-white px-4 py-2 text-xs font-bold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60">
+                            <button type="button" wire:click="resendConfirmationEmail" wire:loading.attr="disabled" wire:target="resendConfirmationEmail" class="inline-flex rounded-xl border border-emerald-300 bg-white px-4 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60">
                                 <span wire:loading.remove wire:target="resendConfirmationEmail">Kirim Ulang Email Konfirmasi</span>
                                 <span wire:loading wire:target="resendConfirmationEmail">Mengirim Ulang...</span>
                             </button>
@@ -141,7 +141,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="rounded-3xl bg-slate-50 p-6">
-                            <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400 mb-3">Pilihan Jurusan</p>
+                            <p class="text-xs font-bold uppercase tracking-[0.25em] text-slate-400 mb-3">Pilihan Peminatan</p>
                             <div class="space-y-2 text-sm text-slate-700">
                                 <p><span class="font-semibold">Pilihan 1:</span> {{ $result->pilihanProgram1->nama_jurusan }}</p>
                                 <p><span class="font-semibold">Pilihan 2:</span> {{ $result->pilihanProgram2->nama_jurusan ?? '-' }}</p>
@@ -155,7 +155,7 @@
                                 <p><span class="font-semibold">Skor:</span> {{ $announcementPublished ? number_format((float) ($result->skor_seleksi ?? 0), 2) : 'Belum ditampilkan' }}</p>
                                 <p><span class="font-semibold">Ranking Jalur:</span> {{ $announcementPublished ? ($result->ranking_jalur ?? '-') : '-' }}</p>
                                 <p><span class="font-semibold">Ranking Program:</span> {{ $announcementPublished ? ($result->ranking_program ?? '-') : '-' }}</p>
-                                <p><span class="font-semibold">Jurusan Diterima:</span> {{ $announcementPublished ? ($result->programDiterima->nama_jurusan ?? 'Belum ditetapkan') : 'Menunggu pengumuman resmi' }}</p>
+                                <p><span class="font-semibold">Peminatan Diterima:</span> {{ $announcementPublished ? ($result->programDiterima->nama_jurusan ?? 'Belum ditetapkan') : 'Menunggu pengumuman resmi' }}</p>
                                 <p><span class="font-semibold">Daftar Ulang:</span> {{ $announcementPublished ? $result->status_daftar_ulang_label : 'Menunggu pengumuman resmi' }}</p>
                             </div>
                         </div>

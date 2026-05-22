@@ -70,7 +70,7 @@
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Kuota Aktif</p>
                     <p class="mt-2 text-lg font-black text-slate-900 dark:text-white">{{ $quotaOverview->count() }} kombinasi</p>
-                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Kombinasi jalur-jurusan aktif</p>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Kombinasi jalur-peminatan aktif</p>
                 </div>
             </div>
 
@@ -115,7 +115,7 @@
                         <li>Kontak person dipakai pada lampiran PDF formulir.</li>
                         <li>Tanggal penting menyesuaikan timeline periode aktif.</li>
                         <li>Persyaratan berkas tampil di panduan verifikasi.</li>
-                        <li>Warna map jurusan menjadi ketentuan cetak resmi.</li>
+                        <li>Warna map peminatan menjadi ketentuan cetak resmi.</li>
                     </ul>
                 </div>
             </div>
@@ -371,7 +371,7 @@
 
                         <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
                             <p class="text-sm font-bold text-slate-900 dark:text-white">Pengaturan NIPD Otomatis</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">NIPD akan diberikan otomatis ketika peserta dinyatakan lulus, sudah ditetapkan jurusan, dan daftar ulang diverifikasi.</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">NIPD akan diberikan otomatis ketika peserta dinyatakan lulus, sudah ditetapkan peminatan, dan daftar ulang diverifikasi.</p>
 
                             <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                                 <div class="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900">
@@ -744,7 +744,7 @@
 
                         <div class="flex justify-end">
                             <button type="submit" wire:loading.attr="disabled" wire:target="openActionModal" class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
-                                <span wire:loading.remove wire:target="openActionModal">Simpan Warna Map Jurusan</span>
+                                <span wire:loading.remove wire:target="openActionModal">Simpan Warna Map Peminatan</span>
                                 <span wire:loading wire:target="openActionModal">Memproses...</span>
                             </button>
                         </div>

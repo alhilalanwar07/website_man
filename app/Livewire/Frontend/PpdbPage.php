@@ -11,7 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
-#[Title('PPDB Online - SMK Negeri 1 Kolaka')]
+#[Title('PPDB Online - MAN 2 Kolaka')]
 class PpdbPage extends Component
 {
     #[Url(as: 'periode')]

@@ -4,25 +4,25 @@
     {{-- ============================================ --}}
     <section class="relative py-28 overflow-hidden bg-slate-950 noise">
         <div class="absolute inset-0">
-            <div class="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-cyan-600/20 rounded-full blur-[100px] animate-blob"></div>
-            <div class="absolute bottom-[-10%] right-[-5%] w-[300px] h-[300px] bg-blue-600/15 rounded-full blur-[80px] animate-blob" style="animation-delay:2s"></div>
-            <div class="absolute top-[30%] right-[15%] w-[200px] h-[200px] bg-indigo-500/10 rounded-full blur-[80px] animate-float-slow"></div>
+            <div class="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-emerald-600/20 rounded-full blur-[100px] animate-blob"></div>
+            <div class="absolute bottom-[-10%] right-[-5%] w-[300px] h-[300px] bg-teal-600/15 rounded-full blur-[80px] animate-blob" style="animation-delay:2s"></div>
+            <div class="absolute top-[30%] right-[15%] w-[200px] h-[200px] bg-emerald-500/10 rounded-full blur-[80px] animate-float-slow"></div>
         </div>
         <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute top-[15%] right-[12%] w-20 h-20 border border-white/10 rounded-2xl rotate-12 animate-float"></div>
-            <div class="absolute bottom-[25%] left-[8%] w-14 h-14 border border-cyan-400/15 rounded-full animate-float-reverse"></div>
-            <div class="absolute top-[40%] left-[45%] w-3 h-3 bg-cyan-400/40 rounded-full animate-float" style="animation-delay:1s"></div>
+            <div class="absolute bottom-[25%] left-[8%] w-14 h-14 border border-teal-400/15 rounded-full animate-float-reverse"></div>
+            <div class="absolute top-[40%] left-[45%] w-3 h-3 bg-teal-400/40 rounded-full animate-float" style="animation-delay:1s"></div>
         </div>
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-bold text-cyan-300 glass rounded-full uppercase tracking-wider mb-6 animate-fade-up">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 text-xs font-bold text-teal-300 glass rounded-full uppercase tracking-wider mb-6 animate-fade-up">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 Dokumentasi
             </span>
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-6 leading-[0.95] animate-fade-up delay-100">
                 Galeri <span class="text-gradient">Foto & Video</span>
             </h1>
-            <p class="text-lg text-slate-400 max-w-2xl animate-fade-up delay-200">Dokumentasi kegiatan, prestasi, dan momen berharga di SMKN 1 Kolaka.</p>
+            <p class="text-lg text-slate-400 max-w-2xl animate-fade-up delay-200">Dokumentasi kegiatan, prestasi, dan momen berharga di MAN 2 Kolaka.</p>
         </div>
     </section>
 
@@ -30,8 +30,8 @@
     {{-- GALLERY CONTENT --}}
     {{-- ============================================ --}}
     <section class="py-28 bg-white relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-cyan-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
+        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             @if(!$selectedAlbum)
                 {{-- Albums Grid --}}
@@ -49,7 +49,7 @@
                                 </div>
                             @endif
                         </div>
-                        <h3 class="text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors">{{ $album->judul_album }}</h3>
+                        <h3 class="text-lg font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{{ $album->judul_album }}</h3>
                         <div class="flex items-center gap-3 mt-2">
                             <span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -76,7 +76,7 @@
             @else
                 {{-- Album Detail --}}
                 <div class="mb-10">
-                    <button wire:click="closeAlbum" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors mb-6">
+                    <button wire:click="closeAlbum" class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                         Kembali ke Album
                     </button>

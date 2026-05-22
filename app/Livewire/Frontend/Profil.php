@@ -9,7 +9,7 @@ use App\Models\ProfilSekolah;
 use App\Models\Pegawai;
 
 #[Layout('components.layouts.app')]
-#[Title('Profil Sekolah - SMK Negeri 1 Kolaka')]
+#[Title('Profil Madrasah - MAN 2 Kolaka')]
 class Profil extends Component
 {
     public function render()

@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 use App\Models\Agenda;
 
 #[Layout('components.layouts.app')]
-#[Title('Agenda - SMK Negeri 1 Kolaka')]
+#[Title('Agenda - MAN 2 Kolaka')]
 class AgendaIndex extends Component
 {
     use WithPagination;

@@ -4,7 +4,7 @@
         now()->addMinutes(10),
         fn () => \App\Models\ProfilSekolah::first()
     );
-    $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
+    $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 
 <div class="min-h-screen w-full flex flex-col justify-center items-center py-10 px-4 relative">
@@ -40,7 +40,7 @@
                 <div class="space-y-2">
                     <label for="email" class="block text-sm font-bold text-slate-700 dark:text-slate-300">Email Address</label>
                     <div class="relative group/input">
-                        <input wire:model="email" type="email" id="email" placeholder="admin@smkn1kolaka.sch.id"
+                        <input wire:model="email" type="email" id="email" placeholder="admin@man2kolaka.sch.id"
                             class="peer w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-300 shadow-sm relative z-0" autocomplete="username">
                         
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 peer-focus:text-blue-500 transition-colors z-10">

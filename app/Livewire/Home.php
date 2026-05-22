@@ -13,11 +13,10 @@ use App\Models\Pengumuman;
 use App\Models\Pegawai;
 use App\Models\GaleriAlbum;
 use App\Models\GaleriItem;
-use App\Models\TefaProduk;
 use Illuminate\Support\Facades\Cache;
 
 #[Layout('components.layouts.app')]
-#[Title('Beranda - SMK Negeri 1 Kolaka')]
+#[Title('Beranda - MAN 2 Kolaka')]
 class Home extends Component
 {
     public function render()
@@ -53,12 +52,6 @@ class Home extends Component
                 ->take(12)
                 ->get();
 
-            $tefaProduks = TefaProduk::where('status_ketersediaan', 'tersedia')
-                ->select(['id', 'nama_produk_jasa', 'gambar_utama', 'harga_estimasi', 'status_ketersediaan'])
-                ->latest()
-                ->take(8)
-                ->get();
-
             $pegawaiHighlight = Pegawai::aktif()
                 ->select(['id', 'nama_lengkap', 'jabatan', 'foto_profil'])
                 ->take(12)
@@ -69,11 +62,10 @@ class Home extends Component
             $beritaCount = Berita::published()->count();
 
             $stats = [
-                ['label' => 'Program Keahlian', 'value' => $jurusans->count(), 'icon' => 'academic', 'color' => 'from-blue-400 to-blue-600'],
-                ['label' => 'Tenaga Pengajar', 'value' => $pegawaiCount, 'icon' => 'users', 'color' => 'from-indigo-400 to-indigo-600'],
-                ['label' => 'Berita Diterbitkan', 'value' => $beritaCount, 'icon' => 'newspaper', 'color' => 'from-purple-400 to-purple-600'],
+                ['label' => 'Peminatan', 'value' => $jurusans->count(), 'icon' => 'academic', 'color' => 'from-blue-400 to-blue-600'],
+                ['label' => 'Guru & Tendik', 'value' => $pegawaiCount, 'icon' => 'users', 'color' => 'from-indigo-400 to-indigo-600'],
+                ['label' => 'Berita', 'value' => $beritaCount, 'icon' => 'newspaper', 'color' => 'from-purple-400 to-purple-600'],
                 ['label' => 'Album Galeri', 'value' => GaleriAlbum::count(), 'icon' => 'camera', 'color' => 'from-cyan-400 to-cyan-600'],
-                ['label' => 'Produk TEFA', 'value' => TefaProduk::count(), 'icon' => 'cube', 'color' => 'from-emerald-400 to-emerald-600'],
                 ['label' => 'Agenda Kegiatan', 'value' => Agenda::count(), 'icon' => 'calendar', 'color' => 'from-amber-400 to-amber-600'],
             ];
 
@@ -85,7 +77,6 @@ class Home extends Component
                 'pengumuman',
                 'stats',
                 'galeriItems',
-                'tefaProduks',
                 'pegawaiHighlight'
             );
         });

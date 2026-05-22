@@ -8,7 +8,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
-#[Title('Daftar Ulang PPDB - SMK Negeri 1 Kolaka')]
+#[Title('Daftar Ulang PPDB - MAN 2 Kolaka')]
 class PpdbDaftarUlang extends Component
 {
     protected const PREFILL_SESSION_KEY = 'ppdb.re_registration_prefill';

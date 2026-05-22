@@ -76,7 +76,7 @@
                     </div>
                     <div>
                         <select wire:model.live="programFilter" wire:loading.attr="disabled" wire:target="search,statusFilter,programFilter" class="block w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60">
-                            <option value="">Semua Jurusan</option>
+                            <option value="">Semua Peminatan</option>
                             @foreach($programFilterOptions as $programOption)
                                 <option value="{{ $programOption->id }}">{{ $programOption->nama_jurusan }}</option>
                             @endforeach

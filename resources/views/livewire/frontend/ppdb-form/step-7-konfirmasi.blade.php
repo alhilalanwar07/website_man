@@ -63,18 +63,18 @@
         </div>
     </div>
 
-    {{-- Sekolah & Jurusan --}}
+    {{-- Sekolah & Peminatan --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="flex items-center justify-between px-5 py-3 bg-slate-50 border-b border-slate-100">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sekolah & Jurusan</span>
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sekolah & Peminatan</span>
             <button type="button" wire:click="goToStep(3)" class="text-xs font-semibold text-blue-600 hover:text-blue-700">Ubah</button>
         </div>
         <div class="px-5 py-4 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
             <div class="col-span-2"><span class="text-slate-400">Asal Sekolah:</span> <strong>{{ $asal_sekolah }}</strong></div>
             <div><span class="text-slate-400">Jalur:</span> {{ $trackSelected?->nama_jalur ?? '-' }}</div>
-            <div><span class="text-slate-400">Jurusan 1:</span> <strong class="text-blue-700">{{ $prog1?->nama_jurusan ?? '-' }}</strong></div>
-            <div><span class="text-slate-400">Jurusan 2:</span> {{ $prog2?->nama_jurusan ?? '-' }}</div>
-            <div><span class="text-slate-400">Jurusan 3:</span> {{ $prog3?->nama_jurusan ?? '-' }}</div>
+            <div><span class="text-slate-400">Peminatan 1:</span> <strong class="text-blue-700">{{ $prog1?->nama_jurusan ?? '-' }}</strong></div>
+            <div><span class="text-slate-400">Peminatan 2:</span> {{ $prog2?->nama_jurusan ?? '-' }}</div>
+            <div><span class="text-slate-400">Peminatan 3:</span> {{ $prog3?->nama_jurusan ?? '-' }}</div>
         </div>
     </div>
 

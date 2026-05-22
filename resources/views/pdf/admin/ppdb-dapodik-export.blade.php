@@ -9,7 +9,7 @@
     };
     $defaultLogoBase64 = $toBase64Image($logoPath);
     $leftLogoBase64 = $toBase64Image(storage_path('app/public/sultra_logo.png')) ?? $defaultLogoBase64;
-    $rightLogoBase64 = $toBase64Image(storage_path('app/public/smk1kolaka.jpg')) ?? $defaultLogoBase64;
+    $rightLogoBase64 = $toBase64Image(storage_path('app/public/MAN-2.png')) ?? $defaultLogoBase64;
     $meta = $documentMeta ?? [];
     $signLocation = $meta['sign_location'] ?? 'Kolaka';
     $signDate = $meta['sign_date'] ?? now()->translatedFormat('d F Y');

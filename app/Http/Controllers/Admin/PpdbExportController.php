@@ -129,7 +129,7 @@ class PpdbExportController extends Controller
             }
 
             $documentMeta = [
-                'school_name' => $profilSekolah?->nama_sekolah ?: 'SMK Negeri 1 Kolaka',
+                'school_name' => $profilSekolah?->nama_sekolah ?: 'MAN 2 Kolaka',
                 'school_npsn' => $profilSekolah?->npsn,
                 'school_address' => $profilSekolah?->alamat_lengkap,
                 'school_phone' => $profilSekolah?->nomor_telepon,
@@ -137,7 +137,7 @@ class PpdbExportController extends Controller
                 'logo_absolute_path' => $logoAbsolutePath,
                 'sign_location' => 'Kolaka',
                 'sign_date' => now()->translatedFormat('d F Y'),
-                'sign_title' => $kepalaSekolah?->jabatan ?: 'Kepala Sekolah',
+                'sign_title' => $kepalaSekolah?->jabatan ?: 'Kepala Madrasah',
                 'sign_name' => $kepalaSekolah?->nama_lengkap ?: '........................................',
                 'sign_nip' => $kepalaSekolah?->nip,
             ];
@@ -276,7 +276,7 @@ class PpdbExportController extends Controller
         $operator = $request->user();
 
         return [
-            'school_name' => strtoupper((string) ($profilSekolah?->nama_sekolah ?: 'SMKN 1 KOLAKA')),
+            'school_name' => strtoupper((string) ($profilSekolah?->nama_sekolah ?: 'MAN 2 KOLAKA')),
             'school_address' => (string) ($profilSekolah?->alamat_lengkap ?: '-'),
             'updated_at' => now()->format('d-m-Y H:i:s'),
             'academic_year' => (string) ($period?->tahun_ajaran ?: '-'),
@@ -543,7 +543,7 @@ class PpdbExportController extends Controller
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
         $sheet->mergeCells("A2:{$lastCol}2");
-        $sheet->setCellValue('A2', $meta['school_name'] ?? 'SMKN 1 KOLAKA');
+        $sheet->setCellValue('A2', $meta['school_name'] ?? 'MAN 2 KOLAKA');
         $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(16);
 
         $sheet->mergeCells("A3:{$lastCol}3");

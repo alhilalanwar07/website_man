@@ -45,8 +45,8 @@ class BeritaDetail extends Component
         $metaKeywords = collect([
             $this->berita->judul,
             $this->berita->kategori?->nama_kategori,
-            'berita sekolah',
-            'SMK Negeri 1 Kolaka',
+            'berita madrasah',
+            'MAN 2 Kolaka',
         ])->filter()->implode(', ');
         $publishedAt = optional($this->berita->published_at)->toIso8601String();
         $updatedAt = optional($this->berita->updated_at)->toIso8601String();
@@ -68,7 +68,7 @@ class BeritaDetail extends Component
             ],
             'publisher' => [
                 '@type' => 'Organization',
-                'name' => 'SMK Negeri 1 Kolaka',
+                'name' => 'MAN 2 Kolaka',
                 'logo' => [
                     '@type' => 'ImageObject',
                     'url' => asset('favicon.ico'),
@@ -78,6 +78,8 @@ class BeritaDetail extends Component
             'wordCount' => str_word_count($plainContent),
         ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
+        $safeKontenHtml = $this->safeKontenHtml;
+
         return view('livewire.frontend.berita-detail', compact(
             'related',
             'metaDescription',
@@ -86,7 +88,7 @@ class BeritaDetail extends Component
             'shareImage',
             'safeKontenHtml'
         ))
-            ->title($this->berita->judul . ' - SMK Negeri 1 Kolaka')
+            ->title($this->berita->judul . ' - MAN 2 Kolaka')
             ->layoutData([
                 'metaDescription' => $metaDescription,
                 'metaKeywords' => $metaKeywords,

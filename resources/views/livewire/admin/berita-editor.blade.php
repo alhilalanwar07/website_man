@@ -28,7 +28,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Judul *</label>
-                    <input wire:model="judul" type="text" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Contoh: Siswa SMKN 1 Kolaka Raih Prestasi Nasional">
+                    <input wire:model="judul" type="text" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Contoh: Siswa MAN 2 Kolaka Raih Prestasi Nasional">
                     @error('judul') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                 </div>
 
@@ -146,7 +146,7 @@
                     <div class="mt-4 space-y-3">
                         <div>
                             <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Brief untuk AI *</label>
-                            <textarea wire:model="ai_prompt" rows="5" class="w-full rounded-2xl border border-emerald-200 bg-white/90 px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-emerald-900/70 dark:bg-slate-900/80 dark:text-white" placeholder="Contoh: Tim siswa jurusan TKJ meraih juara 1 lomba IoT tingkat provinsi. Sertakan nama kegiatan, capaian, pernyataan kepala sekolah, dan dampaknya bagi motivasi siswa."></textarea>
+                            <textarea wire:model="ai_prompt" rows="5" class="w-full rounded-2xl border border-emerald-200 bg-white/90 px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-emerald-900/70 dark:bg-slate-900/80 dark:text-white" placeholder="Contoh: Tim siswa peminatan IPA meraih juara 1 lomba sains tingkat provinsi. Sertakan nama kegiatan, capaian, pernyataan kepala madrasah, dan dampaknya bagi motivasi siswa."></textarea>
                             @error('ai_prompt') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                         </div>
 

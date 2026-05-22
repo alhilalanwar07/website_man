@@ -148,14 +148,21 @@
 
 /* Gradient text */
 .text-gradient {
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    background: linear-gradient(135deg, #10b981, #0d9488, #059669);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .text-gradient-blue {
-    background: linear-gradient(135deg, #60a5fa, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #34d399, #10b981, #0d9488);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-emerald {
+    background: linear-gradient(135deg, #6ee7b7, #10b981, #059669);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -164,10 +171,10 @@
 /* Mesh gradient backgrounds */
 .bg-mesh-hero {
     background:
-        radial-gradient(at 20% 80%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-        radial-gradient(at 80% 20%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(236, 72, 153, 0.08) 0px, transparent 50%),
-        radial-gradient(at 90% 80%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+        radial-gradient(at 20% 80%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+        radial-gradient(at 80% 20%, rgba(13, 148, 136, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(5, 150, 105, 0.08) 0px, transparent 50%),
+        radial-gradient(at 90% 80%, rgba(52, 211, 153, 0.10) 0px, transparent 50%);
 }
 
 /* Card tilt on hover */

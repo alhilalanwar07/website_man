@@ -1,19 +1,19 @@
 <div wire:poll.10s>
     <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
-        <span wire:loading wire:target="statusFilter,pilihanFilter,search">Memuat daftar siswa untuk penentuan jurusan.</span>
-        <span wire:loading wire:target="setBatchTo">Memproses penetapan jurusan massal.</span>
-        <span wire:loading wire:target="assignedMajors">Menyimpan penentuan jurusan siswa.</span>
+        <span wire:loading wire:target="statusFilter,pilihanFilter,search">Memuat daftar siswa untuk penentuan peminatan.</span>
+        <span wire:loading wire:target="setBatchTo">Memproses penetapan peminatan massal.</span>
+        <span wire:loading wire:target="assignedMajors">Menyimpan penentuan peminatan siswa.</span>
     </div>
 
     <div wire:loading.flex wire:target="statusFilter,pilihanFilter,search,setBatchTo" class="mb-4 items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-900/30 dark:text-blue-300">
         <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
-        Memperbarui data penentuan jurusan...
+        Memperbarui data penentuan peminatan...
     </div>
 
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shrink-0">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Penentuan Jurusan</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Input manual menetapkan keputusan jurusan akhir siswa berdasarkan hasil tes wawancara.</p>
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Penentuan Peminatan</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Input manual menetapkan keputusan peminatan akhir siswa berdasarkan hasil tes wawancara.</p>
         </div>
         <div class="w-full lg:w-auto mt-2 sm:mt-0 flex flex-col sm:flex-row gap-3">
             <select wire:model.live="statusFilter" wire:loading.attr="disabled" wire:target="statusFilter,pilihanFilter,search,setBatchTo" class="rounded-xl border-slate-300 py-2.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white bg-white disabled:cursor-not-allowed disabled:opacity-60">
@@ -71,7 +71,7 @@
         <!-- Header & Quick Override -->
         <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div class="flex items-center gap-2">
-                <h3 class="font-bold text-slate-800 dark:text-white text-sm whitespace-nowrap">Daftar Siswa Siap Penjurusan</h3>
+                <h3 class="font-bold text-slate-800 dark:text-white text-sm whitespace-nowrap">Daftar Siswa Siap Penentuan Peminatan</h3>
                 @if(count($selectedRows) > 0)
                     <span class="bg-blue-100 text-blue-700 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md">{{ count($selectedRows) }} Dipilih</span>
                 @endif
@@ -81,7 +81,7 @@
                 <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wide px-2 shrink-0">Tetapkan yang dipilih ke:</span>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <select x-model="majorId" class="flex-1 sm:w-48 text-sm font-bold text-slate-700 rounded-lg border-slate-300 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white py-2 px-3 bg-slate-50 cursor-pointer">
-                        <option value="">-- Pilih Jurusan --</option>
+                        <option value="">-- Pilih Peminatan --</option>
                         @foreach($majors as $m)
                             <option value="{{ $m->id }}">{{ $m->kode_jurusan ?? $m->nama_jurusan }}</option>
                         @endforeach
@@ -102,7 +102,7 @@
                             <input wire:model.live="selectAll" wire:loading.attr="disabled" wire:target="statusFilter,pilihanFilter,search,setBatchTo" type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60">
                         </th>
                         <th scope="col" class="px-4 py-4 w-1/3">Identitas Calon Siswa</th>
-                        <th scope="col" class="px-4 py-4 w-1/4">Preferensi Jurusan Awal</th>
+                        <th scope="col" class="px-4 py-4 w-1/4">Preferensi Peminatan Awal</th>
                         <th scope="col" class="px-5 py-4 w-[350px]">
                             <div class="flex items-center text-blue-600 dark:text-blue-400 gap-2">
                                 <x-admin.icon name="academic-cap" class="w-4 h-4" /> KEPUTUSAN FINAL

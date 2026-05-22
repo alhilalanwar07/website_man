@@ -9,7 +9,7 @@
     };
     $defaultLogoBase64 = $toBase64Image($logoPath);
     $leftLogoBase64 = $toBase64Image(storage_path('app/public/sultra_logo.png')) ?? $defaultLogoBase64;
-    $rightLogoBase64 = $toBase64Image(storage_path('app/public/smk1kolaka.jpg')) ?? $defaultLogoBase64;
+    $rightLogoBase64 = $toBase64Image(storage_path('app/public/MAN-2.png')) ?? $defaultLogoBase64;
     $meta = $documentMeta ?? [];
     $tahunAjaran = $period->tahun_ajaran ?? '-';
     $gelombang = $period->gelombang_label ?? ('Gelombang ' . ($period->gelombang_ke ?? '-'));
@@ -67,15 +67,15 @@
                 @endif
             </td>
             <td class="kop-text">
-                <div class="line1">PEMERINTAH PROVINSI SULAWESI TENGGARA</div>
-                <div class="line2">DINAS PENDIDIKAN DAN KEBUDAYAAN</div>
-                <div class="line3">SMK NEGERI 1 KOLAKA</div>
-                <div class="line4">Jl. Pendidikan No. 49, Telp./Fax. (0405) 231378, Kab. Kolaka, 93517</div>
-                <div class="line5">Email: smk1kolaka@gmail.com</div>
+            <div class="line1">KEMENTERIAN AGAMA REPUBLIK INDONESIA</div>
+                <div class="line2">KANTOR KEMENTERIAN AGAMA KABUPATEN KOLAKA</div>
+                <div class="line3">{{ strtoupper($profil->nama_sekolah ?? 'MAN 2 KOLAKA') }}</div>
+                <div class="line4">{{ $profil->alamat_lengkap ?? 'Jl. Pemuda No. 12, Kelurahan Laloeha, Kecamatan Kolaka, Kabupaten Kolaka, Sulawesi Tenggara 93511' }}{{ $profil->nomor_telepon ? ' | Telp. ' . $profil->nomor_telepon : '' }}</div>
+                <div class="line5">Email: {{ $profil->email_resmi ?? 'info@man2kolaka.sch.id' }}</div>
             </td>
             <td class="logo-cell">
                 @if($rightLogoBase64)
-                    <img src="{{ $rightLogoBase64 }}" alt="Logo SMK">
+                    <img src="{{ $rightLogoBase64 }}" alt="Logo MAN">
                 @endif
             </td>
         </tr>
@@ -103,7 +103,7 @@
                 <th rowspan="2" style="width:70px;">Tanggal Lahir</th>
                 <th rowspan="2" style="width:55px;">Nilai Akademik</th>
                 <th rowspan="2" style="width:55px;">Nilai Wawancara</th>
-                <th colspan="{{ $programs->count() }}">Jurusan yang Direkomendasikan (<span class="sym">&#10003;</span>)</th>
+                <th colspan="{{ $programs->count() }}">Peminatan yang Direkomendasikan (<span class="sym">&#10003;</span>)</th>
             </tr>
             <tr>
                 @foreach($programs as $program)
@@ -138,7 +138,7 @@
         <p><strong>Keterangan:</strong></p>
         <ul>
             <li>Kolom <strong>Nilai Akademik</strong> dan <strong>Nilai Wawancara</strong> diisi oleh guru penguji.</li>
-            <li>Berikan tanda <strong><span class="sym">&#10003;</span> (centang)</strong> pada kolom jurusan yang direkomendasikan.</li>
+            <li>Berikan tanda <strong><span class="sym">&#10003;</span> (centang)</strong> pada kolom peminatan yang direkomendasikan.</li>
             <li>Tanda <strong><span class="sym">&#9734;</span></strong> menandakan pilihan pertama calon siswa (sebagai referensi).</li>
         </ul>
     </div>
@@ -148,7 +148,7 @@
         <tr>
             <td>
                 <p>Mengetahui,</p>
-                <p>{{ $meta['sign_title'] ?? 'Kepala Sekolah' }}</p>
+                <p>{{ $meta['sign_title'] ?? 'Kepala Madrasah' }}</p>
                 <div style="height: 55px;"></div>
                 <p class="sign-name">{{ $meta['sign_name'] ?? '........................................' }}</p>
                 @if($meta['sign_nip'] ?? null)<p style="font-size:9pt">NIP. {{ $meta['sign_nip'] }}</p>@endif

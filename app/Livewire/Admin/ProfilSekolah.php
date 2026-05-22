@@ -81,7 +81,7 @@ class ProfilSekolah extends Component
             'alamat_lengkap' => 'required|string',
             'email_resmi' => 'nullable|email',
             'logo' => 'nullable|image|max:2048',
-            'favicon' => 'nullable|image|max:1024',
+            'favicon' => ['nullable', 'file', 'max:1024', 'mimes:png,jpg,jpeg,gif,bmp,webp,ico,x-icon'],
             'foto_kepsek' => 'nullable|image|max:2048',
         ]);
 

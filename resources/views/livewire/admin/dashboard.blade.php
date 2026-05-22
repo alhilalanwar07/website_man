@@ -13,11 +13,11 @@
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>',
                 'caption' => 'Pilihan kompetensi yang ditawarkan sekolah.',
             ],
-            'Produk TEFA' => [
+            'Ekstrakurikuler' => [
                 'accent' => 'from-emerald-500 to-teal-600',
                 'soft' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
                 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12"/>',
-                'caption' => 'Unit karya dan layanan teaching factory.',
+                'caption' => 'Kegiatan ekstrakurikuler yang tersedia di madrasah.',
             ],
             'Berita' => [
                 'accent' => 'from-amber-500 to-orange-600',

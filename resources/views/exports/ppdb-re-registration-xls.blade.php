@@ -84,7 +84,7 @@
                     <th>Asal Sekolah</th>
                     <th>Tanggal Lahir</th>
                     <th>Jenis Kelamin</th>
-                    <th>Jurusan Diterima</th>
+                    <th>Peminatan Diterima</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,7 +107,7 @@
                 <td colspan="{{ $columnCount }}" class="meta-cell meta-title">Daftar Peserta Didik</td>
             </tr>
             <tr>
-                <td colspan="{{ $columnCount }}" class="meta-cell meta-school">{{ $exportMeta['school_name'] ?? 'SMKN 1 KOLAKA' }}</td>
+                <td colspan="{{ $columnCount }}" class="meta-cell meta-school">{{ $exportMeta['school_name'] ?? 'MAN 2 KOLAKA' }}</td>
             </tr>
             <tr>
                 <td colspan="{{ $columnCount }}" class="meta-cell">{{ $exportMeta['school_address'] ?? '-' }}</td>

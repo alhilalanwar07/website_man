@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class TefaProduk extends Model
+class Ekstrakurikuler extends Model
 {
     protected $table = 'tefa_produk';
 
@@ -34,10 +34,10 @@ class TefaProduk extends Model
 
     public function kategori(): BelongsTo
     {
-        return $this->belongsTo(TefaKategori::class, 'kategori_id');
+        return $this->belongsTo(EkstrakurikulerKategori::class, 'kategori_id');
     }
 
-    public function scopeTersedia($query)
+    public function scopeAktif($query)
     {
         return $query->where('status_ketersediaan', 'tersedia');
     }

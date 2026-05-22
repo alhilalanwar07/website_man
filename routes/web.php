@@ -26,7 +26,7 @@ use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\ProfilSekolah;
 use App\Livewire\Admin\Pegawai;
 use App\Livewire\Admin\ProgramKeahlian;
-use App\Livewire\Admin\Tefa;
+use App\Livewire\Admin\Ekstrakurikuler;
 use App\Livewire\Admin\Berita;
 use App\Livewire\Admin\BeritaEditor;
 use App\Livewire\Admin\Pengumuman;
@@ -113,7 +113,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/profil-sekolah', ProfilSekolah::class)->name('profil-sekolah');
     Route::get('/pegawai', Pegawai::class)->name('pegawai');
     Route::get('/program-keahlian', ProgramKeahlian::class)->name('program-keahlian');
-    Route::get('/tefa', Tefa::class)->name('tefa');
+    Route::get('/ekstrakurikuler', Ekstrakurikuler::class)->name('ekstrakurikuler');
     Route::get('/berita', Berita::class)->name('berita');
     Route::get('/berita/tambah', BeritaEditor::class)->name('berita.create');
     Route::get('/berita/{berita}/edit', BeritaEditor::class)->name('berita.edit');

@@ -10,7 +10,7 @@ use App\Models\Berita;
 use App\Models\KategoriBerita;
 
 #[Layout('components.layouts.app')]
-#[Title('Berita - SMK Negeri 1 Kolaka')]
+#[Title('Berita - MAN 2 Kolaka')]
 class BeritaIndex extends Component
 {
     use WithPagination;

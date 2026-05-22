@@ -3,35 +3,55 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Halaman Tidak Ditemukan - SMKN 1 Kolaka</title>
-    
-    <!-- Fonts -->
+    <title>Halaman Tidak Ditemukan — MAN 2 Kolaka</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900" rel="stylesheet" />
-    
-    <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="antialiased bg-slate-50 min-h-screen flex items-center justify-center p-4">
+<body class="antialiased bg-slate-950 min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
 
-    <div class="max-w-2xl w-full text-center relative z-10">
-        {{-- Background Effects --}}
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-400/10 rounded-full blur-[100px] -z-10"></div>
-        
-        <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
-            <h1 class="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-indigo-600 mb-4 tracking-tighter">404</h1>
-            
-            <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tight">Halaman Tidak Ditemukan</h2>
-            <p class="text-lg text-slate-600 mb-8 max-w-lg mx-auto">Maaf, halaman yang Anda cari mungkin telah dihapus, diubah namanya, atau tidak pernah ada.</p>
-            
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="/" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-600/20 w-full sm:w-auto">
-                    Kembali ke Beranda
-                </a>
-            </div>
+    {{-- Background blobs --}}
+    <div class="absolute top-[-10%] left-[-5%] w-[28rem] h-[28rem] rounded-full bg-emerald-600/15 blur-[110px] pointer-events-none"></div>
+    <div class="absolute bottom-[-15%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-teal-600/10 blur-[120px] pointer-events-none"></div>
+
+    {{-- Card --}}
+    <div class="relative z-10 w-full max-w-lg text-center">
+
+        {{-- Badge --}}
+        <span class="inline-flex px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-bold uppercase tracking-[0.3em] text-emerald-400 mb-8">
+            MAN 2 Kolaka
+        </span>
+
+        {{-- Code --}}
+        <div class="text-[7rem] sm:text-[9rem] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 via-teal-400 to-emerald-600 select-none mb-4">
+            404
         </div>
-        
-        <p class="text-sm text-slate-400 mt-8 font-medium">SMK Negeri 1 Kolaka &copy; {{ date('Y') }}</p>
+
+        {{-- Message --}}
+        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-3">
+            Halaman Tidak Ditemukan
+        </h1>
+        <p class="text-slate-400 text-base leading-relaxed max-w-sm mx-auto mb-10">
+            Halaman yang Anda cari mungkin sudah dipindahkan, dihapus, atau alamatnya salah ketik.
+        </p>
+
+        {{-- Actions --}}
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="/" class="w-full sm:w-auto px-7 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-2xl transition-all shadow-lg shadow-emerald-600/25 hover:-translate-y-0.5">
+                Kembali ke Beranda
+            </a>
+            <a href="javascript:history.back()" class="w-full sm:w-auto px-7 py-3.5 border border-white/10 bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-2xl transition-all">
+                Halaman Sebelumnya
+            </a>
+        </div>
+
+        {{-- Divider --}}
+        <div class="mt-12 pt-8 border-t border-white/10">
+            <p class="text-xs text-slate-500 font-medium">
+                MAN 2 Kolaka &mdash; Madrasah Aliyah Negeri &copy; {{ date('Y') }}
+            </p>
+        </div>
     </div>
+
 </body>
 </html>

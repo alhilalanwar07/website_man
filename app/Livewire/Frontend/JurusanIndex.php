@@ -8,7 +8,7 @@ use Livewire\Attributes\Title;
 use App\Models\ProgramKeahlian;
 
 #[Layout('components.layouts.app')]
-#[Title('Program Keahlian - SMK Negeri 1 Kolaka')]
+#[Title('Peminatan - MAN 2 Kolaka')]
 class JurusanIndex extends Component
 {
     public function render()

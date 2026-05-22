@@ -19,6 +19,6 @@ class JurusanDetail extends Component
     public function render()
     {
         return view('livewire.frontend.jurusan-detail')
-            ->title($this->jurusan->nama_jurusan . ' - SMK Negeri 1 Kolaka');
+            ->title($this->jurusan->nama_jurusan . ' - MAN 2 Kolaka');
     }
 }

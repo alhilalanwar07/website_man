@@ -1,6 +1,6 @@
 @php
     $profil = \App\Models\ProfilSekolah::first();
-    $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
+    $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Admin - SMK Negeri 1 Kolaka' }}</title>
+    <title>{{ $title ?? 'Admin - MAN 2 Kolaka' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@
         x-show="navigatingMenu"
         x-cloak
         class="fixed inset-0 z-[999] flex items-center justify-center bg-slate-950/45 backdrop-blur-sm">
-        <div class="w-full max-w-sm rounded-2xl border border-blue-100 bg-white/95 p-5 shadow-2xl dark:border-blue-900 dark:bg-slate-900/95">
+        <div class="w-full max-w-sm rounded-2xl border border-emerald-100 bg-white/95 p-5 shadow-2xl dark:border-emerald-900 dark:bg-slate-900/95">
             <div role="status" aria-live="polite" aria-atomic="true" class="flex items-center gap-3 text-sm font-semibold text-blue-700 dark:text-blue-300">
                 <svg class="h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
                 Membuka halaman yang dipilih...
@@ -73,20 +73,20 @@
                x-cloak>
             {{-- Logo --}}
             <a href="{{ $brandHomeRoute }}" @click="startNavigation($event)" class="flex items-center gap-3 px-4 h-16 border-b border-slate-700/50 transition-colors hover:bg-slate-800/60">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                <div class="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                 </div>
-                <span class="font-bold text-sm tracking-tight whitespace-nowrap overflow-hidden" x-show="sidebarOpen" x-transition>SMKN 1 KOLAKA</span>
+                <span class="font-bold text-sm tracking-tight whitespace-nowrap overflow-hidden" x-show="sidebarOpen" x-transition>MAN 2 KOLAKA</span>
             </a>
 
             {{-- Navigation --}}
             <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
                 @if ($isSuperAdmin)
                     <x-admin.nav-link href="{{ route('admin.dashboard') }}" icon="home" :active="request()->routeIs('admin.dashboard')">Dashboard</x-admin.nav-link>
-                    <x-admin.nav-link href="{{ route('admin.profil-sekolah') }}" icon="building" :active="request()->routeIs('admin.profil-sekolah')">Profil Sekolah</x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.profil-sekolah') }}" icon="building" :active="request()->routeIs('admin.profil-sekolah')">Profil Madrasah</x-admin.nav-link>
                     <x-admin.nav-link href="{{ route('admin.pegawai') }}" icon="users" :active="request()->routeIs('admin.pegawai*')">Pegawai</x-admin.nav-link>
-                    <x-admin.nav-link href="{{ route('admin.program-keahlian') }}" icon="book" :active="request()->routeIs('admin.program-keahlian*')">Program Keahlian</x-admin.nav-link>
-                    <x-admin.nav-link href="{{ route('admin.tefa') }}" icon="shopping-bag" :active="request()->routeIs('admin.tefa*')">TEFA</x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.program-keahlian') }}" icon="book" :active="request()->routeIs('admin.program-keahlian*')">Peminatan</x-admin.nav-link>
+                    <x-admin.nav-link href="{{ route('admin.ekstrakurikuler') }}" icon="star" :active="request()->routeIs('admin.ekstrakurikuler*')">Ekstrakurikuler</x-admin.nav-link>
                     <x-admin.nav-link href="{{ route('admin.berita') }}" icon="newspaper" :active="request()->routeIs('admin.berita*')">Berita</x-admin.nav-link>
                     <x-admin.nav-link href="{{ route('admin.pengumuman') }}" icon="megaphone" :active="request()->routeIs('admin.pengumuman*')">Pengumuman</x-admin.nav-link>
                     <x-admin.nav-link href="{{ route('admin.agenda') }}" icon="calendar" :active="request()->routeIs('admin.agenda*')">Agenda</x-admin.nav-link>
@@ -115,7 +115,7 @@
                         <p class="px-3 text-[11px] font-bold uppercase tracking-[0.25em] text-slate-500" x-show="sidebarOpen" x-transition>PPDB</p>
                         <x-admin.nav-link href="{{ route('admin.ppdb.dashboard') }}" icon="home" :active="request()->routeIs('admin.ppdb.dashboard')">Dashboard</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.pendaftar') }}" icon="users" :active="request()->routeIs('admin.ppdb.pendaftar')">Data Pendaftar</x-admin.nav-link>
-                        <x-admin.nav-link href="{{ route('admin.ppdb.penentuan-jurusan') }}" icon="clipboard-check" :active="request()->routeIs('admin.ppdb.penentuan-jurusan')">Penentuan Jurusan</x-admin.nav-link>
+                        <x-admin.nav-link href="{{ route('admin.ppdb.penentuan-jurusan') }}" icon="clipboard-check" :active="request()->routeIs('admin.ppdb.penentuan-jurusan')">Penentuan Peminatan</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.daftar-ulang') }}" icon="document-text" :active="request()->routeIs('admin.ppdb.daftar-ulang')">Daftar Ulang</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.laporan') }}" icon="chart-bar" :active="request()->routeIs('admin.ppdb.laporan')">Laporan</x-admin.nav-link>
                         <x-admin.nav-link href="{{ route('admin.ppdb.broadcast') }}" icon="megaphone" :active="request()->routeIs('admin.ppdb.broadcast')">Broadcast</x-admin.nav-link>
@@ -133,7 +133,7 @@
             {{-- User --}}
             <div class="border-t border-slate-700/50 p-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-blue-500 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
+                    <div class="w-9 h-9 bg-emerald-500 rounded-lg flex items-center justify-center text-sm font-bold shrink-0">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
                     <div class="overflow-hidden" x-show="sidebarOpen" x-transition>
@@ -167,7 +167,7 @@
                         <svg x-show="!dark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                         <svg x-show="dark" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </button>
-                    <a href="/" @click="startNavigation($event)" class="text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition">Lihat Website</a>
+                    <a href="/" @click="startNavigation($event)" class="text-sm text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition">Lihat Website</a>
                     <form method="POST" action="{{ route('logout') }}" @submit="startNavigation($event)">
                         @csrf
                         <button type="submit" :disabled="navigatingMenu" class="px-4 py-2 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition disabled:cursor-not-allowed disabled:opacity-60">Logout</button>

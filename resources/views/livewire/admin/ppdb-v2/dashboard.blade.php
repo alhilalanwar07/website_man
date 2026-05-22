@@ -12,7 +12,7 @@
     <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Dashboard PPDB</h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ringkasan pendaftaran dan akses cepat penentuan jurusan.</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Ringkasan pendaftaran dan akses cepat penentuan peminatan.</p>
         </div>
         <div class="flex flex-shrink-0 items-center gap-3">
             <a href="{{ route('admin.ppdb.broadcast') }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <!-- Selesai Jurusan -->
+        <!-- Selesai Peminatan -->
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">

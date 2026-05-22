@@ -361,10 +361,10 @@
                     </div>
                 </div>
 
-                <!-- Status & Jurusan -->
+                <!-- Status & Peminatan -->
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                     <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
-                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Sekolah, Jurusan & Status</h3>
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">Sekolah, Peminatan & Status</h3>
                     </div>
                     <div class="p-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 text-sm">
                         @foreach([
@@ -375,9 +375,9 @@
                             'Asal Sekolah' => $s->asal_sekolah,
                             'Alamat Sekolah' => $s->alamat_sekolah,
                             'Nilai Rata-rata' => $s->nilai_rata_rata,
-                            'Jurusan Pilihan 1' => $s->pilihanProgram1?->nama_jurusan,
-                            'Jurusan Pilihan 2' => $s->pilihanProgram2?->nama_jurusan,
-                            'Jurusan Pilihan 3' => $s->pilihanProgram3?->nama_jurusan,
+                            'Peminatan Pilihan 1' => $s->pilihanProgram1?->nama_jurusan,
+                            'Peminatan Pilihan 2' => $s->pilihanProgram2?->nama_jurusan,
+                            'Peminatan Pilihan 3' => $s->pilihanProgram3?->nama_jurusan,
                         ] as $lbl => $val)
                         <div wire:key="sj-{{ Str::slug($lbl) }}" class="rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/40">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $lbl }}</p>

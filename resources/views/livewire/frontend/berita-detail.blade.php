@@ -15,8 +15,8 @@
     {{-- ============================================ --}}
     <section class="relative py-28 overflow-hidden bg-slate-950 noise">
         <div class="absolute inset-0">
-            <div class="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-purple-600/20 rounded-full blur-[100px] animate-blob"></div>
-            <div class="absolute bottom-[-10%] right-[-5%] w-[300px] h-[300px] bg-blue-600/15 rounded-full blur-[80px] animate-blob" style="animation-delay:2s"></div>
+            <div class="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-emerald-600/20 rounded-full blur-[100px] animate-blob"></div>
+            <div class="absolute bottom-[-10%] right-[-5%] w-[300px] h-[300px] bg-teal-600/15 rounded-full blur-[80px] animate-blob" style="animation-delay:2s"></div>
         </div>
         <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -74,7 +74,7 @@
                     <p class="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Bagikan</p>
                     <div class="mt-3 flex flex-wrap gap-2">
                         @foreach($shareLinks as $label => $link)
-                        <a href="{{ $link }}" target="_blank" rel="noopener noreferrer" class="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-600">
+                        <a href="{{ $link }}" target="_blank" rel="noopener noreferrer" class="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-600">
                             {{ $label }}
                         </a>
                         @endforeach
@@ -88,20 +88,20 @@
             </div>
             @endif
 
-            <article class="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-a:text-blue-600 prose-img:rounded-2xl">
+            <article class="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-a:text-emerald-600 prose-img:rounded-2xl">
                 {!! $safeKontenHtml !!}
             </article>
 
-            <div x-data="{ copied: false }" class="mt-10 rounded-[28px] border border-blue-100 bg-blue-50 p-6">
+            <div x-data="{ copied: false }" class="mt-10 rounded-[28px] border border-emerald-100 bg-emerald-50 p-6">
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <p class="text-base font-black text-slate-900">Bagikan artikel ini</p>
-                        <p class="mt-1 text-sm text-slate-600">Tautan artikel sudah dioptimalkan untuk dibagikan ke media sosial, grup wali murid, dan kanal informasi sekolah.</p>
+                        <p class="mt-1 text-sm text-slate-600">Tautan artikel sudah dioptimalkan untuk dibagikan ke media sosial, grup wali murid, dan kanal informasi madrasah.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
                         <a href="{{ $canonicalUrl }}" class="rounded-full bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm">Link Artikel</a>
-                        <button type="button" @click="navigator.clipboard.writeText('{{ $canonicalUrl }}'); copied = true; setTimeout(() => copied = false, 2000)" class="rounded-full bg-blue-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-700">Salin Link</button>
-                        <span x-show="copied" x-transition class="text-xs font-bold text-blue-600">Link tersalin</span>
+                        <button type="button" @click="navigator.clipboard.writeText('{{ $canonicalUrl }}'); copied = true; setTimeout(() => copied = false, 2000)" class="rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">Salin Link</button>
+                        <span x-show="copied" x-transition class="text-xs font-bold text-emerald-600">Link tersalin</span>
                     </div>
                 </div>
             </div>
@@ -113,10 +113,10 @@
     {{-- ============================================ --}}
     @if($related->count() > 0)
     <section class="py-28 bg-slate-50 relative overflow-hidden">
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="mb-14">
-                <span class="inline-block px-4 py-1.5 text-xs font-bold text-purple-600 bg-purple-50 rounded-full uppercase tracking-wider mb-4">Baca Juga</span>
+                <span class="inline-block px-4 py-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 rounded-full uppercase tracking-wider mb-4">Baca Juga</span>
                 <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-slate-900">Berita <span class="text-gradient">Terkait</span></h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -133,7 +133,7 @@
                     </div>
                     <div class="p-6">
                         <span class="text-xs text-slate-400">{{ $r->published_at?->format('d M Y') }}</span>
-                        <h3 class="text-base font-bold text-slate-900 mt-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                        <h3 class="text-base font-bold text-slate-900 mt-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
                             <a href="{{ route('berita.show', $r->slug) }}">{{ $r->judul }}</a>
                         </h3>
                     </div>

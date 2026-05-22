@@ -15,7 +15,7 @@ use Livewire\Component;
 use Throwable;
 
 #[Layout('components.layouts.app')]
-#[Title('Cek Status PPDB - SMK Negeri 1 Kolaka')]
+#[Title('Cek Status PPDB - MAN 2 Kolaka')]
 class PpdbStatus extends Component
 {
     protected const RE_REGISTRATION_PREFILL_SESSION_KEY = 'ppdb.re_registration_prefill';

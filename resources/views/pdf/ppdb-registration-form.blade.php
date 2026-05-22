@@ -21,7 +21,7 @@
 
     $defaultLogoBase64 = $toBase64Image($logoPath);
     $leftLogoBase64 = $toBase64Image(storage_path('app/public/sultra_logo.png')) ?? $defaultLogoBase64;
-    $rightLogoBase64 = $toBase64Image(storage_path('app/public/smk1kolaka.jpg')) ?? $defaultLogoBase64;
+    $rightLogoBase64 = $toBase64Image(storage_path('app/public/MAN-2.png')) ?? $defaultLogoBase64;
 
     $pasFotoDoc = $application->documents->firstWhere('jenis_dokumen', 'Pas Foto');
     $pasFotoBase64 = null;
@@ -71,7 +71,7 @@
 
     $period = $application->period;
 
-    $contactEmail = trim((string) config('services.ppdb_contact.admin_email', 'admin@smkn1kolaka.sch.id'));
+    $contactEmail = trim((string) config('services.ppdb_contact.admin_email', 'admin@man2kolaka.sch.id'));
     $contactWhatsApp = preg_replace('/\D+/', '', (string) config('services.ppdb_contact.admin_whatsapp', ''));
     $contactPhone = trim((string) ($profil->nomor_telepon ?? '(0405) 231378'));
 
@@ -159,7 +159,7 @@
             'Fotokopi rapor semester 1 s.d. 5 atau dokumen nilai rapor yang disahkan.',
             'Fotokopi SKL atau Ijazah (sesuai ketersediaan saat daftar ulang).',
             'Pas foto 3x4 latar biru (2 lembar).',
-            'Map berwarna sesuai ketentuan jurusan pilihan utama.',
+            'Map berwarna sesuai ketentuan peminatan pilihan utama.',
         ];
     }
 
@@ -707,15 +707,15 @@
                     @endif
                 </td>
                 <td class="kop-text">
-                    <div class="line1">PEMERINTAH PROVINSI SULAWESI TENGGARA</div>
-                    <div class="line2">DINAS PENDIDIKAN DAN KEBUDAYAAN</div>
-                    <div class="line3">SMK NEGERI 1 KOLAKA</div>
-                    <div class="line4">Jl. Pendidikan No. 49, Telp./Fax. (0405) 231378, Kab. Kolaka, 93517</div>
-                    <div class="line5">Email: smk1kolaka@gmail.com</div>
+                    <div class="line1">KEMENTERIAN AGAMA REPUBLIK INDONESIA</div>
+                    <div class="line2">KANTOR KEMENTERIAN AGAMA KABUPATEN KOLAKA</div>
+                    <div class="line3">{{ strtoupper($profil->nama_sekolah ?? 'MAN 2 KOLAKA') }}</div>
+                    <div class="line4">{{ $profil->alamat_lengkap ?? 'Jl. Pemuda No. 12, Kelurahan Laloeha, Kecamatan Kolaka, Kabupaten Kolaka, Sulawesi Tenggara 93511' }}{{ $profil->nomor_telepon ? ' | Telp. ' . $profil->nomor_telepon : '' }}</div>
+                    <div class="line5">Email: {{ $profil->email_resmi ?? 'info@man2kolaka.sch.id' }}</div>
                 </td>
                 <td class="logo-cell">
                     @if($rightLogoBase64)
-                        <img src="{{ $rightLogoBase64 }}" alt="Logo SMK">
+                        <img src="{{ $rightLogoBase64 }}" alt="Logo MAN">
                     @endif
                 </td>
             </tr>
@@ -744,7 +744,7 @@
             </div>
             <div class="title-cell">
                 <div class="form-title">FORMULIR PENDAFTARAN SPMB (SISTEM PENERIMAAN MURID BARU)</div>
-                <div class="form-subtitle">SMK NEGERI 1 KOLAKA TP. {{ $tahunAjaranLabel }}</div>
+                <div class="form-subtitle">MAN 2 KOLAKA TP. {{ $tahunAjaranLabel }}</div>
             </div>
         </div>
 
@@ -871,20 +871,20 @@
             </tbody>
         </table>
 
-        <div class="section-title">B. PILIHAN JURUSAN :</div>
+        <div class="section-title">B. PILIHAN PEMINATAN :</div>
         <table class="jurusan-table">
             <tr>
-                <td class="jurusan-label">JURUSAN KE - 1</td>
+                <td class="jurusan-label">PEMINATAN KE - 1</td>
                 <td class="sep-col">:</td>
                 <td><strong>{{ $pilihanJurusan1 }}</strong></td>
             </tr>
             <tr>
-                <td class="jurusan-label">JURUSAN KE - 2</td>
+                <td class="jurusan-label">PEMINATAN KE - 2</td>
                 <td class="sep-col">:</td>
                 <td>{{ $pilihanJurusan2 }}</td>
             </tr>
             <tr>
-                <td class="jurusan-label">JURUSAN KE - 3</td>
+                <td class="jurusan-label">PEMINATAN KE - 3</td>
                 <td class="sep-col">:</td>
                 <td>{{ $pilihanJurusan3 }}</td>
             </tr>
@@ -1013,10 +1013,10 @@
         <div class="declaration-title">PERNYATAAN CALON MURID BARU</div>
         <p class="declaration-intro">Saya bertanggung jawab kebenaran data dan bersedia untuk :</p>
         <ol class="declaration-list">
-            <li>Dicabut status peserta tes calon murid baru di SMK Negeri 1 Kolaka jika memberikan data palsu.</li>
+            <li>Dicabut status peserta tes calon murid baru di MAN 2 Kolaka jika memberikan data palsu.</li>
             <li>Belajar sungguh-sungguh serta mematuhi seluruh peraturan dan tata tertib sekolah hingga tamat.</li>
             <li>Berakhlak mulia di mana pun berada serta menjaga nama baik diri sendiri, keluarga, dan sekolah.</li>
-            <li>Orang tua/wali bersedia bekerja sama dengan pihak sekolah dalam pembinaan calon murid baru.</li>
+            <li>Orang tua/wali bersedia bekerja sama dengan pihak madrasah dalam pembinaan calon murid baru.</li>
         </ol>
 
         <table class="signature-table">
@@ -1112,13 +1112,13 @@
         <div class="list-box">
             <h4>4. Ketentuan map berkas fisik</h4>
             <div style="margin-top: 5px; border: 1px dashed #444; padding: 8px; font-size: 10pt; line-height: 1.4; background-color: #fcfcfc;">
-                Berdasarkan pilihan jurusan pertama Anda (<strong>{{ $pilihanJurusan1 }}</strong>), silakan gunakan map kertas berwarna <strong>{{ strtoupper($warnaMapUtama) }}</strong> saat menyerahkan dokumen fisik ke panitia pendaftaran.
+                Berdasarkan pilihan peminatan pertama Anda (<strong>{{ $pilihanJurusan1 }}</strong>), silakan gunakan map kertas berwarna <strong>{{ strtoupper($warnaMapUtama) }}</strong> saat menyerahkan dokumen fisik ke panitia pendaftaran.
             </div>
-            <p class="muted-note" style="margin-top: 5px;">Jika terdapat perubahan warna map dari panitia, gunakan ketentuan terbaru pada pengumuman resmi sekolah.</p>
+            <p class="muted-note" style="margin-top: 5px;">Jika terdapat perubahan warna map dari panitia, gunakan ketentuan terbaru pada pengumuman resmi madrasah.</p>
         </div>
 
         <div class="footer-note">
-            Dokumen ini dicetak otomatis oleh sistem SPMB SMK Negeri 1 Kolaka.<br>
+            Dokumen ini dicetak otomatis oleh sistem SPMB MAN 2 Kolaka.<br>
             Simpan dokumen ini dan bawa saat proses verifikasi serta daftar ulang.
         </div>
 

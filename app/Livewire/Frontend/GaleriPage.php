@@ -8,7 +8,7 @@ use Livewire\Attributes\Title;
 use App\Models\GaleriAlbum;
 
 #[Layout('components.layouts.app')]
-#[Title('Galeri - SMK Negeri 1 Kolaka')]
+#[Title('Galeri - MAN 2 Kolaka')]
 class GaleriPage extends Component
 {
     public $selectedAlbum = null;

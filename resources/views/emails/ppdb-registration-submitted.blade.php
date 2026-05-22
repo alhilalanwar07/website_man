@@ -12,7 +12,7 @@
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
                     <tr>
                         <td style="padding:24px;background:#0f172a;color:#ffffff;">
-                            <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#93c5fd;">PPDB SMK Negeri 1 Kolaka</p>
+                            <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#93c5fd;">PPDB MAN 2 Kolaka</p>
                             <h1 style="margin:12px 0 0;font-size:24px;line-height:1.2;">Pendaftaran Berhasil Diterima</h1>
                         </td>
                     </tr>
@@ -31,11 +31,11 @@
                                     <td style="padding:10px 14px;font-size:13px;color:#0f172a;">{{ $application->track?->nama_jalur ?? '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding:10px 14px;font-size:13px;color:#475569;">Pilihan Jurusan 1</td>
+                                    <td style="padding:10px 14px;font-size:13px;color:#475569;">Pilihan Peminatan 1</td>
                                     <td style="padding:10px 14px;font-size:13px;color:#0f172a;">{{ $application->pilihanProgram1?->nama_jurusan ?? '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding:10px 14px;font-size:13px;color:#475569;">Pilihan Jurusan 2</td>
+                                    <td style="padding:10px 14px;font-size:13px;color:#475569;">Pilihan Peminatan 2</td>
                                     <td style="padding:10px 14px;font-size:13px;color:#0f172a;">{{ $application->pilihanProgram2?->nama_jurusan ?? '-' }}</td>
                                 </tr>
                             </table>
@@ -53,7 +53,7 @@
                     </tr>
                     <tr>
                         <td style="padding:16px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;">
-                            <p style="margin:0;font-size:12px;color:#64748b;">Email ini dikirim otomatis oleh sistem PPDB SMK Negeri 1 Kolaka.</p>
+                            <p style="margin:0;font-size:12px;color:#64748b;">Email ini dikirim otomatis oleh sistem PPDB MAN 2 Kolaka.</p>
                         </td>
                     </tr>
                 </table>

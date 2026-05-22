@@ -25,7 +25,7 @@ class PpdbRegistrationSubmittedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'PPDB SMK Negeri 1 Kolaka - Pendaftaran Berhasil'
+            subject: 'PPDB MAN 2 Kolaka - Pendaftaran Berhasil'
         );
     }
 

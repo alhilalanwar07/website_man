@@ -13,7 +13,7 @@
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-4">
             <h2 class="text-white font-bold text-sm tracking-wide uppercase">Surat Pernyataan</h2>
-            <p class="text-slate-300 text-xs mt-0.5">SMK Negeri 1 Kolaka — Tahun Pelajaran {{ now()->format('Y') }}/{{ now()->format('Y') + 1 }}</p>
+            <p class="text-slate-300 text-xs mt-0.5">MAN 2 Kolaka — Tahun Pelajaran {{ now()->format('Y') }}/{{ now()->format('Y') + 1 }}</p>
         </div>
 
         <div class="px-6 py-6 space-y-4 text-sm text-slate-700 leading-relaxed">
@@ -22,19 +22,19 @@
             <ol class="space-y-3 pl-1">
                 <li class="flex gap-3">
                     <span class="flex-shrink-0 w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xs font-bold">1</span>
-                    <span><strong class="text-slate-900">Dicabut haknya</strong> sebagai peserta tes calon murid baru di SMK Negeri 1 Kolaka jika memberikan data palsu atau tidak sesuai dengan dokumen resmi.</span>
+                    <span><strong class="text-slate-900">Dicabut haknya</strong> sebagai peserta tes calon murid baru di MAN 2 Kolaka jika memberikan data palsu atau tidak sesuai dengan dokumen resmi.</span>
                 </li>
                 <li class="flex gap-3">
                     <span class="flex-shrink-0 w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xs font-bold">2</span>
-                    <span><strong class="text-slate-900">Belajar sungguh-sungguh</strong> selama mengikuti pendidikan di SMK Negeri 1 Kolaka sampai tamat serta akan mematuhi peraturan dan tata tertib yang ditetapkan oleh sekolah.</span>
+                    <span><strong class="text-slate-900">Belajar sungguh-sungguh</strong> selama mengikuti pendidikan di MAN 2 Kolaka sampai tamat serta akan mematuhi peraturan dan tata tertib yang ditetapkan oleh madrasah.</span>
                 </li>
                 <li class="flex gap-3">
                     <span class="flex-shrink-0 w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xs font-bold">3</span>
-                    <span><strong class="text-slate-900">Berakhlak mulia</strong> dimanapun berada serta menjaga nama baik sendiri, keluarga, dan SMK Negeri 1 Kolaka.</span>
+                    <span><strong class="text-slate-900">Berakhlak mulia</strong> dimanapun berada serta menjaga nama baik sendiri, keluarga, dan MAN 2 Kolaka.</span>
                 </li>
                 <li class="flex gap-3">
                     <span class="flex-shrink-0 w-7 h-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-xs font-bold">4</span>
-                    <span><strong class="text-slate-900">Orang Tua / Wali Murid</strong> bersedia bekerja sama dan membantu pihak sekolah dalam mengarahkan calon murid baru untuk rajin dan tekun belajar di rumah dan di sekolah.</span>
+                    <span><strong class="text-slate-900">Orang Tua / Wali Murid</strong> bersedia bekerja sama dan membantu pihak madrasah dalam mengarahkan calon murid baru untuk rajin dan tekun belajar di rumah dan di sekolah.</span>
                 </li>
             </ol>
 

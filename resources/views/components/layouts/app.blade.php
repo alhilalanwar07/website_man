@@ -4,7 +4,7 @@
         now()->addMinutes(10),
         fn () => \App\Models\ProfilSekolah::first()
     );
-    $namaSekolah = $profil->nama_sekolah ?? 'SMK Negeri 1 Kolaka';
+    $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
     $sosmed = $profil->tautan_sosmed ?? [];
 @endphp
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 
     <title>{{ $title ?? $namaSekolah }}</title>
     <meta name="description" content="{{ $metaDescription ?? 'Website resmi ' . $namaSekolah }}">
-    <meta name="keywords" content="{{ $metaKeywords ?? $namaSekolah . ', sekolah kejuruan, berita sekolah, pendidikan vokasi' }}">
+    <meta name="keywords" content="{{ $metaKeywords ?? $namaSekolah . ', madrasah aliyah, berita madrasah, pendidikan islam' }}">
     <meta name="robots" content="{{ $metaRobots ?? 'index,follow' }}">
     @if(!empty($canonicalUrl))
     <link rel="canonical" href="{{ $canonicalUrl }}">
@@ -58,49 +58,113 @@
     <!-- Navigation -->
     <nav class="fixed top-0 inset-x-0 z-50 transition-all duration-500" :class="scrolled ? 'bg-white/90 backdrop-blur-2xl shadow-lg shadow-slate-200/20 border-b border-slate-100' : 'bg-transparent'">
         <!-- Scroll Progress Bar -->
-        <div class="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 scroll-indicator" x-data x-init="window.addEventListener('scroll', () => { $el.style.setProperty('--scroll-progress', (window.scrollY / (document.body.scrollHeight - window.innerHeight)).toFixed(3)) })"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 scroll-indicator" x-data x-init="window.addEventListener('scroll', () => { $el.style.setProperty('--scroll-progress', (window.scrollY / (document.body.scrollHeight - window.innerHeight)).toFixed(3)) })"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
                     @if($profil && $profil->logo_path)
                         <img src="{{ Storage::url($profil->logo_path) }}" class="w-11 h-11 rounded-xl object-contain group-hover:scale-110 transition-transform duration-300" alt="{{ $namaSekolah }}">
                     @else
-                        <div class="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all group-hover:scale-110">
+                        <div class="w-11 h-11 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 group-hover:shadow-emerald-500/50 transition-all group-hover:scale-110">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                         </div>
                     @endif
                     <div>
-                        <span class="block text-lg font-extrabold tracking-tight leading-none transition-colors" :class="scrolled ? 'text-slate-900' : 'text-slate-900'">SMKN 1 KOLAKA</span>
-                        <span class="text-[10px] font-semibold tracking-[0.2em] text-blue-600 uppercase">Center of Excellence</span>
+                        <span class="block text-base font-extrabold tracking-tight leading-none transition-colors" :class="scrolled ? 'text-slate-900' : 'text-slate-900'">MAN 2 KOLAKA</span>
+                        <span class="text-[9px] font-semibold tracking-[0.15em] text-emerald-600 uppercase">Madrasah Aliyah Negeri</span>
                     </div>
                 </a>
 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-1">
+                <div class="hidden xl:flex items-center gap-1">
                     @php
                         $currentRoute = request()->route()?->getName();
                         $navItems = [
-                            ['route' => 'home', 'label' => 'Beranda'],
-                            ['route' => 'profil', 'label' => 'Profil'],
-                            ['route' => 'jurusan.index', 'label' => 'Jurusan'],
-                            ['route' => 'ppdb.index', 'label' => 'PPDB'],
-                            ['route' => 'berita.index', 'label' => 'Berita'],
-                            ['route' => 'galeri', 'label' => 'Galeri'],
-                            ['route' => 'agenda.index', 'label' => 'Agenda'],
+                            ['label' => 'Beranda', 'route' => 'home'],
+                            [
+                                'label' => 'Profil',
+                                'route' => 'profil',
+                                'children' => [
+                                    ['label' => 'Tentang Madrasah', 'route' => 'profil'],
+                                    ['label' => 'Peminatan', 'route' => 'jurusan.index'],
+                                    ['label' => 'Guru & Tendik', 'url' => '#'],
+                                    ['label' => 'Zona Integritas', 'url' => '#'],
+                                ],
+                            ],
+                            [
+                                'label' => 'Publikasi',
+                                'route' => 'berita.index',
+                                'children' => [
+                                    ['label' => 'Berita & Artikel', 'route' => 'berita.index'],
+                                    ['label' => 'Agenda Madrasah', 'route' => 'agenda.index'],
+                                    ['label' => 'Galeri Kegiatan', 'route' => 'galeri'],
+                                ],
+                            ],
+                            [
+                                'label' => 'PMBM Online',
+                                'route' => 'ppdb.index',
+                                'children' => [
+                                    ['label' => 'Info Pendaftaran', 'route' => 'ppdb.index'],
+                                    ['label' => 'Formulir PMBM', 'route' => 'ppdb.form'],
+                                    ['label' => 'Cek Status Kelulusan', 'route' => 'ppdb.status'],
+                                    ['label' => 'Daftar Ulang', 'route' => 'ppdb.daftar-ulang'],
+                                ],
+                            ],
+                            [
+                                'label' => 'Layanan',
+                                'url' => '#',
+                                'children' => [
+                                    ['label' => 'Portal e-RDM', 'url' => '#'],
+                                    ['label' => 'e-Learning', 'url' => '#'],
+                                    ['label' => 'Simpatika', 'url' => '#'],
+                                    ['label' => 'Aduan Masyarakat', 'url' => '#'],
+                                    ['label' => 'Download Area', 'url' => '#'],
+                                ],
+                            ],
+                            ['label' => 'Login', 'route' => 'login'],
                         ];
                     @endphp
                     @foreach($navItems as $nav)
-                        <a href="{{ route($nav['route']) }}" class="relative px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-300 {{ $currentRoute === $nav['route'] ? 'text-blue-600 bg-blue-50/80' : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50/50' }}">
-                            {{ $nav['label'] }}
-                            @if($currentRoute === $nav['route'])
-                            <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full"></span>
+                        @php
+                            $itemUrl = isset($nav['route']) ? route($nav['route']) : ($nav['url'] ?? '#');
+                            $childRoutes = collect($nav['children'] ?? [])->pluck('route')->filter();
+                            $hasChildren = !empty($nav['children']);
+                            $isActive = $currentRoute && ($currentRoute === ($nav['route'] ?? null) || $childRoutes->contains($currentRoute));
+                        @endphp
+                        <div class="relative group">
+                            <a href="{{ $itemUrl }}" class="relative inline-flex items-center px-3 py-2 text-sm font-semibold rounded-xl transition-all duration-300 {{ $isActive ? 'text-emerald-600 bg-emerald-50/80' : 'text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50' }}">
+                                <span class="flex items-center gap-1">
+                                    {{ $nav['label'] }}
+                                    @if($hasChildren)
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                                    @endif
+                                </span>
+                                @if($isActive)
+                                    <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-emerald-600 rounded-full"></span>
+                                @endif
+                            </a>
+                            @if($hasChildren)
+                                <div class="absolute left-0 top-full w-56 pt-2">
+                                    <div class="rounded-2xl border border-slate-100 bg-white/95 backdrop-blur-xl shadow-xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200">
+                                        <div class="py-3">
+                                            @foreach($nav['children'] as $child)
+                                                @php
+                                                    $childUrl = isset($child['route']) ? route($child['route']) : ($child['url'] ?? '#');
+                                                @endphp
+                                                <a href="{{ $childUrl }}" class="block px-4 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/60 transition-colors">
+                                                    {{ $child['label'] }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
-                        </a>
+                        </div>
                     @endforeach
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
+                <div class="xl:hidden flex items-center">
                     <button @click="mobileOpen = !mobileOpen" class="p-2 text-slate-600 rounded-lg hover:bg-slate-100">
                         <svg x-show="!mobileOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                         <svg x-show="mobileOpen" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -110,10 +174,32 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div x-show="mobileOpen" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 -translate-y-2" class="md:hidden bg-white border-t border-slate-100 shadow-lg" @click.outside="mobileOpen = false">
-            <div class="px-4 py-3 space-y-1">
+        <div x-show="mobileOpen" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 -translate-y-2" class="xl:hidden bg-white border-t border-slate-100 shadow-lg" @click.outside="mobileOpen = false">
+            <div class="px-4 py-3 space-y-2">
                 @foreach($navItems as $nav)
-                    <a href="{{ route($nav['route']) }}" class="block px-4 py-3 text-sm font-semibold rounded-lg {{ $currentRoute === $nav['route'] ? 'text-blue-600 bg-blue-50' : 'text-slate-700 hover:bg-slate-50' }}">{{ $nav['label'] }}</a>
+                    @php
+                        $itemUrl = isset($nav['route']) ? route($nav['route']) : ($nav['url'] ?? '#');
+                        $childRoutes = collect($nav['children'] ?? [])->pluck('route')->filter();
+                        $hasChildren = !empty($nav['children']);
+                        $isActive = $currentRoute && ($currentRoute === ($nav['route'] ?? null) || $childRoutes->contains($currentRoute));
+                    @endphp
+                    <div>
+                        <a href="{{ $itemUrl }}" class="block px-4 py-3 text-sm font-semibold rounded-lg {{ $isActive ? 'text-emerald-600 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
+                            {{ $nav['label'] }}
+                        </a>
+                        @if($hasChildren)
+                            <div class="mt-1 ml-4 space-y-1">
+                                @foreach($nav['children'] as $child)
+                                    @php
+                                        $childUrl = isset($child['route']) ? route($child['route']) : ($child['url'] ?? '#');
+                                    @endphp
+                                    <a href="{{ $childUrl }}" class="block px-3 py-2 text-xs font-semibold text-slate-500 rounded-lg hover:bg-slate-50">
+                                        {{ $child['label'] }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 @endforeach
             </div>
         </div>
@@ -132,20 +218,20 @@
                         @if($profil && $profil->logo_path)
                             <img src="{{ Storage::url($profil->logo_path) }}" class="w-10 h-10 rounded-lg object-contain" alt="{{ $namaSekolah }}">
                         @else
-                            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                             </div>
                         @endif
-                        <span class="text-2xl font-bold tracking-tight">SMKN 1 KOLAKA</span>
+                        <span class="text-2xl font-bold tracking-tight">MAN 2 KOLAKA</span>
                     </div>
                     <p class="text-slate-400 max-w-md leading-relaxed mb-6">
-                        Mewujudkan lembaga pendidikan kejuruan yang unggul dalam mencetak lulusan profesional, berakhlak mulia, dan siap bersaing di era digital global.
+                        Madrasah Aliyah Negeri yang menumbuhkan karakter islami, wawasan ilmu, dan prestasi untuk menyiapkan generasi yang berdaya saing.
                     </p>
                     @if(!empty($sosmed))
                     <div class="flex gap-3">
                         @foreach(['facebook','instagram','youtube','twitter'] as $platform)
                             @if(!empty($sosmed[$platform]))
-                            <a href="{{ $sosmed[$platform] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors text-slate-300 hover:text-white">
+                            <a href="{{ $sosmed[$platform] }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-emerald-600 transition-colors text-slate-300 hover:text-white">
                                 @if($platform === 'facebook')
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
                                 @elseif($platform === 'instagram')
@@ -164,13 +250,13 @@
                 <div>
                     <h4 class="text-lg font-bold mb-6">Tautan Cepat</h4>
                     <ul class="space-y-4 text-slate-400">
-                        <li><a href="{{ route('profil') }}" class="hover:text-blue-400 transition-colors">Profil Sekolah</a></li>
-                        <li><a href="{{ route('jurusan.index') }}" class="hover:text-blue-400 transition-colors">Program Keahlian</a></li>
-                        <li><a href="{{ route('ppdb.index') }}" class="hover:text-blue-400 transition-colors">PPDB Online</a></li>
-                        <li><a href="{{ route('ppdb.form') }}" class="hover:text-blue-400 transition-colors">Form Pendaftaran</a></li>
-                        <li><a href="{{ route('berita.index') }}" class="hover:text-blue-400 transition-colors">Berita</a></li>
-                        <li><a href="{{ route('galeri') }}" class="hover:text-blue-400 transition-colors">Galeri</a></li>
-                        <li><a href="{{ route('agenda.index') }}" class="hover:text-blue-400 transition-colors">Agenda</a></li>
+                        <li><a href="{{ route('profil') }}" class="hover:text-emerald-400 transition-colors">Profil Madrasah</a></li>
+                        <li><a href="{{ route('jurusan.index') }}" class="hover:text-emerald-400 transition-colors">Peminatan</a></li>
+                        <li><a href="{{ route('ppdb.index') }}" class="hover:text-emerald-400 transition-colors">PMBM Online</a></li>
+                        <li><a href="{{ route('ppdb.form') }}" class="hover:text-emerald-400 transition-colors">Formulir PMBM</a></li>
+                        <li><a href="{{ route('berita.index') }}" class="hover:text-emerald-400 transition-colors">Berita</a></li>
+                        <li><a href="{{ route('agenda.index') }}" class="hover:text-emerald-400 transition-colors">Agenda</a></li>
+                        <li><a href="{{ route('galeri') }}" class="hover:text-emerald-400 transition-colors">Galeri</a></li>
                     </ul>
                 </div>
                 <div>
@@ -178,19 +264,19 @@
                     <ul class="space-y-4 text-slate-400">
                         @if($profil && $profil->alamat_lengkap)
                         <li class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                             <span>{{ $profil->alamat_lengkap }}</span>
                         </li>
                         @endif
                         @if($profil && $profil->nomor_telepon)
                         <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                             <span>{{ $profil->nomor_telepon }}</span>
                         </li>
                         @endif
                         @if($profil && $profil->email_resmi)
                         <li class="flex items-center gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             <span>{{ $profil->email_resmi }}</span>
                         </li>
                         @endif

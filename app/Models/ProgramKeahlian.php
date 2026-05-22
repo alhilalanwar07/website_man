@@ -27,9 +27,9 @@ class ProgramKeahlian extends Model
         ];
     }
 
-    public function tefaProduk(): HasMany
+    public function ekstrakurikuler(): HasMany
     {
-        return $this->hasMany(TefaProduk::class, 'program_keahlian_id');
+        return $this->hasMany(Ekstrakurikuler::class, 'program_keahlian_id');
     }
 
     public function ppdbQuotas(): HasMany

@@ -21,7 +21,7 @@
 
     $defaultLogoBase64 = $toBase64Image($logoPath);
     $leftLogoBase64 = $toBase64Image(storage_path('app/public/sultra_logo.png')) ?? $defaultLogoBase64;
-    $rightLogoBase64 = $toBase64Image(storage_path('app/public/smk1kolaka.jpg')) ?? $defaultLogoBase64;
+    $rightLogoBase64 = $toBase64Image(storage_path('app/public/MAN-2.png')) ?? $defaultLogoBase64;
 
     $meta = $documentMeta ?? [];
     $documentScope = $scope ?? 're-registration';
@@ -30,7 +30,7 @@
         : 'Pengumuman Hasil Seleksi PPDB';
     $openingText = $documentScope === 're-registration-audit'
         ? 'Dokumen ini merupakan rekap hasil audit verifikasi daftar ulang peserta PPDB pada periode yang dipilih.'
-        : 'Berdasarkan hasil seleksi PPDB pada periode yang ditetapkan, berikut daftar nama peserta yang dinyatakan diterima dan ditempatkan pada program keahlian masing-masing.';
+        : 'Berdasarkan hasil seleksi PPDB pada periode yang ditetapkan, berikut daftar nama peserta yang dinyatakan diterima dan ditempatkan pada peminatan masing-masing.';
 
     // Filter applications to only show those WITH an NIPD
     $filteredApplications = collect($applications)->filter(fn($app) => !empty($app->nipd));
@@ -38,17 +38,17 @@
 
     $signLocation = $meta['sign_location'] ?? 'Kolaka';
     $signDate = $meta['sign_date'] ?? now()->translatedFormat('d F Y');
-    $signTitle = $meta['sign_title'] ?? 'Kepala Sekolah';
+    $signTitle = $meta['sign_title'] ?? 'Kepala Madrasah';
     $signName = $meta['sign_name'] ?? '........................................';
     $signNip = $meta['sign_nip'] ?? null;
 
-    $qrData = "Tanda Tangan Digital\n" . $signTitle . " SMK Negeri 1 Kolaka\nNama: " . $signName . "\nNIP: " . ($signNip ?? '-') . "\nTanggal: " . $signDate;
+    $qrData = "Tanda Tangan Digital\n" . $signTitle . " MAN 2 Kolaka\nNama: " . $signName . "\nNIP: " . ($signNip ?? '-') . "\nTanggal: " . $signDate;
     $qrCodeBase64 = null;
     if (class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class)) {
         try {
             $qrCodeBase64 = 'data:image/png;base64,' . base64_encode(
                 \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
-                    ->merge(storage_path('app/public/smk1kolaka.jpg'), 0.25, true)
+                    ->merge(storage_path('app/public/MAN-2.png'), 0.25, true)
                     ->size(120)
                     ->errorCorrection('H')
                     ->generate($qrData)
@@ -251,15 +251,15 @@
                         @endif
                     </td>
                     <td class="kop-text">
-                        <div class="line1">PEMERINTAH PROVINSI SULAWESI TENGGARA</div>
-                        <div class="line2">DINAS PENDIDIKAN DAN KEBUDAYAAN</div>
-                        <div class="line3">SMK NEGERI 1 KOLAKA</div>
-                        <div class="line4">Jl. Pendidikan No. 49, Telp./Fax. (0405) 231378, Kab. Kolaka, 93517</div>
-                        <div class="line5">Email: smk1kolaka@gmail.com</div>
+                <div class="line1">KEMENTERIAN AGAMA REPUBLIK INDONESIA</div>
+                <div class="line2">KANTOR KEMENTERIAN AGAMA KABUPATEN KOLAKA</div>
+                <div class="line3">{{ strtoupper($profil->nama_sekolah ?? 'MAN 2 KOLAKA') }}</div>
+                <div class="line4">{{ $profil->alamat_lengkap ?? 'Jl. Pemuda No. 12, Kelurahan Laloeha, Kecamatan Kolaka, Kabupaten Kolaka, Sulawesi Tenggara 93511' }}{{ $profil->nomor_telepon ? ' | Telp. ' . $profil->nomor_telepon : '' }}</div>
+                <div class="line5">Email: {{ $profil->email_resmi ?? 'info@man2kolaka.sch.id' }}</div>
                     </td>
                     <td class="logo-cell">
                         @if($rightLogoBase64)
-                            <img src="{{ $rightLogoBase64 }}" alt="Logo SMK">
+                            <img src="{{ $rightLogoBase64 }}" alt="Logo MAN">
                         @endif
                     </td>
                 </tr>
@@ -278,7 +278,7 @@
                 <p style="margin-bottom: 6px;"><strong>Filter pencarian:</strong> {{ $filters['search'] }}</p>
             @endif
 
-            <p class="program-title">Program Keahlian: {{ $programName }}</p>
+            <p class="program-title">Peminatan: {{ $programName }}</p>
             <table class="data-table">
                 <thead>
                     <tr>

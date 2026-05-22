@@ -7,7 +7,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
-#[Title('Hubungi Admin PPDB - SMK Negeri 1 Kolaka')]
+#[Title('Hubungi Admin PPDB - MAN 2 Kolaka')]
 class PpdbContactAdmin extends Component
 {
     public string $adminEmail = '';

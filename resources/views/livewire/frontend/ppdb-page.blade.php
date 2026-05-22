@@ -2,13 +2,13 @@
     <section class="relative overflow-hidden bg-slate-950 text-white noise">
         <div class="absolute inset-0 bg-mesh-hero opacity-70"></div>
         <div class="absolute inset-0">
-            <div class="absolute top-[-10%] left-[-5%] w-[28rem] h-[28rem] rounded-full bg-blue-600/20 blur-[110px] animate-blob"></div>
-            <div class="absolute bottom-[-15%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-indigo-600/20 blur-[120px] animate-blob" style="animation-delay: 2s"></div>
+            <div class="absolute top-[-10%] left-[-5%] w-[28rem] h-[28rem] rounded-full bg-emerald-600/20 blur-[110px] animate-blob"></div>
+            <div class="absolute bottom-[-15%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-teal-600/20 blur-[120px] animate-blob" style="animation-delay: 2s"></div>
         </div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
                 <div class="lg:col-span-3">
-                    <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-blue-300 mb-6">PPDB SMKN 1 Kolaka</span>
+                    <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.3em] text-emerald-300 mb-6">PPDB MAN 2 Kolaka</span>
                     <h1 class="text-4xl md:text-6xl xl:text-7xl font-black tracking-tight leading-[0.95]">
                         Pusat Informasi
                         <span class="block text-gradient">Peserta Didik Baru</span>
@@ -73,10 +73,10 @@
             <div>
                 <div class="flex items-end justify-between gap-4 flex-wrap mb-8">
                     <div>
-                        <span class="inline-flex px-4 py-1.5 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-[0.25em] mb-4">Jalur & Kuota</span>
+                        <span class="inline-flex px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-[0.25em] mb-4">Jalur & Kuota</span>
                         <h2 class="text-3xl lg:text-5xl font-black tracking-tight text-slate-900">Struktur Awal <span class="text-gradient">PPDB</span></h2>
                     </div>
-                    <a href="{{ route('ppdb.status') }}" class="text-sm font-bold text-blue-600 hover:text-blue-700">Sudah daftar? Cek status</a>
+                    <a href="{{ route('ppdb.status') }}" class="text-sm font-bold text-emerald-600 hover:text-emerald-700">Sudah daftar? Cek status</a>
                 </div>
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                     @foreach($period->tracks as $track)
@@ -102,12 +102,12 @@
                     <div class="bg-slate-900 text-white rounded-[32px] p-8 noise relative overflow-hidden">
                         <div class="absolute inset-0 bg-mesh-hero opacity-50"></div>
                         <div class="relative">
-                            <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.25em] text-blue-300 mb-5">Panduan Singkat</span>
+                            <span class="inline-flex px-4 py-1.5 rounded-full glass text-xs font-bold uppercase tracking-[0.25em] text-emerald-300 mb-5">Panduan Singkat</span>
                             <h3 class="text-2xl font-black leading-tight">Sebelum Mengisi Form</h3>
                             <ul class="mt-6 space-y-4 text-sm text-slate-300">
                                 <li>Siapkan data siswa, data orang tua, dan asal sekolah.</li>
                                 <li>Siapkan file KK, akta lahir, rapor, pas foto, dan SKL bila ada.</li>
-                                <li>Pilih jalur pendaftaran dan jurusan utama dengan cermat.</li>
+                                <li>Pilih jalur pendaftaran dan peminatan utama dengan cermat.</li>
                                 <li>Setelah submit, simpan nomor pendaftaran untuk cek status.</li>
                             </ul>
                         </div>
@@ -204,9 +204,9 @@
                                 @error('track_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Jurusan 1 *</label>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Peminatan 1 *</label>
                                 <select wire:model="pilihan_program_1_id" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
-                                    <option value="">Pilih Jurusan</option>
+                                    <option value="">Pilih Peminatan</option>
                                     @foreach($programs as $program)
                                     <option value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
                                     @endforeach
@@ -214,7 +214,7 @@
                                 @error('pilihan_program_1_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Jurusan 2</label>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Pilihan Peminatan 2</label>
                                 <select wire:model="pilihan_program_2_id" class="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10">
                                     <option value="">Tidak memilih cadangan</option>
                                     @foreach($programs as $program)
@@ -287,8 +287,8 @@
                         @error('period') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
 
                         <div class="flex flex-wrap items-center gap-4 pt-2">
-                            <button type="submit" class="px-7 py-4 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition">Kirim Pendaftaran</button>
-                            <a href="{{ route('ppdb.status') }}" class="text-sm font-bold text-slate-600 hover:text-blue-600">Sudah punya nomor pendaftaran?</a>
+                            <button type="submit" class="px-7 py-4 rounded-2xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition">Kirim Pendaftaran</button>
+                            <a href="{{ route('ppdb.status') }}" class="text-sm font-bold text-slate-600 hover:text-emerald-600">Sudah punya nomor pendaftaran?</a>
                         </div>
                     </form>
                 </div>

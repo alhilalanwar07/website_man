@@ -3,42 +3,68 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sedang Perbaikan - SMKN 1 Kolaka</title>
-    
-    <!-- Fonts -->
+    <title>Sedang Pemeliharaan — MAN 2 Kolaka</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900" rel="stylesheet" />
-    
-    <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="antialiased bg-slate-50 min-h-screen flex items-center justify-center p-4">
+<body class="antialiased bg-slate-950 min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
 
-    <div class="max-w-2xl w-full text-center relative z-10">
-        {{-- Background Effects --}}
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-amber-400/20 rounded-full blur-[100px] -z-10"></div>
-        
-        <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
-            <div class="w-24 h-24 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-inner border border-amber-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            </div>
-            
-            <h1 class="text-4xl font-black text-slate-900 mb-4 tracking-tight">Website Sedang Diperbarui</h1>
-            <p class="text-lg text-slate-600 mb-8 max-w-lg mx-auto">Kami sedang melakukan perbaikan atau pembaruan sistem untuk meningkatkan layanan. Mohon kembali beberapa saat lagi.</p>
-            
-            <div class="inline-flex items-center gap-3 px-6 py-3 bg-slate-100 rounded-full text-slate-600 text-sm font-semibold">
-                <span class="relative flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-                </span>
-                Sistem Sedang Offline (Mode Perbaikan)
-            </div>
+    {{-- Background blobs --}}
+    <div class="absolute top-[-10%] left-[-5%] w-[28rem] h-[28rem] rounded-full bg-amber-600/10 blur-[110px] pointer-events-none"></div>
+    <div class="absolute bottom-[-15%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-emerald-600/10 blur-[120px] pointer-events-none"></div>
+
+    {{-- Card --}}
+    <div class="relative z-10 w-full max-w-lg text-center">
+
+        {{-- Badge --}}
+        <span class="inline-flex px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-xs font-bold uppercase tracking-[0.3em] text-emerald-400 mb-8">
+            MAN 2 Kolaka
+        </span>
+
+        {{-- Icon --}}
+        <div class="w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
         </div>
-        
-        <p class="text-sm text-slate-400 mt-8 font-medium">SMK Negeri 1 Kolaka &copy; {{ date('Y') }}</p>
+
+        {{-- Code --}}
+        <div class="text-[7rem] sm:text-[9rem] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-amber-400 via-yellow-400 to-amber-600 select-none mb-4">
+            503
+        </div>
+
+        {{-- Message --}}
+        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-3">
+            Website Sedang Pemeliharaan
+        </h1>
+        <p class="text-slate-400 text-base leading-relaxed max-w-sm mx-auto mb-10">
+            Kami sedang melakukan pembaruan sistem untuk meningkatkan layanan. Mohon kembali beberapa saat lagi.
+        </p>
+
+        {{-- Status indicator --}}
+        <div class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/10 bg-white/5 text-sm font-semibold text-slate-300 mb-10">
+            <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+            </span>
+            Sistem sedang offline sementara
+        </div>
+
+        @if(!empty($exception) && $exception->getMessage())
+        <div class="mb-8 px-5 py-3 rounded-2xl border border-white/10 bg-white/5 text-xs text-slate-500 font-mono text-left break-all">
+            {{ $exception->getMessage() }}
+        </div>
+        @endif
+
+        {{-- Divider --}}
+        <div class="pt-8 border-t border-white/10">
+            <p class="text-xs text-slate-500 font-medium">
+                MAN 2 Kolaka &mdash; Madrasah Aliyah Negeri &copy; {{ date('Y') }}
+            </p>
+        </div>
     </div>
+
 </body>
 </html>

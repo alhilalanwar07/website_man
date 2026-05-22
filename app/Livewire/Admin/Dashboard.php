@@ -8,7 +8,7 @@ use App\Models\GaleriAlbum;
 use App\Models\Pegawai;
 use App\Models\Pengumuman;
 use App\Models\ProgramKeahlian;
-use App\Models\TefaProduk;
+use App\Models\Ekstrakurikuler;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -25,7 +25,7 @@ class Dashboard extends Component
                 'stats' => [
                     ['label' => 'Pegawai', 'value' => Pegawai::count(), 'color' => 'blue'],
                     ['label' => 'Program Keahlian', 'value' => ProgramKeahlian::count(), 'color' => 'indigo'],
-                    ['label' => 'Produk TEFA', 'value' => TefaProduk::count(), 'color' => 'emerald'],
+                    ['label' => 'Ekstrakurikuler', 'value' => Ekstrakurikuler::count(), 'color' => 'emerald'],
                     ['label' => 'Berita', 'value' => Berita::count(), 'color' => 'orange'],
                     ['label' => 'Pengumuman', 'value' => Pengumuman::count(), 'color' => 'pink'],
                     ['label' => 'Agenda', 'value' => Agenda::count(), 'color' => 'cyan'],

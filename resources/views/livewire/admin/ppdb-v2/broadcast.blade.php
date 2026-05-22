@@ -59,7 +59,7 @@
                         <select wire:model="targetAudience" wire:loading.attr="disabled" wire:target="sendBroadcast" class="w-full rounded-xl border-slate-300 bg-slate-50 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="all">Semua Pendaftar Terdaftar</option>
                             <option value="verified">Siswa Terverifikasi / Diterima (Siap Ujian)</option>
-                            <option value="lulus">Siswa Lulus (Semua Jurusan)</option>
+                            <option value="lulus">Siswa Lulus (Semua Peminatan)</option>
                             <option value="belum_daftar_ulang">Siswa Lulus (Belum Daftar Ulang)</option>
                             <option value="selesai_daftar_ulang">Siswa Lulus (Selesai Daftar Ulang)</option>
                         </select>

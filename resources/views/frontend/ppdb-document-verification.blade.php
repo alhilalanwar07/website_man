@@ -9,7 +9,7 @@
     <div style="max-width:760px;margin:24px auto;padding:0 12px;">
         <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
             <div style="padding:20px 24px;background:#0f172a;color:#fff;">
-                <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;font-weight:700;">PPDB SMK Negeri 1 Kolaka</p>
+                <p style="margin:0;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#93c5fd;font-weight:700;">PPDB MAN 2 Kolaka</p>
                 <h1 style="margin:10px 0 0;font-size:22px;">Verifikasi Keaslian Dokumen</h1>
             </div>
 
@@ -35,7 +35,7 @@
                             <td style="padding:8px;border:1px solid #e2e8f0;">{{ optional($application->tanggal_lahir)->translatedFormat('d F Y') }}</td>
                         </tr>
                         <tr>
-                            <td style="padding:8px;border:1px solid #e2e8f0;background:#f8fafc;">Pilihan Jurusan 1</td>
+                            <td style="padding:8px;border:1px solid #e2e8f0;background:#f8fafc;">Pilihan Peminatan 1</td>
                             <td style="padding:8px;border:1px solid #e2e8f0;">{{ $application->pilihanProgram1?->nama_jurusan ?? '-' }}</td>
                         </tr>
                         <tr>

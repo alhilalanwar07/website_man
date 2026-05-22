@@ -1,8 +1,8 @@
-{{-- Step 3: Asal Sekolah & Pilihan Jurusan --}}
+{{-- Step 3: Asal Sekolah & Pilihan Peminatan --}}
 <div class="space-y-6">
     <div>
-        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Sekolah Asal & Pilihan Jurusan</h2>
-        <p class="mt-1 text-sm text-slate-500">Data sekolah SMP/MTs asal dan pilihan program keahlian yang diminati.</p>
+        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Sekolah Asal & Pilihan Peminatan</h2>
+        <p class="mt-1 text-sm text-slate-500">Data sekolah SMP/MTs asal dan pilihan peminatan yang diminati.</p>
     </div>
 
     {{-- Card: Asal Sekolah --}}
@@ -34,19 +34,19 @@
         </div>
     </div>
 
-    {{-- Card: Jalur & Jurusan --}}
+    {{-- Card: Jalur & Peminatan --}}
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
         <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
             <div class="w-7 h-7 bg-indigo-50 rounded-lg flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
             </div>
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jalur & Pilihan Jurusan</span>
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Jalur & Pilihan Peminatan</span>
         </div>
 
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jalur Pendaftaran <span class="text-red-500">*</span></label>
             <select wire:model="track_id" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                @foreach($period->tracks->filter(fn($t) => stripos($t->nama_jalur, 'reguler') !== false) as $track)
+                @foreach($period->tracks->filter(fn($t) => $t->status_tampil) as $track)
                     <option wire:key="track-opt-{{ $track->id }}" value="{{ $track->id }}">{{ $track->nama_jalur }}</option>
                 @endforeach
             </select>
@@ -55,9 +55,9 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jurusan Pilihan 1 <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Peminatan Pilihan 1 <span class="text-red-500">*</span></label>
                 <select wire:model="pilihan_program_1_id" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih Jurusan</option>
+                    <option value="">Pilih Peminatan</option>
                     @foreach($programs as $program)
                         <option wire:key="prog1-{{ $program->id }}" value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
                     @endforeach
@@ -65,9 +65,9 @@
                 @error('pilihan_program_1_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jurusan Pilihan 2 <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Peminatan Pilihan 2 <span class="text-red-500">*</span></label>
                 <select wire:model="pilihan_program_2_id" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih Jurusan</option>
+                    <option value="">Pilih Peminatan</option>
                     @foreach($programs as $program)
                         <option wire:key="prog2-{{ $program->id }}" value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
                     @endforeach
@@ -75,9 +75,9 @@
                 @error('pilihan_program_2_id') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jurusan Pilihan 3 <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold text-slate-700 mb-1.5">Peminatan Pilihan 3 <span class="text-red-500">*</span></label>
                 <select wire:model="pilihan_program_3_id" class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition">
-                    <option value="">Pilih Jurusan</option>
+                    <option value="">Pilih Peminatan</option>
                     @foreach($programs as $program)
                         <option wire:key="prog3-{{ $program->id }}" value="{{ $program->id }}">{{ $program->nama_jurusan }}</option>
                     @endforeach
@@ -87,7 +87,7 @@
         </div>
 
         <div class="bg-slate-50 rounded-xl px-4 py-3 text-[11px] text-slate-500">
-            <strong class="text-slate-600">Tips:</strong> Pilihan 1 adalah jurusan utama. Pilihan 2 dan 3 menjadi cadangan jika kuota jurusan utama sudah penuh.
+            <strong class="text-slate-600">Tips:</strong> Pilihan 1 adalah peminatan utama. Pilihan 2 dan 3 menjadi cadangan jika kuota peminatan utama sudah penuh.
         </div>
     </div>
 
