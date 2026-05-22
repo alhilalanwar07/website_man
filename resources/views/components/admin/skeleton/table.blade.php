@@ -12,7 +12,7 @@
     <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-700 animate-pulse">
         <thead class="bg-slate-50 dark:bg-slate-800/70">
             <tr>
-                @foreach(range(1, $columnsCount) as $columnIndex)
+                @for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
                     <th wire:key="{{ $keyPrefix }}-head-{{ $columnIndex }}" class="px-4 py-3 text-left">
                         <div @class([
                             'h-3 rounded bg-slate-200 dark:bg-slate-700',
@@ -20,14 +20,14 @@
                             'w-20' => $columnIndex !== $columnsCount,
                         ])></div>
                     </th>
-                @endforeach
+                @endfor
             </tr>
         </thead>
 
         <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
-            @foreach(range(1, $rowsCount) as $rowIndex)
+            @for($rowIndex = 1; $rowIndex <= $rowsCount; $rowIndex++)
                 <tr wire:key="{{ $keyPrefix }}-row-{{ $rowIndex }}">
-                    @foreach(range(1, $columnsCount) as $columnIndex)
+                    @for($columnIndex = 1; $columnIndex <= $columnsCount; $columnIndex++)
                         <td wire:key="{{ $keyPrefix }}-row-{{ $rowIndex }}-column-{{ $columnIndex }}" class="px-4 py-3">
                             @if((bool) $showActions && $columnIndex === $columnsCount)
                                 <div class="flex justify-end gap-2">
@@ -44,9 +44,9 @@
                                 ])></div>
                             @endif
                         </td>
-                    @endforeach
+                    @endfor
                 </tr>
-            @endforeach
+            @endfor
         </tbody>
     </table>
 </div>
