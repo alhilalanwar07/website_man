@@ -7,10 +7,10 @@
     $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 
-<div class="min-h-screen w-full flex flex-col justify-center items-center py-10 px-4 relative">
+<div class="min-h-screen w-full flex flex-col justify-center items-center py-10 px-4 relative overflow-x-hidden">
     
-    <div class="absolute top-10 left-10 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 dark:opacity-20 animate-blob pointer-events-none"></div>
-    <div class="absolute bottom-10 right-10 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 dark:opacity-20 animate-blob animation-delay-2000 pointer-events-none"></div>
+    <div class="absolute top-10 left-1/2 -translate-x-1/2 sm:left-10 sm:translate-x-0 w-56 h-56 sm:w-80 sm:h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 dark:opacity-20 animate-blob pointer-events-none"></div>
+    <div class="absolute bottom-10 right-1/2 translate-x-1/2 sm:right-10 sm:translate-x-0 w-56 h-56 sm:w-80 sm:h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-[80px] opacity-40 dark:opacity-20 animate-blob animation-delay-2000 pointer-events-none"></div>
 
     <div class="w-full max-w-md relative z-10">
         

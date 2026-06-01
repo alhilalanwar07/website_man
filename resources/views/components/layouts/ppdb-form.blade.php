@@ -7,7 +7,7 @@
     $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth overflow-x-hidden">
 
 <head>
     <meta charset="utf-8">
@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body class="antialiased font-sans bg-slate-50 text-slate-900 selection:bg-emerald-500 selection:text-white min-h-screen flex flex-col">
+<body class="antialiased font-sans bg-slate-50 text-slate-900 selection:bg-emerald-500 selection:text-white min-h-screen flex flex-col overflow-x-hidden">
     {{-- Minimal Top Bar --}}
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -64,7 +64,7 @@
     </header>
 
     {{-- Main Content --}}
-    <main class="flex-1">
+    <main class="flex-1 overflow-x-hidden">
         {{ $slot }}
     </main>
 

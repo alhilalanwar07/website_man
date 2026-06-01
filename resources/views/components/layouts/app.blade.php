@@ -8,7 +8,7 @@
     $sosmed = $profil->tautan_sosmed ?? [];
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth overflow-x-hidden">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -54,7 +54,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="antialiased font-sans bg-white text-slate-900 selection:bg-blue-500 selection:text-white" x-data="{ mobileOpen: false, scrolled: false }" @scroll.window="scrolled = window.scrollY > 50">
+<body class="antialiased font-sans bg-white text-slate-900 selection:bg-blue-500 selection:text-white overflow-x-hidden" x-data="{ mobileOpen: false, scrolled: false }" @scroll.window="scrolled = window.scrollY > 50">
     <!-- Navigation -->
     <nav class="fixed top-0 inset-x-0 z-50 transition-all duration-500" :class="scrolled ? 'bg-white/90 backdrop-blur-2xl shadow-lg shadow-slate-200/20 border-b border-slate-100' : 'bg-transparent'">
         <!-- Scroll Progress Bar -->
@@ -193,7 +193,7 @@
         </div>
     </nav>
 
-    <main class="pt-20">
+    <main class="pt-20 overflow-x-hidden">
         {{ $slot }}
     </main>
 

@@ -135,12 +135,12 @@
     {{-- ═══════ PERIOD SELECTOR (top bar) ═══════ --}}
     @if(!$submittedNumber)
     <div class="bg-white border-b border-slate-200/60">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2 text-xs text-slate-500">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-3 sm:gap-4">
+            <div class="flex items-center gap-2 text-xs text-slate-500 sm:shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span class="font-semibold">Periode:</span>
             </div>
-            <select wire:model.live="selectedPeriod" class="flex-1 max-w-xs rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30">
+            <select wire:model.live="selectedPeriod" class="w-full sm:w-auto sm:flex-1 sm:max-w-xs min-w-0 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30">
                 @foreach($availablePeriods as $periodOption)
                     <option wire:key="period-opt-{{ $periodOption->id }}" value="{{ $periodOption->id }}">{{ $periodOption->full_label }}</option>
                 @endforeach

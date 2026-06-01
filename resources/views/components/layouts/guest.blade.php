@@ -7,7 +7,7 @@
     $namaSekolah = $profil->nama_sekolah ?? 'MAN 2 Kolaka';
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="overflow-x-hidden">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,7 +33,7 @@
 
     </style>
 </head>
-<body class=" antialiased font-sans bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-emerald-500 selection:text-white">
+<body class=" antialiased font-sans bg-slate-50 dark:bg-slate-950 min-h-screen flex items-center justify-center relative overflow-hidden overflow-x-hidden selection:bg-emerald-500 selection:text-white">
     {{ $slot }}
 </body>
 </html>
